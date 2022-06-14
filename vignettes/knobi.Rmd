@@ -270,31 +270,28 @@ $$SP_{t}=  \frac{r}{p}\overline{B}_{t}\left(1-\left( \frac{\overline{B}_{t}}{K}\
 * `years`: time series of years corresponding to the environmental variable(s).
 * `nlag`: this argument is used to test all the lags smaller or equal to `nlag` (numerical vector) through cor.test function. The lag corresponding to the highest pearson correlation among the surplus production and the lag environmental covariable values is considered in the environmental model. This means that the *SP<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included.
 
-When more than one environmental variable is introduced in `data`, the fit is made with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var = TRUE` inside the `environmental` list. 
-
-There is the possibility of fixing lag value(s) in the relation among the surplus production and the environmental variable, using `lag` instead `nlag` inside `environmental`.
-
-It is also possible to fit the environmental model considering more environmental variables, up to a total of 5 covariates, using `multicovar = TRUE`. This means that *cX<sub>t</sub>* is replaced by *sum<sub>i in 1...n</sub>(c<sub>i</sub>X<sub>t,i</sub>)* in equations (4) and (5), where index *n* represents each environmental variable.
-
 ```{r}
-Env=data.frame(years=seq(1960,2020),amo=c(0.221,0.085,0.057,-0.011,-0.111,-0.176,-0.013,
--0.115,-0.184,-0.008,-0.121,-0.331,-0.373,-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
--0.041,-0.098,-0.235,-0.093,-0.23,-0.29,-0.297,0.044,-0.028,-0.106,-0.061,-0.155,-0.242,
--0.234,-0.2,0.112,-0.082,0.028,0.349,0.094,0.004,0.095,0.041,0.207,0.182,0.268,0.242,
-0.123,0.114,0.015,0.325,0.078,0.189,0.142,0.077,0.09,0.318,0.291,0.045,0.15,0.279))
+Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
+  -0.041,-0.098,-0.235,-0.093,-0.23,-0.29,-0.297,0.044,-0.028,-0.106,-0.061,-0.155,-0.242,
+  -0.234,-0.2,0.112,-0.082,0.028,0.349,0.094,0.004,0.095,0.041,0.207,0.182,0.268,0.242,
+  0.123,0.114,0.015,0.325,0.078,0.189,0.142,0.077,0.09,0.318,0.291,0.045,0.15,0.279),
+  TMax_Vigo=c(16.5,16.7,17.1,16.3,16.4,16.7,17.3,17.3,17.4,18,17.5,17.5,17.6,18,17,18.4,
+  17.8,19.6,19.1,18,17.9,17.7,17.7,19.4,18.2,19.7,19.2,18.6,18,18.3,18.5,18.8,18.7,18.7,
+  18.5,17.9,17.4,19.2,19,19.7,18,19.1,19.4,20,19.5,20.2,18.8,18.6))
 
-# We have to provide environmental data series from first year of the adjustment
+# The environmental data series must start in the first year of the KBPM fit data
 # minus the provided nlag or lag
 years=hake_n_results$data$years # See knobi_fit example to obtain the knobi_results object
 ind=which(Env[,1]==years[1])
 ind1=which(Env[,1]==years[length(years)])
 nlag=5
+Env=Env[(ind-nlag):ind1,]
 
 # Now we create the environmental list
 environmental=list()
-environmental$data=data.frame(AMO=Env[(ind-nlag):ind1,2])
-environmental$years=Env[(ind-nlag):ind1,1]
-environmental$nlag=nlag
+environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years=Env$years
+environmental$nlag=c(nlag,nlag)
 ```
 
 ```{r,eval=FALSE}
@@ -310,22 +307,21 @@ hake_n_environmental<-knobi_env(hake_n_results,        # previous results
 hake_n_environmental<-knobi_env(hake_n_results,environmental)
 ```
 
-Result plots are shown in the plot window and also saved (if `plot_out = TRUE`) on the provided directory or in the same directory as knobi_fit.
-
-The first plot reports the correlation analysis between the environmental variable(s) and the KBPM data whereas the second reports the fitted values of the different models: without environmental information and environmental (additive and multiplicative) models.
-
-There are also reported 3D plots showing the surplus production curve conditioning to a grid of environmental values.
+Result plots are shown in the plot window and also saved (if plot_out="TRUE") on the provided directory or in the same directory as knobi_fit.
+ 
+The first plot reports the correlation analysis between the environmental variable(s) and the KBPM data. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
+ 
+3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
 
 &nbsp;
 
 #### Quantitative results ####
 
-The output is a list containing tthe environmental analysis:
+The output is a list containing the environmental analysis:
 
 * `selected_lag`: Estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the surplus production. Derived if lag is not fixed.
-* `fixed_lag`: Input value of 'lag' argument.
 * `lag_cor`: Correlation between the environmental variable(s) value and the surplus production (after lagging the environmental one if corresponds).
-* `selected_var`: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument `multicovar` is omitted, `NULL` or equal to `FALSE`.
+* `selected_var`: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure.
 * `model_env_Multiplicative`: Estimates of the multiplicative model parameters.
 * `model_env_Additive`: Estimates of the additive model parameters.
 * `ref_pts`: Reference points (RPs) estimations for each model in the absence of environmental effect.
@@ -340,15 +336,47 @@ $$B_{msy}(X_t)=K\left(\frac{p c X_t+r}{r(p+1)}\right)^{1/p}$$
 $$F_{msy}(X_t)=F_{msy}-\frac{cX_t}{p+1}+cX_t$$
 $$MSY(X_t)=B_{msy}(X_t)*F_{msy}(X_t)$$
 $$K(X_t)=K+cX_t$$
+*F<sub>msy</sub>*, *B<sub>msy</sub>* and *K* are the RP estimates for *X<sub>t</sub>=0*. 
 Note that *RP(X<sub>t</sub>)* represents the dependence of each RP in relation to the environmental variable.
 
-In case of considering more than one covariate, replace the term *cX<sub>t* by *sum<sub>i in 1...n</sub>(c<sub>i</sub>X<sub>t,i</sub>)*, where *n* is the number of covariates.
-
 * `scaled_environmental_var`: Standardized variable used in the fit, with the `scale` and `center` attributes.
-* `environmental_variables`: Standardized covariables used in the fit (if `multicovar=TRUE`), with the `scale` and `center` attributes.
 * `plots3D`: List with the 3D plots objects.
 * `error`: Array of  measures of estimates accuracy (error measures comparing observed an estimated values) for each model (base KBPM, additive model and multiplicative model): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).
 
 ```{r, fig.show='hide'}
 hake_n_environmental
 ```
+
+&nbsp;
+&nbsp;
+#### More options ####
+
+When more than one environmental variable is introduced in `data`, the fit is made with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
+
+```{r, eval=FALSE}
+environmental$selected_var="Tmax"
+knobi_env(hake_n_results,environmental)
+```
+
+&nbsp;
+
+There is the possibility of fixing lag value(s) in the relation among the surplus production and the environmental variable, using `lag` instead `nlag` inside `environmental`.
+
+It is also possible to fit the environmental model considering more environmental variables, up to a total of 5 covariates, using `multicovar = TRUE`. This means that *cX<sub>t</sub>* is replaced by *sum<sub>{i in 1...n}</sub>(c<sub>i</sub>X<sub>t,i</sub>)* in equations (4) and (5), where index *n* represents each environmental variable.
+
+```{r, eval=FALSE}
+environmental=list()
+environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years=Env$years
+environmental$lag=c(2,3)
+environmental$multicovar=TRUE
+knobi_env(hake_n_results,environmental)
+```
+
+In this case, 3D plots are not reported, and the output list slightly differs from the previous one.
+
+* `fixed_lag` instead `selected_lag`, which is the input value of 'lag' argument.
+* `environmental_variables` instead `scaled_environmental_var`, the standardized covariables used in the fit with the `scale` and `center` attributes.
+* `plots3D` and `selected_var` are not reported.
+
+For the RP estimation when *X<sub>t* is not equal to 0, you have to replace the term *cX<sub>t* in the previous *RP(X<sub>t</sub>)* equations by *sum<sub>i in 1...n</sub>(c<sub>i</sub>X<sub>t,i</sub>)*, where *n* is the number of covariates.
