@@ -1,6 +1,9 @@
 # knobi
 
-Application of a KBPM (Known Biomass Production Model): (1) the fitting of KBPM to each stock; (2) the retrospective analysis to identify regime shifts;  and (3) the estimation of the effects of environmental variability.
+Application of a KBPM (Known Biomass Production Model):
+(1) the fitting of KBPM to each stock;
+(2) the retrospective analysis to identify regime shifts;  and 
+(3) the estimation of the effects of environmental variability.
 
 First step is to install `devtools` package using `install.packages("devtools")`.
 
