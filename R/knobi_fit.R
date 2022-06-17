@@ -204,6 +204,8 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to spawning biomass time series length')}
   }
 
+  B_p=B
+
   if(length(B)!=(length(C)) & length(B)!=(length(C)+1)){
     stop('The biomass MUST be provided for the same years as the catch or for such years and the next one')}
 
@@ -301,12 +303,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   df_aux=data.frame(av,bv)
   if(control$method=="Biomass"){
-    xtit="SP curve and observed Biomass and SP"
-    xaxis="Biomass"
+    xtit="SP curve and observed average Biomass and SP"
+    xaxis="Average Biomass"
     xleg="observed biomass"
     } else {
-      xtit="SP curve and observed SSB and SP"
-      xaxis="Spawn Biomass (SSB)"
+      xtit="SP curve and observed average SSB and SP"
+      xaxis="Average Spawn Biomass (SSB)"
       xleg="observed SSB"
     }
 
@@ -350,7 +352,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
     ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
     ggplot2::labs(title="SP curve and observed catches and SP",
-                 x ="Spawning Biomass (SSB)", y = "Surplus Production (SP)") +
+                 x ="Average Spawning Biomass (SSB)", y = "Surplus Production (SP)") +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Observed catches")) +
     ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
     ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
@@ -385,20 +387,20 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   Frel_inp=F_inp/Fmsy_inp
 
   if(is.null(data$RP$B_MSY)) {Bmsy_inp=NA} else {Bmsy_inp=data$RP$B_MSY}
-  Brel_out=B_aver/Bmsy
-  Brel_inp=B_aver/Bmsy_inp
+  Brel_out=B_p/Bmsy
+  Brel_inp=B_p/Bmsy_inp
 
   max_f=max(c(F_inp,F_out,Fmsy,Fmsy_inp)*1.1,na.rm = TRUE)
   min_f=min(c(F_inp,F_out,Fmsy,Fmsy_inp),na.rm = TRUE)
-  max_b=max(c(B_aver,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
-  min_b=min(c(B_aver,Bmsy,Bmsy_inp),na.rm = TRUE)
+  max_b=max(c(B_p,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
+  min_b=min(c(B_p,Bmsy,Bmsy_inp),na.rm = TRUE)
   max_fr=max(c(Frel_inp,Frel_out,1.1),na.rm = TRUE)
   min_fr=min(c(Frel_inp,Frel_out,0.9),na.rm = TRUE)
   max_br=max(c(Brel_inp,Brel_out,1.1),na.rm = TRUE)
   min_br=min(c(Brel_inp,Brel_out,0.9),na.rm = TRUE)
 
-  if(control$method=="SSB"){bfac=c(rep("SSB from KBPM",length(Year)),rep("original SSB",length(Year)))
-  } else {bfac=c(rep("B from KBPM",length(Year)),rep("original B",length(Year)))}
+  if(control$method=="SSB"){bfac=c(rep("SSB from KBPM",length(Year)+1),rep("original SSB",length(Year)+1))
+  } else {bfac=c(rep("B from KBPM",length(Year)+1),rep("original B",length(Year)+1))}
   if(control$method=="SSB"){
     btit="Spawning Biomass (SSB) over Years"
     baxis="Spawning biomass (SSB)"
@@ -408,9 +410,9 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
       Brtit="Relative Biomass over Years"}
 
 
-  plot_df=data.frame(Year=rep(Year,2),f=c(F_out,F_inp),fr=c(Frel_out,Frel_inp),
-                     f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
-                     b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
+  plot_df=data.frame(Year=rep(c(Year,Year[length(Year)]+1),2),f=c(F_out,NA,F_inp,NA),fr=c(Frel_out,NA,Frel_inp,NA),
+                     f_factor=c(rep("F from KBPM",length(Year)+1),rep("original F",length(Year)+1)),
+                     b=rep(B_p,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
 
   f_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +

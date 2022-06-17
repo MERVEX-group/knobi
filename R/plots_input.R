@@ -32,7 +32,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
   p2=ggplot2::ggplot(data,ggplot2::aes(x=years, y=SSB)) +
     ggplot2::geom_line(data=data[!is.na(data$SSB),]) +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("SSB time series")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Average SSB time series")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p2=p2+ggplot2::labs(subtitle=subtitle)
   }
@@ -87,7 +87,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
     p6=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=F)) +
       ggplot2::geom_smooth(formula = y ~ x, method="loess") +
       ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-      ggplot2::ggtitle("F over SSB")+ggplot2::theme_bw()
+      ggplot2::ggtitle("F over average SSB")+ggplot2::theme_bw()
     if(!is.null(subtitle)){
       p6=p6+ggplot2::labs(subtitle=subtitle)
     }
@@ -104,7 +104,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
   p7=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=C)) +
     ggplot2::geom_smooth(formula = y ~ x, method="loess") +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches over SSB")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catches over average SSB")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p7=p7+ggplot2::labs(subtitle=subtitle)
   }
@@ -153,7 +153,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
   p2=ggplot2::ggplot(data,ggplot2::aes(x=years, y=SSB)) +
     ggplot2::geom_line(data=data[!is.na(data$SSB),]) +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Biomass time series")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Average Biomass time series")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p2=p2+ggplot2::labs(subtitle=subtitle)
   }
@@ -208,7 +208,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
     p6=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=F)) +
       ggplot2::geom_smooth(formula = y ~ x, method="loess") +
       ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-      ggplot2::ggtitle("F over B")+ggplot2::theme_bw()
+      ggplot2::ggtitle("F over average B")+ggplot2::theme_bw()
     if(!is.null(subtitle)){
       p6=p6+ggplot2::labs(subtitle=subtitle)
     }
@@ -225,7 +225,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
   p7=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=C)) +
     ggplot2::geom_smooth(formula = y ~ x, method="loess") +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches over B")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catches over average B")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p7=p7+ggplot2::labs(subtitle=subtitle)
   }
