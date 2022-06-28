@@ -7,16 +7,16 @@
 \method{print}{knobi}(x, ...)
 }
 \arguments{
-\item{x, ...}{Fitted model objects of class \code{knobi} produced by \code{knobi_fit()} or \code{knobi_env()}.}
+\item{x, ...}{Fitted model objects of class \code{knobi} produced by \code{knobi_fit()}, \code{knobi_env()} or \code{knobi_proj()}.}
 }
 \description{
-The default print method for a \code{\link{knobi_fit}} or a \code{\link{knobi_env}} object
+The default print method for a \code{\link{knobi_fit}},\code{\link{knobi_env}} or a \code{\link{knobi_proj}} object
 }
 \details{
-Prints out the formula and the parameters estimates for the base KBPM fit or the environmental KBPM fit.
+Prints out the formula and the parameters estimates for the base KBPM fit or the environmental KBPM fit or the biomass and the surplus production estimated projections.
 }
 \seealso{
-\code{\link{knobi_fit}}, \code{\link{knobi_env}}
+\code{\link{knobi_fit}}, \code{\link{knobi_env}}, \code{\link{knobi_proj}}
 }
 \author{
 \itemize{

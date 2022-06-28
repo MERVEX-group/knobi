@@ -1,10 +1,10 @@
 #' @title Print a knobi object
 #'
-#' @description The default print method for a \code{\link{knobi_fit}} or a \code{\link{knobi_env}} object
+#' @description The default print method for a \code{\link{knobi_fit}},\code{\link{knobi_env}} or a \code{\link{knobi_proj}} object
 #'
-#' @param x,... Fitted model objects of class \code{knobi} produced by \code{knobi_fit()} or \code{knobi_env()}.
+#' @param x,... Fitted model objects of class \code{knobi} produced by \code{knobi_fit()}, \code{knobi_env()} or \code{knobi_proj()}.
 #'
-#' @details Prints out the formula and the parameters estimates for the base KBPM fit or the environmental KBPM fit.
+#' @details Prints out the formula and the parameters estimates for the base KBPM fit or the environmental KBPM fit or the biomass and the surplus production estimated projections.
 #'
 #' @author
 #' \itemize{
@@ -15,14 +15,14 @@
 #' }
 #'
 #' @seealso
-#' \code{\link{knobi_fit}}, \code{\link{knobi_env}}
+#' \code{\link{knobi_fit}}, \code{\link{knobi_env}}, \code{\link{knobi_proj}}
 #'
 #' @export
 #'
 
 print.knobi<-function(x, ...){
 
-  if(is.null(x$model_env_Multiplicative)==T){
+  if(is.null(x$fit)==F){
     if(x$control$pella==T){
       cat("\n Formula:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p) \n \n")
     } else {
@@ -37,7 +37,9 @@ print.knobi<-function(x, ...){
       cat(names(x$fit$Parameter_estimates)[3]," ",x$fit$Parameter_estimates[3],"\n \n")
     } else {cat("\n")}
 
-  } else {
+  }
+
+  if(is.null(x$model_env_Multiplicative)==F){
 
     if("p" %in% names(x$model_env_Multiplicative)){
 
@@ -72,4 +74,15 @@ print.knobi<-function(x, ...){
     cat("\n")
 
   }
+
+  if(is.null(x$biomass)==F){
+    cat("\n Biomass projections: \n")
+    subset(x$biomass[,-3],x$biomass$scenario!="input")
+    cat("\n")
+
+    cat("\n Surplus Production projections: \n")
+    subset(x$SP[,-3],x$SP$scenario!="input")
+    cat("\n \n")
+  }
+
 }

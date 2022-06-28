@@ -1149,6 +1149,7 @@ if(is.null(env_results)==T){
   }
 }
 
+class(forecast)="knobi"
 
 return(forecast)
 
