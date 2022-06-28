@@ -152,7 +152,14 @@ hake_n_results<-knobi_fit(data,control,plot_out=F)
 
 #### Quantitative results ####
 
-The output is a list containing the input data and control updated with the fitting results and the plot settings information, respectively. The data is updated including also the annual average biomass (mean of two consecutive years), in `\$data\$Average_Biomass`, the surplus production, in `$data\$SP`, and the *F* estimates derive from KBPM, in `\$data\$F_output`. The fit results of the KBPM are in `\$fit`, and contains:
+The output prints out the formula and the parameters estimates for the fit.
+
+```{r}
+hake_n_results
+```
+
+
+The complete output object is a list containing the input data and control updated with the fitting results and the plot settings information, respectively. The data is updated including also the annual average biomass (mean of two consecutive years), in `\$data\$Average_Biomass`, the surplus production, in `$data\$SP`, and the *F* estimates derive from KBPM, in `\$data\$F_output`. The fit results of the KBPM are in `\$fit`, and contains:
 
 * `Parameter_estimates`: Estimates of the model parameters.
 * `data`: Reports the data used for the model.
@@ -317,7 +324,13 @@ The first plot reports the correlation analysis between the environmental variab
 
 #### Quantitative results ####
 
-The output is a list containing the environmental analysis:
+The output prints the formula and the parameters estimates for both environmental models fit.
+
+```{r}
+hake_n_environmental
+```
+
+The complete output object is a list containing the environmental analysis:
 
 * `selected_lag`: Estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the surplus production. Derived if lag is not fixed.
 * `lag_cor`: Correlation between the environmental variable(s) value and the surplus production (after lagging the environmental one if corresponds).
@@ -343,8 +356,9 @@ Note that *RP(X<sub>t</sub>)* represents the dependence of each RP in relation t
 * `plots3D`: List with the 3D plots objects.
 * `error`: Array of  measures of estimates accuracy (error measures comparing observed an estimated values) for each model (base KBPM, additive model and multiplicative model): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).
 
-```{r, fig.show='hide'}
-hake_n_environmental
+```{r}
+hake_n_environmental$model_env_Additive
+hake_n_environmental$model_env_Multiplicative
 ```
 
 &nbsp;
