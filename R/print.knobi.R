@@ -28,7 +28,7 @@ print.knobi<-function(x, ...){
     } else {
       cat("\n Formula:\n","SP_t = r*B_t*(1-B_t/K) \n \n")}
 
-    cat("Coefficients:\n")
+    cat("Parameter estimates:\n")
 
     cat(names(x$fit$Parameter_estimates)[1]," ",x$fit$Parameter_estimates[1],"\n")
     cat(names(x$fit$Parameter_estimates)[2]," ",x$fit$Parameter_estimates[2],"\n")
@@ -48,7 +48,7 @@ print.knobi<-function(x, ...){
       cat("\n Multiplicative model:\n","SP_t = r*B_t*(1-B_t/K)*exp(c%*%X_t) \n \n")
     }
 
-    cat("Coefficients:\n")
+    cat("Parameter estimates:\n")
 
     npms=length(x$model_env_Multiplicative)
 
@@ -65,7 +65,7 @@ print.knobi<-function(x, ...){
       cat("\n Additive model:\n","SP_t = r*B_t*(1-B_t/K)+c%*%X_tBt \n \n")
     }
 
-    cat("Coefficients:\n")
+    cat("Parameter estimates:\n")
 
     for(i in 1:npms){
       cat(names(x$model_env_Additive)[i]," ",x$model_env_Additive[i],"\n")
