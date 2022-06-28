@@ -42,13 +42,15 @@
 #' \item value: The value of the function corresponding to the parameter estimation.
 #' \item convergence: An integer code. ‘0’ indicates successful completion in the optimization.
 #' \item message: A character string giving any additional information returned by the optimizer, or NULL}
-#' \item error: Data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
+#' \item rror: List of performance and accuracy: \itemize{
+#' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sqrt(estimates).
+#' \item error_table: Data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
 #' \item SER: Standard error of the regression, calculated as the root of the rate between the residual sum of squares and the degrees of freedom of the regression.
 #' \item R-squared: Coefficient of determination.
 #' \item adj-R-squared: Adjusted coefficient of determination.
 #' \item AIC: Akaike information criterion.
 #' \item RMSE: Root mean squared error.
-#' \item MAPE: Mean absolute percentage error.}}
+#' \item MAPE: Mean absolute percentage error.}}}
 #' The plots are shown in the plot window and also saved (if plot_out=TRUE) on the provided directory or in the current directory (if the directory is not provided). The following input quantities are plotted: time series of fishing mortality, SSB, surplus production and catch time series. Also plots of catch over fishing mortality, fishing mortality over SSB, and catch over SSB time series are available with a smooth line from a "loess" regression. Plot of input and output time series of fishing mortality with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL) is provided. The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first one) and with the catch and SP observations (second one).
 #'
 #' @author

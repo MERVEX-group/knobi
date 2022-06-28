@@ -32,7 +32,9 @@
 #' \item scaled_environmental_var: Standardized variable used in the fit, with the 'scale' and 'center' attributes.
 #' \item environmental_variables: Standardized covariables used in the fit (if 'multicovar=TRUE'), with the 'scale' and 'center' attributes.
 #' \item plots3D: List with the 3D plots objects.
-#' \item error: Array of performance and accuracy (observed vs. estimated) measures for each model (base KBPM, additive model and multiplicative model): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).}
+#' \item error: List of performance and accuracy: \itemize{
+#' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sqrt(estimates) for each model (base KBPM, additive model and multiplicative model).
+#' \item error_table: Array of performance and accuracy (observed vs. estimated) measures for each model: Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).}}
 #' Result plots are shown in the plot window and also saved (if plot_out="TRUE") on the provided directory or in the same directory as knobi_fit.
 #' The first plot reports the correlation analysis between the environmental variable(s) and the KBPM data. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
 #' If multicovar=FALSE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
