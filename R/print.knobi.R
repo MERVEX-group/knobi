@@ -76,12 +76,12 @@ print.knobi<-function(x, ...){
   }
 
   if(is.null(x$biomass)==F){
-    cat("\n Biomass projections: \n")
-    subset(x$biomass[,-3],x$biomass$scenario!="input")
+    cat("\n Biomass projections: \n \n")
+    print(subset(x$biomass[,-3],x$biomass$scenario!="input"))
     cat("\n")
 
-    cat("\n Surplus Production projections: \n")
-    subset(x$SP[,-3],x$SP$scenario!="input")
+    cat("\n Surplus Production projections: \n \n")
+    print(subset(x$SP[,-3],x$SP$scenario!="input"))
     cat("\n \n")
   }
 
