@@ -410,7 +410,7 @@ For the RP estimation when *X<sub>t* is not equal to 0, you have to replace the 
 # In this illustration, catch values for all the projected years are constant and equal to the 
 # catch value in the last year multiplied by 1, 1.2 and 0.8.
 
-catch=rep(knobi_results$data$Catch[length(knobi_results$data$Catch)],5)
+catch=rep(hake_n__results$data$Catch[length(hake_n__results$data$Catch)],5)
 
 Ct=data.frame(catch=catch,
               catch08=0.8*catch,
