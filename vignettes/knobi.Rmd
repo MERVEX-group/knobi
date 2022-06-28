@@ -443,12 +443,11 @@ env=data.frame(AMO1=c(0.2,0.3,0.4,0.5,0.6),
 Based on the previous objects we can apply the projection function.
 
 ```{r}
-knobi_proj(hake_n_results,          # knobi_fit results
-           hake_n_environmental,    # knobi_env results
-           Ct=Ct,                   # catch for projections
-           n_y=5,                   # years projected
-           env=env                  # environmental data for projections
-           )
+projections=knobi_proj(hake_n_results,          # knobi_fit results
+                       hake_n_environmental,    # knobi_env results
+                       Ct=Ct,                   # catch for projections
+                       n_y=5,                   # years projected
+                       env=env )                # environmental data for projections
 ```
 
 The plots results are displayed in the plot window and are also saved (if `plot_out="TRUE"`) in the  provided directory or in the same directory as `knobi_fit`.
@@ -461,7 +460,13 @@ If environmental information is provided, the plots are presented in a panel for
 
 #### Quantitative results ####
 
-The output is a list containing the projection estimates:
+The output prints the biomass and surplus production projections for each scenario.
+
+```{r}
+projections
+```
+
+The complete output object is a list containing the projection estimates:
 
 * `base_model`: Three-dimensional array containing projection information for each catch or fishing mortality scenario that is projected using the KBPM base model. Rows correspond to years, columns to the derived quantities (biomass or SSB, surplus production, F and catch) and third dimension to the projection scenarios.
 * `additive_model`: Four-dimensional array containing projections information for each catch or fishing mortality scenario and for each environmental scenario considering the KBPM additive model. The rows correspond to the years, the columns to the derived quantities (biomass or SSB, surplus production, F and catch), the third dimension to the environmental projection scenarios and the fourth one to the catch scenarios. It is only returned if the arguments env_results and env are provided.
@@ -470,6 +475,11 @@ The output is a list containing the projection estimates:
 * `catch`: Data frame containing historical catch and their projection values for all scenarios.
 * `f`: Data frame containing the historical fishing mortality and their projection values for all scenarios.
 * `SP`: Data frame containing the historical surplus production and their projection values for all scenarios.
+
+```{r}
+projections$additive_model[1,,,]
+projections$catch
+```
 
 &nbsp;
 &nbsp;
