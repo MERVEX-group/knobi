@@ -557,6 +557,8 @@ if (plot_out==T){
   setwd(old_dir)
 } else {cat("\n ... Done! :) \n")}
 
+class(Environmental)="knobi"
+
 return(Environmental)
 
 }

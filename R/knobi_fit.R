@@ -512,6 +512,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     setwd(old_dir)}
 
 
+  class(adjustment)="knobi"
 
   return(adjustment)
 }
