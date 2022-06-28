@@ -8,15 +8,15 @@ plotInput=function(data,plot_out){
 
 plotInput.KBPM_SSB=function(data,plot_out){
   years=as.numeric(data$years);SP=as.numeric(data$SP)
-  C=as.numeric(data$Catches); SSB=as.numeric(data$Average_Biomass)
+  C=as.numeric(data$Catch); SSB=as.numeric(data$Average_Biomass)
   if(!is.null(data$Stock)){subtitle=data$Stock} else {subtitle=NULL}
   if(is.na(data$F_input[1])==T){
     data=data.frame(years=as.numeric(data$years),SP=as.numeric(data$SP),
-                    C=as.numeric(data$Catches), SSB=as.numeric(data$Average_Biomass))
+                    C=as.numeric(data$Catch), SSB=as.numeric(data$Average_Biomass))
   } else {
     F=as.numeric(data$F_input)
     data=data.frame(F=as.numeric(data$F_input),years=as.numeric(data$years),SP=as.numeric(data$SP),
-                    C=as.numeric(data$Catches), SSB=as.numeric(data$Average_Biomass))}
+                    C=as.numeric(data$Catch), SSB=as.numeric(data$Average_Biomass))}
 
   # Panel 1
   # First plot
@@ -48,7 +48,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
   p4=ggplot2::ggplot(data,ggplot2::aes(x=years, y=C)) +
     ggplot2::geom_line(data=data[!is.na(data$C),]) +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches time series")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catch time series")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p4=p4+ggplot2::labs(subtitle=subtitle)
   }
@@ -72,7 +72,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
     p5=ggplot2::ggplot(data1,ggplot2::aes(x=F, y=C)) +
       ggplot2::geom_smooth(formula = y ~ x, method="loess") +
       ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-      ggplot2::ggtitle("Catches over F")+ggplot2::theme_bw()
+      ggplot2::ggtitle("Catch over F")+ggplot2::theme_bw()
     if(!is.null(subtitle)){
       p5=p5+ggplot2::labs(subtitle=subtitle)
     }
@@ -104,7 +104,7 @@ plotInput.KBPM_SSB=function(data,plot_out){
   p7=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=C)) +
     ggplot2::geom_smooth(formula = y ~ x, method="loess") +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches over average SSB")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catch over average SSB")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p7=p7+ggplot2::labs(subtitle=subtitle)
   }
@@ -129,15 +129,15 @@ plotInput.KBPM_SSB=function(data,plot_out){
 
 plotInput.KBPM_Biomass=function(data,plot_out){
   years=as.numeric(data$years);SP=as.numeric(data$SP)
-  C=as.numeric(data$Catches); SSB=as.numeric(data$Average_Biomass)
+  C=as.numeric(data$Catch); SSB=as.numeric(data$Average_Biomass)
   if(!is.null(data$Stock)){subtitle=data$Stock} else {subtitle=NULL}
   if(is.na(data$F_input[1])==T){
     data=data.frame(years=as.numeric(data$years),SP=as.numeric(data$SP),
-                    C=as.numeric(data$Catches), SSB=as.numeric(data$Average_Biomass))
+                    C=as.numeric(data$Catch), SSB=as.numeric(data$Average_Biomass))
   } else {
     F=as.numeric(data$F_input)
     data=data.frame(F=as.numeric(data$F_input),years=as.numeric(data$years),SP=as.numeric(data$SP),
-                    C=as.numeric(data$Catches), SSB=as.numeric(data$Average_Biomass))}
+                    C=as.numeric(data$Catch), SSB=as.numeric(data$Average_Biomass))}
 
   # Panel 1
   # First plot
@@ -169,7 +169,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
   p4=ggplot2::ggplot(data,ggplot2::aes(x=years, y=C)) +
     ggplot2::geom_line(data=data[!is.na(data$C),]) +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches time series")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catch time series")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p4=p4+ggplot2::labs(subtitle=subtitle)
   }
@@ -193,7 +193,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
     p5=ggplot2::ggplot(data1,ggplot2::aes(x=F, y=C)) +
       ggplot2::geom_smooth(formula = y ~ x, method="loess") +
       ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-      ggplot2::ggtitle("Catches over F")+ggplot2::theme_bw()
+      ggplot2::ggtitle("Catch over F")+ggplot2::theme_bw()
     if(!is.null(subtitle)){
       p5=p5+ggplot2::labs(subtitle=subtitle)
     }
@@ -225,7 +225,7 @@ plotInput.KBPM_Biomass=function(data,plot_out){
   p7=ggplot2::ggplot(data1,ggplot2::aes(x=SSB, y=C)) +
     ggplot2::geom_smooth(formula = y ~ x, method="loess") +
     ggplot2::geom_point(shape=21, color="black", fill="#56B4E9", size=3) +
-    ggplot2::ggtitle("Catches over average B")+ggplot2::theme_bw()
+    ggplot2::ggtitle("Catch over average B")+ggplot2::theme_bw()
   if(!is.null(subtitle)){
     p7=p7+ggplot2::labs(subtitle=subtitle)
   }

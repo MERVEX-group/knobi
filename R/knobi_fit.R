@@ -1,10 +1,10 @@
-#' @title Known Biomass Production Model (KBPM) fit
+#' @title Known biomass Production Model (KBPM) fit
 #'
-#' @description This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the the catches time series and the biomass or SSB (Spawning Stock Biomass) derived from the fit of other stock assessment model.
+#' @description This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the the catch time series and the biomass or SSB (Spawning Stock Biomass) derived from the fit of other stock assessment model.
 #'
 #' @param data A list containing the data. \itemize{
-#' \item years: time series of years corresponding to the catches.
-#' \item Catches: time series of catches estimates from a stock assessment model.
+#' \item years: time series of years corresponding to the catch time series.
+#' \item Catch: time series of catch estimates from a stock assessment model.
 #' \item Biomass: time series of biomass estimates from a stock assessment model. If it is available, other case introduce SSB in the next argument.
 #' \item Spawning_Biomass: time series of SSB estimates from a stock assessment model. If it is available, other case introduce Biomass in the previous argument.
 #' \item Stock: optional. Character string with the stock name for the plot subtitles.
@@ -49,7 +49,7 @@
 #' \item AIC: Akaike information criterion.
 #' \item RMSE: Root mean squared error.
 #' \item MAPE: Mean absolute percentage error.}}
-#' The plots are shown in the plot window and also saved (if plot_out=TRUE) on the provided directory or in the current directory (if the directory is not provided). The following input quantities are plotted: time series of fishing mortality, SSB, surplus production and catches time series. Also plots of catches over fishing mortality, fishing mortality over SSB, and catches over SSB time series are available with a smooth line from a "loess" regression. Plot of input and output time series of fishing mortality with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL) is provided. The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first one) and with the catches and SP observations (second one).
+#' The plots are shown in the plot window and also saved (if plot_out=TRUE) on the provided directory or in the current directory (if the directory is not provided). The following input quantities are plotted: time series of fishing mortality, SSB, surplus production and catch time series. Also plots of catch over fishing mortality, fishing mortality over SSB, and catch over SSB time series are available with a smooth line from a "loess" regression. Plot of input and output time series of fishing mortality with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL) is provided. The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first one) and with the catch and SP observations (second one).
 #'
 #' @author
 #' \itemize{
@@ -86,7 +86,7 @@
 #'
 #' data<-list()
 #' data$Spawning_Biomass=Database$SSB # We take the SSB in our Database.
-#' data$Catches=Database$catches # We take the catches in our Database.
+#' data$Catch=Database$catches # We take the catch in our Database.
 #' data$F_input=Database$F # We take the F in our Database.
 #' # Reference points estimates from ICES stock assessment model:
 #' # ICES. 2021. Working Group for the Bay of Biscay and the Iberian Waters Ecoregion
@@ -131,17 +131,17 @@
 #' index <- which(sardine1$Year %in% sardine2$Year)
 #' sardine1 <- sardine1[index,]
 #'
-#' # Create a data.frame where the SSB and the catches are
+#' # Create a data.frame where the SSB and the catch are
 #' # the sum of such data in the two stocks
 #' years<-sardine1$Year
 #' sardine <- data.frame(years=years,SSB=sardine1$SSB+sardine2$SSB,
-#'                       catches=sardine1$catches+sardine2$catches)
+#'                       catch=sardine1$catches+sardine2$catches)
 #'
-#' # Once the total SSB and catches are available
+#' # Once the total SSB and catch are available
 #' # we follow previous KBPM illustration
 #' data<-list()
 #' data$Spawning_Biomass=sardine$SSB
-#' data$Catches=sardine$catches
+#' data$Catch=sardine$catch
 #' data$years=sardine$years
 #'
 #' control=list()
@@ -176,7 +176,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   # Check input data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  C=data$Catches
+  C=data$Catch
   years=data$years
 
   if(is.null(data$Biomass)){
@@ -204,8 +204,6 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to spawning biomass time series length')}
   }
 
-  B_p=B
-
   if(length(B)!=(length(C)) & length(B)!=(length(C)+1)){
     stop('The biomass MUST be provided for the same years as the catch or for such years and the next one')}
 
@@ -225,15 +223,15 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     lb=length(B)
     C=C[1:lb]
     years=years[1:lb]
-    data$Catches=C
+    data$Catch=C
     data$years=years
   }
 
   if(is.null(data$F_input)){data$F_input=NA} else {
-    data$F_input=data$F_input[1:length(data$Catches)]}
+    data$F_input=data$F_input[1:length(data$Catch)]}
 
   if(is.null(data$Recruitment)){data$Recruitment=NA} else {
-    data$Recruitment=data$Recruitment[1:length(data$Catches)]}
+    data$Recruitment=data$Recruitment[1:length(data$Catch)]}
 
   # Save SP, F and average biomass ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -303,39 +301,39 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   df_aux=data.frame(av,bv)
   if(control$method=="Biomass"){
-    xtit="SP curve and observed average Biomass and SP"
-    xaxis="Average Biomass"
+    xtit="SP curve and observed Biomass and SP"
+    xaxis="Biomass"
     xleg="observed biomass"
-    } else {
-      xtit="SP curve and observed average SSB and SP"
-      xaxis="Average Spawn Biomass (SSB)"
-      xleg="observed SSB"
-    }
+  } else {
+    xtit="SP curve and observed SSB and SP"
+    xaxis="Spawn Biomass (SSB)"
+    xleg="observed SSB"
+  }
 
-    vec=min(df_aux$bv,df$y)
-    vec1=max(df_aux$bv,df$y)
+  vec=min(df_aux$bv,df$y)
+  vec1=max(df_aux$bv,df$y)
 
-    fit_plot=ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
-      ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
-      ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=3,color=Year)) +
-      ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=2,color=Year,
-                                                    label=Year,vjust=-1), show.legend = FALSE) +
-      ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
-      ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
-      ggplot2::labs(title=xtit,x =xaxis, y = "Surplus Production (SP)") +
-      ggplot2::guides(size="none",col=ggplot2::guide_legend(title=xleg)) +
-      ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
-      ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
-                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),
-                    axis.line=ggplot2::element_line())
-    print(fit_plot)
+  fit_plot=ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
+    ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
+    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=3,color=Year)) +
+    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=2,color=Year,
+                                                            label=Year,vjust=-1), show.legend = FALSE) +
+    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
+    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
+    ggplot2::labs(title=xtit,x =xaxis, y = "Surplus Production (SP)") +
+    ggplot2::guides(size="none",col=ggplot2::guide_legend(title=xleg)) +
+    ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
+    ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
+                   plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),
+                   axis.line=ggplot2::element_line())
+  print(fit_plot)
 
-    if(plot_out==T){
-      p <- grDevices::recordPlot()
-      grDevices::jpeg("fit.jpeg",width=2500, height=2500,res=300)
-      grDevices::replayPlot(p)
-      grDevices::dev.off()
-    }
+  if(plot_out==T){
+    p <- grDevices::recordPlot()
+    grDevices::jpeg("fit.jpeg",width=2500, height=2500,res=300)
+    grDevices::replayPlot(p)
+    grDevices::dev.off()
+  }
 
 
 
@@ -348,21 +346,21 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=3,color=Year)) +
     ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=2,color=Year,
-                                                  label=Year,vjust=-1), show.legend = FALSE) +
+                                                            label=Year,vjust=-1), show.legend = FALSE) +
     ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
     ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
-    ggplot2::labs(title="SP curve and observed catches and SP",
-                 x ="Average Spawning Biomass (SSB)", y = "Surplus Production (SP)") +
-    ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Observed catches")) +
+    ggplot2::labs(title="SP curve and observed catch and SP",
+                  x ="Spawning Biomass (SSB)", y = "Surplus Production (SP)") +
+    ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Observed catch")) +
     ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
     ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
-                  plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
+                   plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
 
   print(fitc_plot)
 
   if(plot_out==T){
     p <- grDevices::recordPlot()
-    grDevices::jpeg("fit_catches.jpeg",width=2500, height=2500,res=300)
+    grDevices::jpeg("fit_catch.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
     grDevices::dev.off()
   }
@@ -387,20 +385,20 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   Frel_inp=F_inp/Fmsy_inp
 
   if(is.null(data$RP$B_MSY)) {Bmsy_inp=NA} else {Bmsy_inp=data$RP$B_MSY}
-  Brel_out=B_p/Bmsy
-  Brel_inp=B_p/Bmsy_inp
+  Brel_out=B_aver/Bmsy
+  Brel_inp=B_aver/Bmsy_inp
 
   max_f=max(c(F_inp,F_out,Fmsy,Fmsy_inp)*1.1,na.rm = TRUE)
   min_f=min(c(F_inp,F_out,Fmsy,Fmsy_inp),na.rm = TRUE)
-  max_b=max(c(B_p,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
-  min_b=min(c(B_p,Bmsy,Bmsy_inp),na.rm = TRUE)
+  max_b=max(c(B_aver,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
+  min_b=min(c(B_aver,Bmsy,Bmsy_inp),na.rm = TRUE)
   max_fr=max(c(Frel_inp,Frel_out,1.1),na.rm = TRUE)
   min_fr=min(c(Frel_inp,Frel_out,0.9),na.rm = TRUE)
   max_br=max(c(Brel_inp,Brel_out,1.1),na.rm = TRUE)
   min_br=min(c(Brel_inp,Brel_out,0.9),na.rm = TRUE)
 
-  if(control$method=="SSB"){bfac=c(rep("SSB from KBPM",length(Year)+1),rep("original SSB",length(Year)+1))
-  } else {bfac=c(rep("B from KBPM",length(Year)+1),rep("original B",length(Year)+1))}
+  if(control$method=="SSB"){bfac=c(rep("SSB from KBPM",length(Year)),rep("original SSB",length(Year)))
+  } else {bfac=c(rep("B from KBPM",length(Year)),rep("original B",length(Year)))}
   if(control$method=="SSB"){
     btit="Spawning Biomass (SSB) over Years"
     baxis="Spawning biomass (SSB)"
@@ -410,9 +408,9 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
       Brtit="Relative Biomass over Years"}
 
 
-  plot_df=data.frame(Year=rep(c(Year,Year[length(Year)]+1),2),f=c(F_out,NA,F_inp,NA),fr=c(Frel_out,NA,Frel_inp,NA),
-                     f_factor=c(rep("F from KBPM",length(Year)+1),rep("original F",length(Year)+1)),
-                     b=rep(B_p,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
+  plot_df=data.frame(Year=rep(Year,2),f=c(F_out,F_inp),fr=c(Frel_out,Frel_inp),
+                     f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
+                     b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
 
   f_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +
@@ -420,12 +418,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::ylim(min_f,max_f) +
     ggplot2::labs(title="Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
     ggplot2::geom_hline(yintercept=c(Fmsy,Fmsy_inp),linetype="dashed",
-                       color = c("#F8766D","#00BFC4"), na.rm=T) +
+                        color = c("#F8766D","#00BFC4"), na.rm=T) +
     ggplot2::annotate("text",x=Year[length(Year)]-1,y=Fmsy,label="Fmsy (KBPM)",
-                     color = "#F8766D",size=3,vjust=-1) +
+                      color = "#F8766D",size=3,vjust=-1) +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +
     ggplot2::theme(legend.position = c(.9,.95), legend.background = ggplot2::element_rect(fill = "transparent"),
-                  plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
+                   plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
   if(!is.na(Fmsy_inp)){
     f_plot = f_plot +
       ggplot2::annotate("text",x=Year[1]+1,y=Fmsy_inp,label="original Fmsy",color = "#00BFC4",na.rm=T,size=3,vjust=-1)
@@ -447,7 +445,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::labs(title="Relative Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +
     ggplot2::theme(legend.position = c(.9,.95), legend.background = ggplot2::element_rect(fill = "transparent"),
-                  plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
+                   plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
 
   print(fr_plot)
 
@@ -464,9 +462,9 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_b,max_b) + ggplot2::labs(title=btit,y=baxis) +
     ggplot2::geom_hline(yintercept=c(Bmsy,Bmsy_inp),linetype="dashed",
-                       color = c("#F8766D","#00BFC4"), na.rm=T) +
+                        color = c("#F8766D","#00BFC4"), na.rm=T) +
     ggplot2::annotate("text",x=Year[length(Year)]-1,y=Bmsy,label="Bmsy (KBPM)",
-                     color = "#F8766D",size=3,vjust=-1) +
+                      color = "#F8766D",size=3,vjust=-1) +
     ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
   if(!is.na(Bmsy_inp)){
     b_plot = b_plot +
@@ -474,12 +472,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   }
   print(b_plot)
 
-    if(plot_out==T){
-      p <- grDevices::recordPlot()
-      grDevices::jpeg("B_absolute.jpeg",width=2500, height=2500,res=300)
-      grDevices::replayPlot(p)
-      grDevices::dev.off()
-    }
+  if(plot_out==T){
+    p <- grDevices::recordPlot()
+    grDevices::jpeg("B_absolute.jpeg",width=2500, height=2500,res=300)
+    grDevices::replayPlot(p)
+    grDevices::dev.off()
+  }
 
 
   br_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(br)),ggplot2::aes(x=Year,y=br,color=b_factor)) +
@@ -487,18 +485,16 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::labs(title=Brtit ,y =baxis) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +
     ggplot2::theme(legend.position = c(.9,.95), legend.background = ggplot2::element_rect(fill = "transparent"),
-                  plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
+                   plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
 
   print(br_plot)
 
-    if(plot_out==T){
-      p <- grDevices::recordPlot()
-      grDevices::jpeg("B_relative.jpeg",width=2500, height=2500,res=300)
-      grDevices::replayPlot(p)
-      grDevices::dev.off()
-      control$plot_settings=plot_settings
-      setwd(old_dir)
-    }
+  if(plot_out==T){
+    p <- grDevices::recordPlot()
+    grDevices::jpeg("B_relative.jpeg",width=2500, height=2500,res=300)
+    grDevices::replayPlot(p)
+    grDevices::dev.off()
+  }
 
 
   RP=list(K=fit$K,B_MSY=fit$B_MSY,F_MSY=fit$F_MSY,
@@ -507,10 +503,13 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     Parameter_estimates=fit$Parameter_estimates,data=fit$data,RP=RP,optimr=fit$optimr))
   class(adjustment$fit)=class(fit)
 
-  adjustment$fit$error=error(adjustment)
+  adjustment$fit$error=error(adjustment,plot_out=plot_out)
+
+  if(plot_out==T){
+    control$plot_settings=plot_settings
+    setwd(old_dir)}
+
+
 
   return(adjustment)
 }
-
-
-

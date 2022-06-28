@@ -1,4 +1,4 @@
-error <- function(knobi_results,env=NULL) {
+error <- function(knobi_results,env=NULL,plot_out) {
 
   X=knobi_results$data$Average_Biomass
   Y=knobi_results$data$SP
@@ -23,11 +23,25 @@ error <- function(knobi_results,env=NULL) {
   RMSE_b<-sqrt(rss_b/total_n)
   MAPE_b<-1/total_n*(sum(abs(((Y-((r_b/p_b)*X*(1-(X/K_b)^(p_b)))))/Y)))
 
+  residuals_b <- (Y-((r_b/p_b)*X*(1-(X/K_b)^(p_b))))/sqrt((r_b/p_b)*X*(1-(X/K_b)^(p_b)))
+
   if(is.null(env)){
 
     error_table=data.frame(ser_b,r2_b,r2_adj_b,AIC_b, RMSE_b, MAPE_b)
     names=names(error_table)=c("SER","R-squared", "adj-R-squared", "AIC", "RMSE", "MAPE")
     rownames(error_table)="KBPM_error"
+
+    residuals = residuals_b
+
+    res_df=data.frame(Residuals=residuals_b,Year=knobi_results$data$years)
+
+    res_plot=ggplot2::ggplot(data=res_df,ggplot2::aes(x=Year,y=Residuals)) + ggplot2::theme_bw() +
+      ggplot2::geom_hline(yintercept=0) + ggplot2::geom_point() +
+      ggplot2::ylim(min(res_df$Residuals),max(res_df$Residuals)) +
+      ggplot2::labs(title="Pearson Residuals", subtitle=knobi_results$data$Stock) +
+      ggplot2::theme(legend.position = c(0.15,0.85), plot.title = ggplot2::element_text(hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent"))
 
   } else {
 
@@ -55,6 +69,8 @@ error <- function(knobi_results,env=NULL) {
     n_params_env=length(model_env_Additive)
     df_env=total_n-n_params_env
 
+    residuals_a <- (Y-as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))/sqrt(as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))
+
     rss_a = sum((Y-as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))^2)
     tss_a = sum((Y-mean(Y))^2)
 
@@ -80,6 +96,8 @@ error <- function(knobi_results,env=NULL) {
       c_m<-model_env_Multiplicative[3:(length(model_env_Additive))]
       p_m=1}
 
+    residuals_m <- (Y-as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))/sqrt(as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))
+
     rss_m = sum((Y-as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))^2)
     tss_m = sum((Y-mean(Y))^2)
 
@@ -99,10 +117,36 @@ error <- function(knobi_results,env=NULL) {
     rownames(error_table)=c("base model", "additive model", "multiplicative model")
     colnames(error_table)=c("SER","R-squared", "adj-R-squared", "AIC", "RMSE",
                             "MAPE"," F-value", "Pr(>F)")
+
+    residuals=list(base=residuals_b,additive_model=residuals_a,multiplicative_model=residuals_m)
+
+    res_df=data.frame(Residuals=c(residuals_b,residuals_a,residuals_m),
+                      Model=c(rep("Base KBPM",length(residuals_b)),
+                              rep("Env. Additive Model",length(residuals_a)),
+                              rep("Env. Multiplicative Model",length(residuals_m))),
+                      Year=rep(knobi_results$data$years,3))
+
+    res_plot=ggplot2::ggplot(data=res_df,ggplot2::aes(x=Year,y=Residuals,color=Model)) + ggplot2::theme_bw() +
+      ggplot2::geom_hline(yintercept=0) + ggplot2::geom_point() +
+      ggplot2::ylim(min(res_df$Residuals),max(res_df$Residuals)) +
+      ggplot2::labs(title="Pearson Residuals", subtitle=knobi_results$data$Stock) +
+      ggplot2::theme(legend.position = c(0.15,0.85), plot.title = ggplot2::element_text(hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent"))
+
   }
 
+  error=list(error_table=error_table,residuals=residuals)
 
-  return(error_table)
+  print(res_plot)
+
+  if (plot_out==T){
+    p <- grDevices::recordPlot()
+    grDevices::jpeg("res_env.jpeg",width=2500, height=2500,res=300)
+    grDevices::replayPlot(p)
+    grDevices::dev.off()}
+
+  return(error)
 
 }
 

@@ -546,12 +546,16 @@ if (plot_out==T){
   p <- grDevices::recordPlot()
   grDevices::jpeg("fits_env.jpeg",width=2500, height=2500,res=300)
   grDevices::replayPlot(p)
-  grDevices::dev.off()
+  grDevices::dev.off()}
+
+Environmental$error <- error(knobi_results, Environmental, plot_out)
+
+if (plot_out==T){
   cat(paste0("\n ... Done! :) \n \n Plots successfully saved in '",getwd(),"'"),". \n")
   setwd(old_dir)
 } else {cat("\n ... Done! :) \n")}
 
-Environmental$error <- error(knobi_results, Environmental)
+return(Environmental)
 
-return(Environmental)}
+}
 
