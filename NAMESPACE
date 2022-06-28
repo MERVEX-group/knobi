@@ -2,4 +2,5 @@
 
 export(knobi_env)
 export(knobi_fit)
+export(knobi_proj)
 export(knobi_retro)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/knobi_fit.R
 \name{knobi_fit}
 \alias{knobi_fit}
-\title{Known Biomass Production Model (KBPM) fit}
+\title{Known biomass Production Model (KBPM) fit}
 \usage{
 knobi_fit(
   data,
@@ -14,8 +14,8 @@ knobi_fit(
 }
 \arguments{
 \item{data}{A list containing the data. \itemize{
-\item years: time series of years corresponding to the catches.
-\item Catches: time series of catches estimates from a stock assessment model.
+\item years: time series of years corresponding to the catch time series.
+\item Catch: time series of catch estimates from a stock assessment model.
 \item Biomass: time series of biomass estimates from a stock assessment model. If it is available, other case introduce SSB in the next argument.
 \item Spawning_Biomass: time series of SSB estimates from a stock assessment model. If it is available, other case introduce Biomass in the previous argument.
 \item Stock: optional. Character string with the stock name for the plot subtitles.
@@ -55,17 +55,19 @@ An output list updated with the fitting information. The control is the input on
 \item value: The value of the function corresponding to the parameter estimation.
 \item convergence: An integer code. ‘0’ indicates successful completion in the optimization.
 \item message: A character string giving any additional information returned by the optimizer, or NULL}
-\item error: Data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
+\item rror: List of performance and accuracy: \itemize{
+\item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sqrt(estimates).
+\item error_table: Data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
 \item SER: Standard error of the regression, calculated as the root of the rate between the residual sum of squares and the degrees of freedom of the regression.
 \item R-squared: Coefficient of determination.
 \item adj-R-squared: Adjusted coefficient of determination.
 \item AIC: Akaike information criterion.
 \item RMSE: Root mean squared error.
-\item MAPE: Mean absolute percentage error.}}
-The plots are shown in the plot window and also saved (if plot_out=TRUE) on the provided directory or in the current directory (if the directory is not provided). The following input quantities are plotted: time series of fishing mortality, SSB, surplus production and catches time series. Also plots of catches over fishing mortality, fishing mortality over SSB, and catches over SSB time series are available with a smooth line from a "loess" regression. Plot of input and output time series of fishing mortality with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL) is provided. The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first one) and with the catches and SP observations (second one).
+\item MAPE: Mean absolute percentage error.}}}
+The plots are shown in the plot window and also saved (if plot_out=TRUE) on the provided directory or in the current directory (if the directory is not provided). The following input quantities are plotted: time series of fishing mortality, SSB, surplus production and catch time series. Also plots of catch over fishing mortality, fishing mortality over SSB, and catch over SSB time series are available with a smooth line from a "loess" regression. Plot of input and output time series of fishing mortality with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL) is provided. The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first one) and with the catch and SP observations (second one).
 }
 \description{
-This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the the catches time series and the biomass or SSB (Spawning Stock Biomass) derived from the fit of other stock assessment model.
+This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the the catch time series and the biomass or SSB (Spawning Stock Biomass) derived from the fit of other stock assessment model.
 }
 \details{
 
@@ -98,7 +100,7 @@ Database <- Database[-nrow(Database),]
 
 data<-list()
 data$Spawning_Biomass=Database$SSB # We take the SSB in our Database.
-data$Catches=Database$catches # We take the catches in our Database.
+data$Catch=Database$catches # We take the catch in our Database.
 data$F_input=Database$F # We take the F in our Database.
 # Reference points estimates from ICES stock assessment model:
 # ICES. 2021. Working Group for the Bay of Biscay and the Iberian Waters Ecoregion
@@ -143,17 +145,17 @@ sardine2 <- sardine2[,c(1,6,8,12)]
 index <- which(sardine1$Year \%in\% sardine2$Year)
 sardine1 <- sardine1[index,]
 
-# Create a data.frame where the SSB and the catches are
+# Create a data.frame where the SSB and the catch are
 # the sum of such data in the two stocks
 years<-sardine1$Year
 sardine <- data.frame(years=years,SSB=sardine1$SSB+sardine2$SSB,
-                      catches=sardine1$catches+sardine2$catches)
+                      catch=sardine1$catches+sardine2$catches)
 
-# Once the total SSB and catches are available
+# Once the total SSB and catch are available
 # we follow previous KBPM illustration
 data<-list()
 data$Spawning_Biomass=sardine$SSB
-data$Catches=sardine$catches
+data$Catch=sardine$catch
 data$years=sardine$years
 
 control=list()

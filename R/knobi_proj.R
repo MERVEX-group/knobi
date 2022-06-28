@@ -8,7 +8,7 @@
 #' @param end_y Optional. The end year of our projections. If not provided, enter n_y in the argument above. If both are provided, the function uses n_y.
 #' @param Ct Optional. Vector, data frame or matrix containing the values of the catch for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.
 #' @param f Optional. Vector, data frame or matrix containing the values of the fishing mortality for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.
-#' @param env Optional. If the multicovar argument of \code{{link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the multicovar argument of \code{link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.
+#' @param env Optional. If the multicovar argument of \code{\link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the multicovar argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.
 #' @param plot_out Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.
 #' @param plot_dir Optional directory for creating the folder and save the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
 #' @param plot_filename Optional name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
@@ -20,8 +20,8 @@
 #' \item biomass: Data frame containing historical biomass and their projections for all scenarios.
 #' \item catch: Data frame containing historical catch and their projection values for all scenarios.
 #' \item f: Data frame containing the historical fishing mortality and their projection values for all scenarios.
-#' \item SP: Data frame containing the historical surplus production and their projection values for all scenarios.
-#' The plots results are displayed in the plot window and are also saved (if plot_out="TRUE") in the  provided directory or in the same directory as \code{link{knobi_fit}.
+#' \item SP: Data frame containing the historical surplus production and their projection values for all scenarios.}
+#' The plots results are displayed in the plot window and are also saved (if plot_out="TRUE") in the  provided directory or in the same directory as \code{link{knobi_fit}}.
 #' If environmental information is not provided, four plots are presented in a panel reporting the biomass, surplus production, catch and fishing mortality projections for each catch or fishing mortality scenario.
 #' If environmental information is provided, the plots are presented in a panel for each catch or fishing mortality scenario reporting   biomass, surplus production, catch and fishing mortality projections in each of the environmental scenarios.
 #'
@@ -94,7 +94,7 @@
 #'                               Tmax_Vigo=c(19,20,21,22,23)))
 #'
 #' knobi_proj(knobi_results, knobi_environmental2, Ct=Ct[1:5,], n_y=5, env=env)
-#'
+#' }
 #'
 #' @export
 
@@ -510,7 +510,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
   base_model=array(NA,dim=c(length(total_years),4,n_esc),
-                   dimname=list(total_years,c("Biomass","Catch","F","SP"),sc_names))
+                   dimnames=list(total_years,c("Biomass","Catch","F","SP"),sc_names))
 
 
   for(i in 1:n_esc){
@@ -524,7 +524,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   if(is.null(env_results)==F){
 
     additive_model=array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
-                         dimname=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
+                         dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
@@ -537,7 +537,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
     multiplicative_model=array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
-                               dimname=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
+                               dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){

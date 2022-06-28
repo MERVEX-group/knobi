@@ -426,11 +426,15 @@ env=data.frame(AMO1=c(0.2,0.3,0.4,0.5,0.6),
 ```
 
 
-
 Based on the previous objects we can apply the projection function.
 
 ```{r}
-knobi_proj(hake_n_results, hake_n_environmental, Ct=Ct, n_y=5, env=env)
+knobi_proj(hake_n_results,          # knobi_fit results
+           hake_n_environmental,    # knobi_env results
+           Ct=Ct,                   # catch for projections
+           n_y=5,                   # years projected
+           env=env                  # environmental data for projections
+           )
 ```
 
 The plots results are displayed in the plot window and are also saved (if `plot_out="TRUE"`) in the  provided directory or in the same directory as `knobi_fit`.
@@ -483,7 +487,7 @@ f=rbind(f,f[1:3,])
 knobi_proj(hake_n_results, f=f, end_y=2027)
 ```
 
-In case of `multicovar=T` in `knobi_env`, a list is required which each item is a data frame for each environmental scenario.
+At last, in case of `multicovar=T` in `knobi_env`, an example of the list that is required which each item is a data frame for each environmental scenario.
 
 ```{r, eval=FALSE}
 env=list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),

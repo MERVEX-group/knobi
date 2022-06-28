@@ -11,7 +11,7 @@ Description: Application of a KBPM (Known Biomass Production Model): (1) the fit
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Imports: corrplot, ggplot2,  gridExtra, grDevices,  optimr, plot3D
+Imports: corrplot, ggplot2, ggpubr, gridExtra, grDevices,  optimr, plot3D
 RoxygenNote: 7.1.2
 Suggests: 
     knitr,
