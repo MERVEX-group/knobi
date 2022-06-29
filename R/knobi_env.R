@@ -501,7 +501,7 @@ if(multicovar==F){
   class(model_Schaefer_Mult) = "Schaefer_Mult_m"
   ref_pts_mult = RF(model_Schaefer_Mult)
   class(model_Schaefer_Mult) = "Schaefer_Add_m"
-  ref_pts_add = RF(model_Schaefer_Mult)
+  ref_pts_add = RF(model_Schaefer_Add)
   res_env$ref_pts = list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
 
   model_Schaefer_Mult=list(model_Schaefer_Mult)
