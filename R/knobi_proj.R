@@ -1138,8 +1138,6 @@ if(is.null(env_results)==T){
       ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
                         nrow = 2, ncol=2, common.legend = TRUE, legend="bottom")
       grDevices::dev.off()
-      cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
-      setwd(old_dir)
     }
 
     f1=ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
@@ -1150,6 +1148,11 @@ if(is.null(env_results)==T){
 }
 
 class(forecast)="knobi"
+
+if(plot_out==T){
+cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
+setwd(old_dir)
+}
 
 return(forecast)
 
