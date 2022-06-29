@@ -171,6 +171,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
         dir.create(plot_filename)
         setwd(paste0(plot_dir,"/",plot_filename))}
     plot_settings=list(plot_filename=plot_filename,plot_dir=plot_dir)
+    control$plot_settings=plot_settings
   }
 
   if(is.null(control)){control=list()}
@@ -508,7 +509,6 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   adjustment$fit$error=error(adjustment,plot_out=plot_out)
 
   if(plot_out==T){
-    control$plot_settings=plot_settings
     setwd(old_dir)}
 
 
