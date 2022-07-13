@@ -347,8 +347,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
             Bt1=v$root
 
             add_Bt[[n]][c(i+1),j]=Bt1
-            add_SP[[n]][i,j]=as.numeric(Bt1-Bi+Ci)
-            add_Baver[[n]][i,j]=(Bt1+Bi)/2
+            add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
+            add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
 
             Bi_m=mult_Bt[[n]][i,j]
 
@@ -363,8 +363,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
             Bt1=v$root
 
             mult_Bt[[n]][c(i+1),j]=Bt1
-            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi+Ci)
-            mult_Baver[[n]][i,j]=(Bt1+Bi)/2
+            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
+            mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
 
           }
         }
@@ -454,8 +454,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
             Bt1=v$root
 
             add_Bt[[n]][c(i+1),j]=Bt1
-            add_SP[[n]][i,j]=as.numeric(Bt1-Bi+Ci)
-            add_Baver[[n]][i,j]=(Bt1+Bi)/2
+            add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
+            add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
 
             Bi_m=mult_Bt[[n]][i,j]
 
@@ -470,8 +470,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
             Bt1=v$root
 
             mult_Bt[[n]][c(i+1),j]=Bt1
-            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi+Ci)
-            mult_Baver[[n]][i,j]=(Bt1+Bi)/2
+            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
+            mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
 
           }
         }
