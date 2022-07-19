@@ -302,6 +302,8 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   bv <- predict_model(fit); fit_base=fit
 
 
+  if(!is.null(data$Stock)){subtitle=data$Stock} else {subtitle=NULL}
+
   df_aux=data.frame(av,bv)
   if(control$method=="Biomass"){
     xtit="SP curve and observed Biomass and SP"
@@ -329,6 +331,9 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),
                    axis.line=ggplot2::element_line())
+  if(!is.null(subtitle)){
+    fit_plot=fit_plot+ggplot2::labs(subtitle=subtitle)
+  }
   print(fit_plot)
 
   if(plot_out==T){
@@ -359,6 +364,9 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::theme(legend.position = c(.9,.85), legend.background = ggplot2::element_rect(fill = "transparent"),
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
 
+  if(!is.null(subtitle)){
+    fitc_plot=fitc_plot+ggplot2::labs(subtitle=subtitle)
+  }
   print(fitc_plot)
 
   if(plot_out==T){
