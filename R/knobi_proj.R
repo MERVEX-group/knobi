@@ -257,35 +257,77 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   base_SP=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_SP)=sc_names
   base_Baver=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_Baver)=sc_names
 
+  if(is.null(f)==T){
+    base_Ct=Ct; colnames(base_Ct)=sc_names
+  } else {
+    base_f=f; colnames(base_f)=sc_names}
+
   for(i in 1:(ly-1)){
 
     for(j in sc_names){
 
       Bi=base_Bt[i,j]
 
-      if(is.null(f)==T){
-        Ci=Ct[i,j]
-        v=stats::uniroot(model,c(0,K),Bt=Bi,Ct=Ci,K=K,r=r,p=p)
+      if(Bi==0){
+        if(is.null(f)==T){
+          base_Ct[i,j]=0} else {base_f[i,j]=0}
+        Bt1=0
       } else {
-        v=stats::uniroot(model,c(0,K),Bt=Bi,ef=f[i,j],K=K,r=r,p=p)
-        Ci=f[i,j]*((Bi+v$root)/2)
+
+        if(is.null(f)==T){
+          Ci=base_Ct[i,j]
+          v=stats::uniroot(model,c(-2*Ci,K),Bt=Bi,Ct=Ci,K=K,r=r,p=p)
+        } else {
+          v=stats::uniroot(model,c(-base_f[i,j]*Bi,K),Bt=Bi,ef=base_f[i,j],K=K,r=r,p=p)
+          Ci=base_f[i,j]*((Bi+v$root)/2)
+        }
+
+        Bt1=v$root}
+
+      if(Bt1<=1e-10){
+
+        base_Bt[c(i+1),j]=0
+        base_SP[i,j]=(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
+
+        if(is.null(f)==T){
+          base_Ct[i,j]=Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
+        } else {
+          base_f[i,j]=(Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p)))/(ifelse(Bi==0,1,0.5*Bi))
+        }
+
+        base_Baver[i,j]=Bi/2
+
+      } else {
+
+        base_Bt[c(i+1),j]=Bt1
+        base_SP[i,j]=as.numeric(Bt1-Bi+Ci)
+        base_Baver[i,j]=(Bt1+Bi)/2
+
       }
-
-      Bt1=v$root
-
-      base_Bt[c(i+1),j]=Bt1
-
-      base_SP[i,j]=as.numeric(Bt1-Bi+Ci)
-      base_Baver[i,j]=(Bt1+Bi)/2
     }
   }
 
+  if(any(base_Bt==0)){
+    index=which(base_Bt[nrow(base_Bt),]==0)
+    for(i in index){
+      if(is.null(f)==T){
+        warning(paste0("Introduced catch in ",sc_names[i]," scenario lead to stock collapse, so they have been reduced in consideration"))
+      } else {
+        warning(paste0("Introduced fishing mortality in ",sc_names[i],"scenario lead to stock collapse, so they have been reduced in consideration"))
+      }}
+  }
+
   if(is.null(f)==T){
-    base_Ct=Ct
-    base_f=Ct/base_Baver
+
+    base_f=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_f)=sc_names
+
+    for(i in 1:(ly-1)){
+      for(j in sc_names){
+        if(base_Baver[i,j]==0){base_f[i,j]=0} else {base_f[i,j]=base_Ct[i,j]/base_Baver[i,j]}
+      }}
+
   } else {
-    base_f=f
-    base_Ct=f*base_Baver
+    base_Ct=base_f*base_Baver
   }
 
 
@@ -315,7 +357,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         if(cs_length!=(ncol(Xt))){
           stop('Number of environmental covariables is different than ist number in knobi_env')}
 
-        for(j in ncol(Xt)){
+        for(j in 1:ncol(Xt)){
           Xt[,j]=(Xt[,j]-attr(env_results$environmental_variables[,j],
                               "scaled:center"))/attr(env_results$environmental_variables[,j],
                                                      "scaled:scale")
@@ -326,9 +368,20 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         add_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])=sc_names
         add_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])=sc_names
 
+        if(is.null(f)==T){
+          add_Ct[[n]]=Ct; colnames(add_Ct[[n]])=sc_names
+        } else {
+          add_f[[n]]=f; colnames(add_f[[n]])=sc_names}
+
         mult_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])=sc_names
         mult_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])=sc_names
         mult_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])=sc_names
+
+        if(is.null(f)==T){
+          mult_Ct[[n]]=Ct; colnames(mult_Ct[[n]])=sc_names
+        } else {
+          mult_f[[n]]=f; colnames(mult_f[[n]])=sc_names
+        }
 
         for(i in 1:(ly-1)){
 
@@ -336,59 +389,107 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
             Bi_a=add_Bt[[n]][i,j]
 
-            if(is.null(f)==T){
-              Ci=Ct[i,j]
-              v=stats::uniroot(model_a,c(0,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
+            if(Bi_a==0){
+              if(is.null(f)==T){
+                add_Ct[[n]][i,j]=0} else {add_f[[n]][i,j]=0}
+              Bt1=0
+
             } else {
-              v=stats::uniroot(model_a,c(0,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
-              Ci=f[i,j]*((Bi_a+v$root)/2)
+
+              if(is.null(f)==T){
+                Ci=add_Ct[[n]][i,j]
+                v=stats::uniroot(model_a,c(-Ci,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
+              } else {
+                v=stats::uniroot(model_a,c(-f[i,j]*Bi_a,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
+                Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
+              }
+
+              Bt1=v$root}
+
+            if(Bt1<=1e-10){
+
+              add_Bt[[n]][c(i+1),j]=0
+              add_SP[[n]][i,j]=(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
+
+              if(is.null(f)==T){
+                add_Ct[[n]][i,j]=Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a
+              } else {
+                add_f[[n]][i,j]=(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
+              }
+
+              add_Baver[[n]][i,j]=Bi_a/2
+
+            } else {
+
+              add_Bt[[n]][c(i+1),j]=Bt1
+              add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
+              add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
+
             }
-
-            Bt1=v$root
-
-            add_Bt[[n]][c(i+1),j]=Bt1
-            add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
-            add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
 
             Bi_m=mult_Bt[[n]][i,j]
 
-            if(is.null(f)==T){
-              Ci=Ct[i,j]
-              v=stats::uniroot(model_m,c(0,K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
+            if(Bi_m==0){
+              if(is.null(f)==T){
+                mult_Ct[[n]][i,j]=0} else {mult_f[[n]][i,j]=0}
+              Bt1=0
             } else {
-              v=stats::uniroot(model_m,c(0,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
-              Ci=f[i,j]*((Bi_m+v$root)/2)
+
+              if(is.null(f)==T){
+                Ci=mult_Ct[[n]][i,j]
+                v=stats::uniroot(model_m,c(-Ci,K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
+              } else {
+                v=stats::uniroot(model_m,c(-f[i,j]*Bi_m,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
+                Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
+              }
+
+              Bt1=v$root}
+
+            if(Bt1<=1e-10){
+
+              mult_Bt[[n]][c(i+1),j]=0
+              mult_SP[[n]][i,j]=(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
+
+              if(is.null(f)==T){
+                mult_Ct[[n]][i,j]=Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m)
+              } else {
+                mult_f[[n]][i,j]=(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
+              }
+
+              mult_Baver[[n]][i,j]=Bi_m/2
+
+            } else {
+
+              mult_Bt[[n]][c(i+1),j]=Bt1
+              mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
+              mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
+
             }
-
-            Bt1=v$root
-
-            mult_Bt[[n]][c(i+1),j]=Bt1
-            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
-            mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
 
           }
         }
 
         if(is.null(f)==T){
 
-          add_Ct[[n]]=Ct
-          add_f[[n]]=Ct/add_Baver[[n]]
+          add_f[[n]]=add_Ct[[n]]
+          mult_f[[n]]=mult_Ct[[n]]
 
-          mult_Ct[[n]]=Ct
-          mult_f[[n]]=Ct/mult_Baver[[n]]
+          for(i in 1:(ly-1)){
+            for(j in sc_names){
+
+              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]=0} else {
+                add_f[[n]][i,j]=add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
+
+              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]=0} else {
+                mult_f[[n]][i,j]=mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
+            }}
 
         } else {
-
-          add_f[[n]]=f
-          add_Ct[[n]]=f*add_Baver[[n]]
-
-          mult_f[[n]]=f
-          mult_Ct[[n]]=f*mult_Baver[[n]]
-
+          add_Ct[[n]]=add_f[[n]]*add_Baver[[n]]
+          mult_Ct[[n]]=mult_f[[n]]*mult_Baver[[n]]
         }
-
-
       }
+
 
       if(is.null(names(env))==F){
         names(add_Baver)=names(add_Bt)=names(add_Ct)=names(add_f)=names(add_SP)=
@@ -401,7 +502,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
           names(mult_Baver)=names(mult_Bt)=names(mult_Ct)=names(mult_f)=names(mult_SP)=names(env)
       }
 
-    }  else {
+    } else {
 
       if(is.vector(env)==T){
         env=matrix(env,ncol=1)
@@ -433,9 +534,20 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         add_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])=sc_names
         add_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])=sc_names
 
+        if(is.null(f)==T){
+          add_Ct[[n]]=Ct; colnames(add_Ct[[n]])=sc_names
+        } else {
+          add_f[[n]]=f; colnames(add_f[[n]])=sc_names}
+
         mult_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])=sc_names
         mult_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])=sc_names
         mult_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])=sc_names
+
+        if(is.null(f)==T){
+          mult_Ct[[n]]=Ct; colnames(mult_Ct[[n]])=sc_names
+        } else {
+          mult_f[[n]]=f; colnames(mult_f[[n]])=sc_names
+        }
 
         for(i in 1:(ly-1)){
 
@@ -443,66 +555,113 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
             Bi_a=add_Bt[[n]][i,j]
 
-            if(is.null(f)==T){
-              Ci=Ct[i,j]
-              v=stats::uniroot(model_a,c(0,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
+            if(Bi_a==0){
+              if(is.null(f)==T){
+                add_Ct[[n]][i,j]=0} else {add_f[[n]][i,j]=0}
+              Bt1=0
+
             } else {
-              v=stats::uniroot(model_a,c(0,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
-              Ci=f[i,j]*((Bi_a+v$root)/2)
+
+              if(is.null(f)==T){
+                Ci=add_Ct[[n]][i,j]
+                v=stats::uniroot(model_a,c(-Ci,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
+              } else {
+                v=stats::uniroot(model_a,c(-f[i,j]*Bi_a,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
+                Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
+              }
+
+              Bt1=v$root}
+
+            if(Bt1<=1e-10){
+
+              add_Bt[[n]][c(i+1),j]=0
+              add_SP[[n]][i,j]=(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
+
+              if(is.null(f)==T){
+                add_Ct[[n]][i,j]=Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a
+              } else {
+                add_f[[n]][i,j]=(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
+              }
+
+              add_Baver[[n]][i,j]=Bi_a/2
+
+            } else {
+
+              add_Bt[[n]][c(i+1),j]=Bt1
+              add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
+              add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
+
             }
 
-            Bt1=v$root
-
-            add_Bt[[n]][c(i+1),j]=Bt1
-            add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
-            add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
 
             Bi_m=mult_Bt[[n]][i,j]
 
-            if(is.null(f)==T){
-              Ci=Ct[i,j]
-              v=stats::uniroot(model_m,c(0,K_m),Bt=Bi_m,Ct=Ct[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
+            if(Bi_m==0){
+              if(is.null(f)==T){
+                mult_Ct[[n]][i,j]=0} else {mult_f[[n]][i,j]=0}
+              Bt1=0
             } else {
-              v=stats::uniroot(model_m,c(0,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
-              Ci=f[i,j]*((Bi_m+v$root)/2)
+
+              if(is.null(f)==T){
+                Ci=mult_Ct[[n]][i,j]
+                v=stats::uniroot(model_m,c(-Ci,K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
+              } else {
+                v=stats::uniroot(model_m,c(-f[i,j]*Bi_m,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
+                Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
+              }
+
+              Bt1=v$root}
+
+            if(Bt1<=1e-10){
+
+              mult_Bt[[n]][c(i+1),j]=0
+              mult_SP[[n]][i,j]=(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
+
+              if(is.null(f)==T){
+                mult_Ct[[n]][i,j]=Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m)
+              } else {
+                mult_f[[n]][i,j]=(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
+              }
+
+              mult_Baver[[n]][i,j]=Bi_m/2
+
+            } else {
+
+              mult_Bt[[n]][c(i+1),j]=Bt1
+              mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
+              mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
+
             }
-
-            Bt1=v$root
-
-            mult_Bt[[n]][c(i+1),j]=Bt1
-            mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
-            mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
 
           }
         }
 
         if(is.null(f)==T){
 
-          add_Ct[[n]]=Ct
-          add_f[[n]]=Ct/add_Baver[[n]]
+          add_f[[n]]=add_Ct[[n]]
+          mult_f[[n]]=mult_Ct[[n]]
 
-          mult_Ct[[n]]=Ct
-          mult_f[[n]]=Ct/mult_Baver[[n]]
+          for(i in 1:(ly-1)){
+            for(j in sc_names){
+
+              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]=0} else {
+                add_f[[n]][i,j]=add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
+
+              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]=0} else {
+                mult_f[[n]][i,j]=mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
+            }}
 
         } else {
-
-          add_f[[n]]=f
-          add_Ct[[n]]=f*add_Baver[[n]]
-
-          mult_f[[n]]=f
-          mult_Ct[[n]]=f*mult_Baver[[n]]
-
+          add_Ct[[n]]=add_f[[n]]*add_Baver[[n]]
+          mult_Ct[[n]]=mult_f[[n]]*mult_Baver[[n]]
         }
-
-
       }
 
       names(add_Baver)=names(add_Bt)=names(add_Ct)=names(add_f)=names(add_SP)=
         names(mult_Baver)=names(mult_Bt)=names(mult_Ct)=names(mult_f)=names(mult_SP)=colnames(env)
+
     }
-
   }
-
 
 
   proj_years=newyears[-1]
@@ -613,7 +772,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         if(is.list(env)==T){
           j_name=names(env)[j]
         } else {
-        j_name=colnames(env)[j]}
+          j_name=colnames(env)[j]}
         scenario=rep(i_name,2*(ly-1))
         env_scenario=rep(j_name,2*(ly-1))
         factor=rep("forecast",2*(ly-1))
@@ -719,8 +878,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     catch_plot=catch[(length(years)-10):nrow(catch),-3]
     catch_plot=rbind(catch_plot,data.frame(years=rep(catch$years[length(years)],n_esc),
-                                               catch=rep(catch$catch[length(years)],n_esc),
-                                               scenario=sc_names))
+                                           catch=rep(catch$catch[length(years)],n_esc),
+                                           scenario=sc_names))
 
     vec=min(catch_plot$years)
     vec1=max(catch_plot$years)
@@ -1107,53 +1266,53 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   }
 
 
-if(is.null(env_results)==T){
+  if(is.null(env_results)==T){
 
-  forecast=list(base_model=base_model,biomass=biomass,catch=catch,f=f,SP=SP)
+    forecast=list(base_model=base_model,biomass=biomass,catch=catch,f=f,SP=SP)
+
+    if(plot_out==T){
+      grDevices::jpeg("projections.jpeg",width=2500, height=2000,res=300)
+      ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots,f_plots, nrow = 2, ncol=2,
+                        common.legend = TRUE, legend="bottom")
+      grDevices::dev.off()
+      cat(paste0("\n Plot successfully saved in '",getwd(),"'"),". \n")
+      setwd(old_dir)
+    }
+
+    f1=ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots, f_plots, nrow = 2, ncol=2,
+                         common.legend = TRUE, legend="bottom")
+
+    print(f1)
+
+  } else {
+
+    forecast=list(base_model=base_model,additive_model=additive_model,
+                  multiplicative_model=multiplicative_model,
+                  biomass=biomass,catch=catch,f=f,SP=SP)
+
+    for(i in sc_names){
+
+      if(plot_out==T){
+        grDevices::jpeg(paste0("projections_",i,".jpeg"),width=2500, height=2000,res=300)
+        ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
+                          nrow = 2, ncol=2, common.legend = TRUE, legend="bottom")
+        grDevices::dev.off()
+      }
+
+      f1=ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
+                           nrow = 2, ncol=2, common.legend = TRUE, legend="right")
+
+      print(f1)
+    }
+  }
+
+  class(forecast)="knobi"
 
   if(plot_out==T){
-    grDevices::jpeg("projections.jpeg",width=2500, height=2000,res=300)
-    ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots,f_plots, nrow = 2, ncol=2,
-                      common.legend = TRUE, legend="bottom")
-    grDevices::dev.off()
-    cat(paste0("\n Plot successfully saved in '",getwd(),"'"),". \n")
+    cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
     setwd(old_dir)
   }
 
-  f1=ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots, f_plots, nrow = 2, ncol=2,
-                       common.legend = TRUE, legend="bottom")
-
-  print(f1)
-
-} else {
-
-  forecast=list(base_model=base_model,additive_model=additive_model,
-                multiplicative_model=multiplicative_model,
-                biomass=biomass,catch=catch,f=f,SP=SP)
-
-  for(i in sc_names){
-
-    if(plot_out==T){
-      grDevices::jpeg(paste0("projections_",i,".jpeg"),width=2500, height=2000,res=300)
-      ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
-                        nrow = 2, ncol=2, common.legend = TRUE, legend="bottom")
-      grDevices::dev.off()
-    }
-
-    f1=ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
-                         nrow = 2, ncol=2, common.legend = TRUE, legend="right")
-
-    print(f1)
-  }
-}
-
-class(forecast)="knobi"
-
-if(plot_out==T){
-cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
-setwd(old_dir)
-}
-
-return(forecast)
+  return(forecast)
 
 }
