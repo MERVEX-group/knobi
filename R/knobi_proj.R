@@ -311,9 +311,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     index=which(base_Bt[nrow(base_Bt),]==0)
     for(i in index){
       if(is.null(f)==T){
-        warning(paste0("Introduced catch in ",sc_names[i]," scenario lead to stock collapse, so they have been reduced in consideration"))
+        warning(paste0("Introduced catch in ",sc_names[i]," scenario lead to stock collapse"))
       } else {
-        warning(paste0("Introduced fishing mortality in ",sc_names[i],"scenario lead to stock collapse, so they have been reduced in consideration"))
+        warning(paste0("Introduced fishing mortality in ",sc_names[i],"scenario lead to stock collapse"))
       }}
   }
 
