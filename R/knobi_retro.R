@@ -26,13 +26,13 @@
 #' @examples
 #'
 #' \dontrun{
-#' 
+#'
 #' library(knobi)
-#' 
+#'
 #' # See knobi_fit example to obtain the knobi_results object
 #' knobi_retrospectives<-knobi_retro(knobi_results,nR=5,plot_out=T)
 #' knobi_retrospectives
-#' 
+#'
 #' knobi_retro(knobi_results,yR=c(2010,2015),yR0=c(1995,2000))
 #' }
 #'
@@ -179,6 +179,7 @@ knobi_retro<-function(knobi_results,yR=NULL,yR0=NULL,nR=NULL,plot_out=F,plot_fil
 
 
   max_y=max(df_plot$SP,df$y)
+  min_y=min(df_plot$SP,df$y)
 
   retro_plot=ggplot2::ggplot() + ggplot2::theme_bw() +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,color=bleg),size=3, show.legend=FALSE) +
@@ -188,7 +189,7 @@ knobi_retro<-function(knobi_results,yR=NULL,yR0=NULL,nR=NULL,plot_out=F,plot_fil
     ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=bleg)) +
     ggplot2::labs(title=btit, subtitle=knobi_results$data$Stock,
                   x =baxis, y = "Surplus Production (SP)") +
-    ggplot2::geom_line(data=df_plot,ggplot2::aes(x=B,y=SP,color=factor)) + ggplot2::ylim(0,max_y) +
+    ggplot2::geom_line(data=df_plot,ggplot2::aes(x=B,y=SP,color=factor)) + ggplot2::ylim(min_y,max_y) +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Retrospectives")) +
     ggplot2::theme(legend.position = c(.89,0.75), legend.background = ggplot2::element_rect(fill = "transparent"),
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),
