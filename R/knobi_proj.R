@@ -276,9 +276,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
         if(is.null(f)==T){
           Ci=base_Ct[i,j]
-          v=stats::uniroot(model,c(-2*Ci,K),Bt=Bi,Ct=Ci,K=K,r=r,p=p)
+          v=stats::uniroot(model,c(min(-K/3,-Ci),K),Bt=Bi,Ct=Ci,K=K,r=r,p=p)
         } else {
-          v=stats::uniroot(model,c(-base_f[i,j]*Bi,K),Bt=Bi,ef=base_f[i,j],K=K,r=r,p=p)
+          v=stats::uniroot(model,c(min(-K/3,-base_f[i,j]*Bi),K),Bt=Bi,ef=base_f[i,j],K=K,r=r,p=p)
           Ci=base_f[i,j]*((Bi+v$root)/2)
         }
 
@@ -398,9 +398,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
               if(is.null(f)==T){
                 Ci=add_Ct[[n]][i,j]
-                v=stats::uniroot(model_a,c(-Ci,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
+                v=stats::uniroot(model_a,c(min(-K_a/4,-Ci),K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
               } else {
-                v=stats::uniroot(model_a,c(-f[i,j]*Bi_a,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
+                v=stats::uniroot(model_a,c(min(-K_a/4,-f[i,j]*Bi_a),K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]))
                 Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
               }
 
@@ -437,9 +437,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
               if(is.null(f)==T){
                 Ci=mult_Ct[[n]][i,j]
-                v=stats::uniroot(model_m,c(-Ci,K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
+                v=stats::uniroot(model_m,c(min(-K_m/4,-Ci),K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
               } else {
-                v=stats::uniroot(model_m,c(-f[i,j]*Bi_m,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
+                v=stats::uniroot(model_m,c(min(-K_m/4,-f[i,j]*Bi_m),K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]))
                 Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
               }
 
@@ -564,9 +564,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
               if(is.null(f)==T){
                 Ci=add_Ct[[n]][i,j]
-                v=stats::uniroot(model_a,c(-Ci,K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
+                v=stats::uniroot(model_a,c(min(-K_a/4,-Ci),K_a),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
               } else {
-                v=stats::uniroot(model_a,c(-f[i,j]*Bi_a,K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
+                v=stats::uniroot(model_a,c(min(-K_a/4,-f[i,j]*Bi_a),K_a),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i])
                 Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
               }
 
@@ -604,9 +604,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
               if(is.null(f)==T){
                 Ci=mult_Ct[[n]][i,j]
-                v=stats::uniroot(model_m,c(-Ci,K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
+                v=stats::uniroot(model_m,c(min(-K_m/4,-Ci),K_m),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
               } else {
-                v=stats::uniroot(model_m,c(-f[i,j]*Bi_m,K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
+                v=stats::uniroot(model_m,c(min(-K_m/4,-f[i,j]*Bi_m),K_m),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i])
                 Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
               }
 
