@@ -1,5 +1,7 @@
 # knobi
 
+Authors: Cousido-Rocha, M., Paz, A., Pennino, M.G., Cerviño, S.
+
 Application of a KBPM (Known Biomass Production Model):
 (1) the fitting of KBPM to each stock;
 (2) the retrospective analysis to identify regime shifts;  and 
