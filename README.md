@@ -14,7 +14,7 @@ There are two options for installing our package:
 ## 1. Version with vignettes
 
 ```
-install_github("MERVEX-group/knobi",build_vignettes = TRUE)
+devtools::install_github("MERVEX-group/knobi",build_vignettes = TRUE)
 ```
 
 This option needs to install previously the following packages:
@@ -26,7 +26,7 @@ install.packages(c("corrplot", "ggplot2",  "gridExtra", "grDevices",  "optimr", 
 ## 2. Version without vignettes
 
 ```
-install_github("MERVEX-group/knobi")
+devtools::install_github("MERVEX-group/knobi")
 ```
 
 This is a faster option.
