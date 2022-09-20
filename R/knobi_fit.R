@@ -43,7 +43,7 @@
 #' \item convergence: An integer code. ‘0’ indicates successful completion in the optimization.
 #' \item message: A character string giving any additional information returned by the optimizer, or NULL}
 #' \item rror: List of performance and accuracy: \itemize{
-#' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sqrt(estimates).
+#' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sd(observations).
 #' \item error_table: Data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
 #' \item SER: Standard error of the regression, calculated as the root of the rate between the residual sum of squares and the degrees of freedom of the regression.
 #' \item R-squared: Coefficient of determination.
