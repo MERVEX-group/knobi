@@ -23,7 +23,7 @@ error <- function(knobi_results,env=NULL,plot_out) {
   RMSE_b<-sqrt(rss_b/total_n)
   MAPE_b<-1/total_n*(sum(abs(((Y-((r_b/p_b)*X*(1-(X/K_b)^(p_b)))))/Y)))
 
-  residuals_b <- (Y-((r_b/p_b)*X*(1-(X/K_b)^(p_b))))/sqrt((r_b/p_b)*X*(1-(X/K_b)^(p_b)))
+  residuals_b <- (Y-((r_b/p_b)*X*(1-(X/K_b)^(p_b))))/stats::sd(Y)
 
   if(is.null(env)){
 
@@ -69,7 +69,7 @@ error <- function(knobi_results,env=NULL,plot_out) {
     n_params_env=length(model_env_Additive)
     df_env=total_n-n_params_env
 
-    residuals_a <- (Y-as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))/sqrt(as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))
+    residuals_a <- (Y-as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))/stats::sd(Y)
 
     rss_a = sum((Y-as.numeric((r_a/p_a)*X*(1-(X/K_a)^(p_a))+as.numeric(env %*% c_a)*X))^2)
     tss_a = sum((Y-mean(Y))^2)
@@ -96,7 +96,7 @@ error <- function(knobi_results,env=NULL,plot_out) {
       c_m<-model_env_Multiplicative[3:(length(model_env_Additive))]
       p_m=1}
 
-    residuals_m <- (Y-as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))/sqrt(as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))
+    residuals_m <- (Y-as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))/stats::sd(Y)
 
     rss_m = sum((Y-as.numeric(exp(1)^{as.numeric(env %*% c_m)}*((r_m/p_m)*X*(1-(X/K_m)^(p_m)))))^2)
     tss_m = sum((Y-mean(Y))^2)
