@@ -382,7 +382,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
   } else {
 
-    envs=df_env[,-c(1:3)]
+    envs=df_env[,-c(1:4)]
 
     cor=round(cor(as.matrix(envs),use="na.or.complete"),4)
     for(i in 1:ncol(cor)){
