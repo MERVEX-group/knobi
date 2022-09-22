@@ -108,7 +108,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
         setwd(paste0(plot_dir,"/",plot_filename))}
   }
 
-  df=data.frame(residuals=knobi_results$fit$error$residuals,
+  df=data.frame(KBPM_residuals=knobi_results$fit$error$residuals,
                 x = knobi_results$data$Average_Biomass,
                 y = knobi_results$data$SP, Year=knobi_results$data$years)
 
@@ -157,15 +157,15 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
       if(knobi_results$control$method=="Biomass"){
         if(!is.na(knobi_results$data$Recruitment[1])){
-          colnames(data_env[[j]])=c("residuals","SP","B","years","R",paste0(j,"_lag0"),vec_env)
-        } else {colnames(data_env[[j]])=c("residuals","SP","B","years",paste0(j,"_lag0"),vec_env)}
+          colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years","R",paste0(j,"_lag0"),vec_env)
+        } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years",paste0(j,"_lag0"),vec_env)}
       } else {
         if(!is.na(knobi_results$data$Recruitment[1])){
-          colnames(data_env[[j]])=c("residuals","SP","SSB","years","R",paste0(j,"_lag0"),vec_env)
-        } else {colnames(data_env[[j]])=c("residuals","SP","SSB","years",paste0(j,"_lag0"),vec_env)}
+          colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years","R",paste0(j,"_lag0"),vec_env)
+        } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years",paste0(j,"_lag0"),vec_env)}
       }
 
-      env[[j]]<-data_env[[j]][,c("residuals",paste0(j,"_lag0"),vec_env)]
+      env[[j]]<-data_env[[j]][,c("KBPM_residuals",paste0(j,"_lag0"),vec_env)]
       p.mat <- cor.mtest(env[[j]])
       corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
       if(plot_out==T){
@@ -178,8 +178,8 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
       cor=round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
       cor=cor[,1]; cor=cor[-1]
 
-      res_env$selected_lag[[j]]=which(max(abs(cor))==abs(cor))-1
-      res_env$lag_cor[[j]]=cor[[which(max(abs(cor))==abs(cor))]]
+      res_env$selected_lag[[j]]=which(max(abs(cor))==abs(cor))[1]-1
+      res_env$lag_cor[[j]]=cor[[which(max(abs(cor))==abs(cor))[1]]]
       df_env[,j]=scale(env[[j]][,res_env$selected_lag[[j]]+2])
 
     }
@@ -197,7 +197,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
       if(length(ind)>0){df_env[,j]=scale(env0[[j]][ind:ind1])} else{
         warning('The length of the environmental variable is not enough to use the number of input lags')}
       res_env$fixed_lag[[j]]=lag_j
-      cor=round(cor(as.matrix(df_env[,c("residuals",j)]),use="na.or.complete"),4)
+      cor=round(cor(as.matrix(df_env[,c("KBPM_residuals",j)]),use="na.or.complete"),4)
       cor=cor[1,2]
       res_env$lag_cor[[j]]=cor}
   }
@@ -211,7 +211,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   if(multicovar==F){
 
     if(is.null(environmental$selected_var)){
-      select<-which.max(abs(as.data.frame(res_env$lag_cor)))
+      select<-which.max(abs(as.data.frame(res_env$lag_cor))[,1])
       selected_var=names(res_env$lag_cor[select])
     } else {
       selected_var=environmental$selected_var
@@ -517,4 +517,3 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   return(Environmental)
 
 }
-
