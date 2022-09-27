@@ -53,9 +53,9 @@
 #' # Then, create the data frame containing the environmental covariable values
 #' # for the projected years.
 #'
-#' env=data.frame(AMO1=c(0.2,0.3,0.4,0.5,0.6),
-#'                AMO2=c(0.05,0.15,0.25,0.35,0.45),
-#'                AMO3=c(-0.1,-0.2,-0.3,-0.4,-0.5))
+#' env=data.frame(Tmax_cte=c(19,19,19,19,19),
+#'                Tmax_05=c(19,19.5,20,20.5,21),
+#'                Tmax_1=c(19,20,21,22,23))
 #'
 #'
 #' # Based on the previous objects we can apply the projection function.

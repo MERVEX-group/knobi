@@ -173,13 +173,9 @@ The complete output object is a list containing the input data and control updat
   + `value`: The value of the function corresponding to the parameter estimation.
   + `convergence`: An integer code. ‘0’ indicates successful completion in the optimization.
   + `message`: A character string giving any additional information returned by the optimizer, or NULL.
-* `error`: List with the Person residuals (`$residuals`) and a data frame with measures of estimates accuracy (error measures comparing observed an estimated values) and model performance (`$error_table`): 
-  + `SER`: Standard error of the regression.
-  + `R-squared`: Coefficient of determination.
-  + `adj-R-squared`: Adjusted coefficient of determination.
-  + `AIC`: Akaike information criterion.
-  + `RMSE`: Root mean squared error.
-  + `MAPE`: Mean absolute percentage error.}
+* `error`: List with error measures:
+  + `residuals`: Pearson residuals for the surplus production calculated as $(observations-estimates) / sd(observations)$.
+  + `error table`: Array of  measures of estimates accuracy (error measures comparing observed an estimated values): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)). 
 
 
 
@@ -275,7 +271,7 @@ $$SP_{t}=  \frac{r}{p}\overline{B}_{t}\left(1-\left( \frac{\overline{B}_{t}}{K}\
 
 * `data`: data frame containing the values of each of the environmental variable(s) in one column. Each row represents a year.
 * `years`: time series of years corresponding to the environmental variable(s).
-* `nlag`: this argument is used to test all the lags smaller or equal to `nlag` (numerical vector) through cor.test function. The lag corresponding to the highest pearson correlation among the surplus production and the lag environmental covariable values is considered in the environmental model. This means that the *SP<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included.
+* `nlag`: this argument is used to test all the lags smaller or equal to `nlag` (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lag environmental covariable values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included.
 
 ```{r}
 Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
@@ -298,7 +294,7 @@ Env=Env[(ind-nlag):ind1,]
 environmental=list()
 environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
 environmental$years=Env$years
-environmental$nlag=c(nlag,nlag)
+environmental$nlag=nlag
 ```
 
 ```{r,eval=FALSE}
@@ -316,9 +312,7 @@ hake_n_environmental<-knobi_env(hake_n_results,environmental)
 
 Result plots are shown in the plot window and also saved (if `plot_out="TRUE"`) on the provided directory or in the same directory as `knobi_fit`.
  
-The first plot reports the correlation analysis between the environmental variable(s) and the KBPM data. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
- 
-3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
+The first plot reports the correlation analysis between the environmental variable(s) and the base KBPM surplus production residuals. Next 3D plots reports the surplus production curve conditioned to a grid of environmental values. The last one reports the fitted values of the base model (no environmental information) and of the environmental ones.
 
 &nbsp;
 
@@ -332,8 +326,8 @@ hake_n_environmental
 
 The complete output object is a list containing the environmental analysis:
 
-* `selected_lag`: Estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the KBPM surplus production residuals. Derived if lag is not fixed.
-* `lag_cor`: Correlation between the environmental variable(s) value and the KBPM base surplus production residuals (after lagging the environmental one if corresponds).
+* `selected_lag`: Estimated lag corresponding to the one reporting the highest correlation between the environmental variable(s) and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag(s) and its corresponding correlation.
+* `lag_cor`: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
 * `selected_var`: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure.
 * `model_env_Multiplicative`: Estimates of the multiplicative model parameters.
 * `model_env_Additive`: Estimates of the additive model parameters.
@@ -354,7 +348,9 @@ Note that *RP(X<sub>t</sub>)* represents the dependence of each RP in relation t
 
 * `scaled_environmental_var`: Standardized variable used in the fit, with the `scale` and `center` attributes.
 * `plots3D`: List with the 3D plots objects.
-* `error`: List with the Person residuals for each model (base KBPM, additive model and multiplicative model) (`$residuals`) and an array with measures of estimates accuracy (error measures comparing observed an estimated values) and model performance (`$error_table`) for each model: Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).
+* `error`: List with the error measures:
+  + `residuals`: Pearson residuals for each model.
+  + `error table`: Array of  measures of estimates accuracy (error measures comparing observed an estimated values) for each model (base KBPM, additive model and multiplicative model): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).
 
 ```{r}
 hake_n_environmental$model_env_Additive
@@ -390,7 +386,7 @@ hake_n_multi<-knobi_env(hake_n_results,environmental)
 
 In this case, 3D plots are not reported, and the output list slightly differs from the previous one.
 
-* `fixed_lag` instead `selected_lag`, which is the input value of 'lag' argument.
+* Lag(s) from `selected_lag` are now the input value(s) of `lag` argument.
 * `environmental_variables` instead `scaled_environmental_var`, the standardized covariables used in the fit with the `scale` and `center` attributes.
 * `plots3D` and `selected_var` are not reported.
 
@@ -434,9 +430,9 @@ Ct=data.frame(catch=catch,
 # Then, create the data frame containing the environmental covariable values
 # for the projected years.
 
-env=data.frame(AMO1=c(0.2,0.3,0.4,0.5,0.6),
-               AMO2=c(0.05,0.15,0.25,0.35,0.45),
-               AMO3=c(-0.1,-0.2,-0.3,-0.4,-0.5))
+env=data.frame(Tmax_cte=c(19,19,19,19,19),
+               Tmax_05=c(19,19.5,20,20.5,21),
+               Tmax_1=c(19,20,21,22,23))
 ```
 
 
@@ -519,7 +515,7 @@ env=list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
          climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
                               Tmax_Vigo=c(19,20,21,22,23)))
 
-knobi_proj(hake_n_results, hake_n_multi, Ct=Ct[1:5,], n_y=5, env=env)
+multiproj=knobi_proj(hake_n_results, hake_n_multi, Ct=Ct[1:5,], n_y=5, env=env)
 ```
 
 ## References ##

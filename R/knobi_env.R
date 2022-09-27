@@ -7,8 +7,8 @@
 #' @param environmental A list containing the following data and settings: \itemize{
 #' \item data: data frame containing the values of each one of the environmental variable(s) in one column. Each row represents a year.
 #' \item years: time series of years corresponding to the environmental variable(s).
-#' \item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production (SP) residuals and the environmental variable(s). This means that the residuals(SP_{t}) is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included.
-#' \item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numerical vector) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM SP residuals and the lagged environmental covariable values is considered in the environmental model.
+#' \item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included.
+#' \item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model.
 #' \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
 #' \item selected_var: optional character. By default, the fit is done using the environmental values according to the lag derived from the previous arguments. However, if this argument is equal to the name of the environmental variable no lag is applied to its values.
 #' \item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental covariable reporting the highest pearson correlation is included (after lagging it if corresponds).}
@@ -22,9 +22,8 @@
 #' The subscript t denotes the time (years).
 #'
 #' @return A list containing the environmental analysis is provided. \itemize{
-#' \item selected_lag: Estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the surplus production. Derived if lag is not fixed.
-#' \item fixed_lag: Input value of 'lag' argument.
-#' \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM SP residuals (after lagging the environmental one if corresponds).
+#' \item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
+#' \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
 #' \item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
 #' \item model_env_Multiplicative: Estimates of the multiplicative model parameters.
 #' \item model_env_Additive: Estimates of the additive model parameters.
@@ -36,7 +35,7 @@
 #' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sd(observations) for each model (base KBPM, additive model and multiplicative model).
 #' \item error_table: Array of performance and accuracy (observed vs. estimated) measures for each model: Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).}}
 #' Result plots are shown in the plot window and also saved (if plot_out="TRUE") on the provided directory or in the same directory as knobi_fit.
-#' The first plot reports the correlation analysis between the environmental variable(s) and the KBPM data. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
+#' The first plot reports the correlation analysis between the environmental variable(s) and the KBPM SP residuals. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
 #' If multicovar=FALSE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
 #'
 #' @author
@@ -79,7 +78,6 @@
 #'
 #' knobi_environmental<-knobi_env(knobi_results,environmental)
 #' knobi_environmental
-#' knobi_environmental$plots3D$additive_plot
 #'
 #' environmental$multicovar=T
 #' knobi_env(knobi_results,environmental,plot_out=T)
@@ -120,87 +118,125 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   res_env=list()
   df_env=df
 
+  res_env$selected_lag=array(NA,dim=c(length(env_names),2))
+  colnames(res_env$selected_lag)=c("lag","correlation")
+  rownames(res_env$selected_lag)=env_names
+
   if (is.null(environmental$lag)){
 
-    nlag=environmental$nlag
-    data_env=list()
+    lag=environmental$nlag
 
-    for(j in env_names){
-      data_env[[j]]=df
-      if(!is.na(knobi_results$data$Recruitment[1])){
-        data_env[[j]]=data.frame(data_env[[j]],knobi_results$data$Recruitment)}
-
-      ind=which(y_env==f_year)
-      ind1=which(y_env==l_year)
-      if(length(ind)>0){data_env[[j]]$env0=env0[ind:ind1,j]} else {
-        warning('The length of the environmental variable is not enough to use the number of input lags')}
-
-      nlag_ind=which(env_names==j)
-      nlag_j=nlag[nlag_ind]
-
-      for (i in 1:nlag_j){
-        ind=which(y_env==(f_year-i))
-        ind1=which(y_env==(l_year-i))
-        if(!is.na(knobi_results$data$Recruitment[1])){
-          if(length(ind)>0){data_env[[j]][,6+i]=env0[[j]][ind:ind1]} else {
-            warning('The length of the environmental variable is not enough to use the number of input lags')}
-        } else {
-          if(length(ind)>0){data_env[[j]][,5+i]=env0[[j]][ind:ind1]} else {
-            warning('The length of the environmental variable is not enough to use the number of input lags')}
-        }
-      }
-
-      vec_env=1:nlag_j
-      for (i in 1:nlag_j){
-        vec_env[i]=paste0(j,"_lag",i)
-      }
-
-      if(knobi_results$control$method=="Biomass"){
-        if(!is.na(knobi_results$data$Recruitment[1])){
-          colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years","R",paste0(j,"_lag0"),vec_env)
-        } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years",paste0(j,"_lag0"),vec_env)}
-      } else {
-        if(!is.na(knobi_results$data$Recruitment[1])){
-          colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years","R",paste0(j,"_lag0"),vec_env)
-        } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years",paste0(j,"_lag0"),vec_env)}
-      }
-
-      env[[j]]<-data_env[[j]][,c("KBPM_residuals",paste0(j,"_lag0"),vec_env)]
-      p.mat <- cor.mtest(env[[j]])
-      corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
-      if(plot_out==T){
-        plotname=paste0("corplot_",j,".jpeg")
-        grDevices::jpeg(plotname,width=2500, height=2500,res=300)
-        corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
-        grDevices::dev.off()
-      }
-
-      cor=round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
-      cor=cor[,1]; cor=cor[-1]
-
-      res_env$selected_lag[[j]]=which(max(abs(cor))==abs(cor))[1]-1
-      res_env$lag_cor[[j]]=cor[[which(max(abs(cor))==abs(cor))[1]]]
-      df_env[,j]=scale(env[[j]][,res_env$selected_lag[[j]]+2])
-
-    }
   } else {
 
-    res_env=list()
-    df_env=df
+    lag=max(environmental$lag)
 
-    for(j in env_names){
-      lag_ind=which(env_names==j)
-      lag_j=environmental$lag[lag_ind]
+    res_env$selected_lag[,1]=environmental$lag
 
-      ind=which(y_env==(f_year-lag_j))
-      ind1=which(y_env==(l_year-lag_j))
-      if(length(ind)>0){df_env[,j]=scale(env0[[j]][ind:ind1])} else{
-        warning('The length of the environmental variable is not enough to use the number of input lags')}
-      res_env$fixed_lag[[j]]=lag_j
-      cor=round(cor(as.matrix(df_env[,c("KBPM_residuals",j)]),use="na.or.complete"),4)
-      cor=cor[1,2]
-      res_env$lag_cor[[j]]=cor}
   }
+
+  data_env=list()
+
+  res_env$lag_cor=array(NA,dim=c(length(env_names),lag+1))
+
+  vec_env="lag_0"
+  for (i in 1:lag){
+    vec_env=c(vec_env,paste0("lag_",i))
+  }
+
+  colnames(res_env$lag_cor)=vec_env
+  rownames(res_env$lag_cor)=env_names
+
+
+  for(j in env_names){
+
+    data_env[[j]]=df
+
+    if(!is.na(knobi_results$data$Recruitment[1])){
+      data_env[[j]]=data.frame(data_env[[j]],knobi_results$data$Recruitment)}
+
+    ind=which(y_env==f_year)
+    ind1=which(y_env==l_year)
+    if(length(ind)>0){data_env[[j]]$env0=env0[ind:ind1,j]} else {
+      warning('The length of the environmental variable is not enough to use the number of input lags')}
+
+    for (i in 1:lag){
+      ind=which(y_env==(f_year-i))
+      ind1=which(y_env==(l_year-i))
+      if(!is.na(knobi_results$data$Recruitment[1])){
+        if(length(ind)>0){data_env[[j]][,6+i]=env0[[j]][ind:ind1]} else {
+          warning('The length of the environmental variable is not enough to use the number of input lags')}
+      } else {
+        if(length(ind)>0){data_env[[j]][,5+i]=env0[[j]][ind:ind1]} else {
+          warning('The length of the environmental variable is not enough to use the number of input lags')}
+      }
+    }
+
+    if(knobi_results$control$method=="Biomass"){
+      if(!is.na(knobi_results$data$Recruitment[1])){
+        colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years","R",vec_env)
+      } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years",vec_env)}
+    } else {
+      if(!is.na(knobi_results$data$Recruitment[1])){
+        colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years","R",vec_env)
+      } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years",vec_env)}
+    }
+
+    env[[j]]<-data_env[[j]][,c("KBPM_residuals",vec_env)]
+    # p.mat <- cor.mtest(env[[j]])
+
+    # corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
+    # if(plot_out==T){
+    #   plotname=paste0("corplot_",j,".jpeg")
+    #   grDevices::jpeg(plotname,width=2500, height=2500,res=300)
+    #   corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
+    #   grDevices::dev.off()
+    # }
+
+    cor=round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
+    cor=cor[,1]; cor=cor[-1]
+
+    if (is.null(environmental$lag)){
+
+      res_env$selected_lag[j,2]=cor[[which(max(abs(cor))==abs(cor))[1]]]
+      res_env$selected_lag[j,1]=which(max(abs(cor))==abs(cor))[1]-1
+
+    } else {
+
+      res_env$selected_lag[j,2]=cor[res_env$selected_lag[j,1]+1]
+
+    }
+
+    df_env[,j]=scale(env[[j]][,res_env$selected_lag[j,1]+2])
+
+    res_env$lag_cor[j,]=cor
+
+  }
+
+  lagf=NULL
+  corlist=NULL
+
+  for(i in vec_env){
+    lagf=c(lagf,rep(i,length(env_names)))
+    corlist=c(corlist,res_env$lag_cor[,i])
+  }
+
+  envcorplot_df=data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+
+  envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
+    ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(-1,1) +
+    ggplot2::labs(title="Environmental correlation with base KBPM SP residuals", subtitle=knobi_results$data$Stock,
+                  y="Correlation",x="") +
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                   plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
+                   legend.background = ggplot2::element_rect(fill = "transparent"))
+
+  print(envcorplot)
+
+  if (plot_out==T){
+    p <- grDevices::recordPlot()
+    grDevices::jpeg("corplot.jpeg",width=2500, height=2500,res=300)
+    grDevices::replayPlot(envcorplot)
+    grDevices::dev.off()}
 
   if(is.null(environmental$multicovar)){
     multicovar=F
@@ -211,10 +247,13 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   if(multicovar==F){
 
     if(is.null(environmental$selected_var)){
-      select<-which.max(abs(as.data.frame(res_env$lag_cor))[,1])
-      selected_var=names(res_env$lag_cor[select])
+
+      selected_var=env_names[which.max(abs(res_env$selected_lag[,2]))]
+
     } else {
+
       selected_var=environmental$selected_var
+
     }
 
     res_env$selected_var=selected_var
@@ -305,7 +344,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
     res_env$scaled_environmental_var=df_env[,selected_var]
     colnames(res_env$scaled_environmental_var)=selected_var
-    rownames(res_env$scaled_environmental_var)=df_env$Year-as.numeric(res_env$selected_lag[selected_var])
+    rownames(res_env$scaled_environmental_var)=df_env$Year-as.numeric(res_env$selected_lag[selected_var,1])
 
     x <- knobi_results$data$Average_Biomass
     y <- df_env[,selected_var]
@@ -517,3 +556,4 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   return(Environmental)
 
 }
+
