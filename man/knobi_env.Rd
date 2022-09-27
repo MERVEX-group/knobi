@@ -84,7 +84,7 @@ Env=Env[(ind-nlag):ind1,]
 environmental=list()
 environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
 environmental$years=Env$years
-environmental$nlag=c(nlag,nlag)
+environmental$nlag=nlag
 
 knobi_environmental<-knobi_env(knobi_results,environmental)
 knobi_environmental
