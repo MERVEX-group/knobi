@@ -365,7 +365,7 @@ hake_n_environmental$model_env_Multiplicative
 When more than one environmental variable is introduced in `data`, the fit is made with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
 
 ```{r, eval=FALSE}
-environmental$selected_var="Tmax"
+environmental$selected_var="AMO"
 knobi_env(hake_n_results,environmental)
 ```
 
