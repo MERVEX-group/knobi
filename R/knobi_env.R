@@ -182,15 +182,6 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
     }
 
     env[[j]]<-data_env[[j]][,c("KBPM_residuals",vec_env)]
-    # p.mat <- cor.mtest(env[[j]])
-
-    # corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
-    # if(plot_out==T){
-    #   plotname=paste0("corplot_",j,".jpeg")
-    #   grDevices::jpeg(plotname,width=2500, height=2500,res=300)
-    #   corrplot::corrplot(round(cor(as.matrix(env[[j]]),use="na.or.complete"),2),title=j,mar=c(0,0,2,0),method="number",type="lower",diag=T,p.mat = p.mat, sig.level = 0.05)
-    #   grDevices::dev.off()
-    # }
 
     cor=round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
     cor=cor[,1]; cor=cor[-1]
