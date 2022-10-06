@@ -226,7 +226,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   if (plot_out==T){
     p <- grDevices::recordPlot()
     grDevices::jpeg("corplot.jpeg",width=2500, height=2500,res=300)
-    grDevices::replayPlot(envcorplot)
+    grDevices::replayPlot(p)
     grDevices::dev.off()}
 
   if(is.null(environmental$multicovar)){
