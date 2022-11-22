@@ -7,7 +7,7 @@
 knobi_fit(
   data,
   control = NULL,
-  plot_out = F,
+  plot_out = FALSE,
   plot_filename = NULL,
   plot_dir = NULL
 )
@@ -99,26 +99,26 @@ Database <- Database[-nrow(Database),]
 # Then, create the data object.
 
 data<-list()
-data$Spawning_Biomass=Database$SSB # We take the SSB in our Database.
-data$Catch=Database$catches # We take the catch in our Database.
-data$F_input=Database$F # We take the F in our Database.
+data$Spawning_Biomass<-Database$SSB # We take the SSB in our Database.
+data$Catch<-Database$catches # We take the catch in our Database.
+data$F_input<-Database$F # We take the F in our Database.
 # Reference points estimates from ICES stock assessment model:
 # ICES. 2021. Working Group for the Bay of Biscay and the Iberian Waters Ecoregion
 # (WGBIE). ICES Scientific Reports. 3:48.1101 pp.
-data$RP=list(F_MSY=0.259, B_MSY=207398, MSY=75052, B_0=NA)
-# In this case, B_MSY is equal to SSB_MSY, since control$method="SSB"
+data$RP<-list(F_MSY=0.259, B_MSY=207398, MSY=75052, B_0=NA)
+# In this case, B_MSY is equal to SSB_MSY, since control$method<-"SSB"
 # (see control list below).
-data$classF_input="average" # Character indicating the type of F.
-data$years=Database$Year    # Years corresponding to the catch values
+data$classF_input<-"average" # Character indicating the type of F.
+data$years<-Database$Year    # Years corresponding to the catch values
 # (can be different than the years corresponding to SSB or biomass).
 
 
 # Now we define the control.
 
-control=list()
-control$pella="TRUE" # Logical. TRUE means that Pella-Tomlinson model is used.
+control<-list()
+control$pella<-"TRUE" # Logical. TRUE means that Pella-Tomlinson model is used.
                          # FALSE means that Schaefer model is employed.
-control$method="SSB" # Information for the fit: "SSB" or "Biomass".
+control$method<-"SSB" # Information for the fit: "SSB" or "Biomass".
 
 
 # Finally, we can fit the model
@@ -154,13 +154,13 @@ sardine <- data.frame(years=years,SSB=sardine1$SSB+sardine2$SSB,
 # Once the total SSB and catch are available
 # we follow previous KBPM illustration
 data<-list()
-data$Spawning_Biomass=sardine$SSB
-data$Catch=sardine$catch
-data$years=sardine$years
+data$Spawning_Biomass<-sardine$SSB
+data$Catch<-sardine$catch
+data$years<-sardine$years
 
-control=list()
-control$pella="TRUE"
-control$method="SSB"
+control<-list()
+control$pella<-"TRUE"
+control$method<-"SSB"
 
 knobi_results2<-knobi_fit(data,control)
 knobi_results2$fit

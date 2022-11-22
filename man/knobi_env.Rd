@@ -7,7 +7,7 @@
 knobi_env(
   knobi_results,
   environmental,
-  plot_out = F,
+  plot_out = FALSE,
   plot_filename = NULL,
   plot_dir = NULL
 )
@@ -75,7 +75,7 @@ For each model, the AIC is estimated, comparing their values in order to see wha
 
 # Then, provide environmental data series
 
-Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
+Env<-data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
 -0.041,-0.098,-0.235,-0.093,-0.23,-0.29,-0.297,0.044,-0.028,-0.106,-0.061,-0.155,-0.242,
 -0.234,-0.2,0.112,-0.082,0.028,0.349,0.094,0.004,0.095,0.041,0.207,0.182,0.268,0.242,
 0.123,0.114,0.015,0.325,0.078,0.189,0.142,0.077,0.09,0.318,0.291,0.045,0.15,0.279),
@@ -85,23 +85,23 @@ TMax_Vigo=c(16.5,16.7,17.1,16.3,16.4,16.7,17.3,17.3,17.4,18,17.5,17.5,17.6,18,17
 
 # The environmental data series must start in the first year of the KBPM fit data
 # minus the provided nlag or lag
-years=knobi_results$data$years # See knobi_fit example to obtain the knobi_results object
-ind=which(Env[,1]==years[1])
-ind1=which(Env[,1]==years[length(years)])
-nlag=5
-Env=Env[(ind-nlag):ind1,]
+years<-knobi_results$data$years # See knobi_fit example to obtain the knobi_results object
+ind<-which(Env[,1]==years[1])
+ind1<-which(Env[,1]==years[length(years)])
+nlag<-5
+Env<-Env[(ind-nlag):ind1,]
 
 # Now we create the environmental list
-environmental=list()
-environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years=Env$years
-environmental$nlag=nlag
+environmental<-list()
+environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years<-Env$years
+environmental$nlag<-nlag
 
 knobi_environmental<-knobi_env(knobi_results,environmental)
 knobi_environmental
 
-environmental$multicovar=T
-knobi_env(knobi_results,environmental,plot_out=T)
+environmental$multicovar<-TRUE
+knobi_env(knobi_results,environmental,plot_out=TRUE)
 }
 
 }

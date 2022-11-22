@@ -65,7 +65,7 @@
 #'
 #' # Then, provide environmental data series
 #'
-#' Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
+#' Env<-data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
 #' -0.041,-0.098,-0.235,-0.093,-0.23,-0.29,-0.297,0.044,-0.028,-0.106,-0.061,-0.155,-0.242,
 #' -0.234,-0.2,0.112,-0.082,0.028,0.349,0.094,0.004,0.095,0.041,0.207,0.182,0.268,0.242,
 #' 0.123,0.114,0.015,0.325,0.078,0.189,0.142,0.077,0.09,0.318,0.291,0.045,0.15,0.279),
@@ -75,192 +75,192 @@
 #'
 #' # The environmental data series must start in the first year of the KBPM fit data
 #' # minus the provided nlag or lag
-#' years=knobi_results$data$years # See knobi_fit example to obtain the knobi_results object
-#' ind=which(Env[,1]==years[1])
-#' ind1=which(Env[,1]==years[length(years)])
-#' nlag=5
-#' Env=Env[(ind-nlag):ind1,]
+#' years<-knobi_results$data$years # See knobi_fit example to obtain the knobi_results object
+#' ind<-which(Env[,1]==years[1])
+#' ind1<-which(Env[,1]==years[length(years)])
+#' nlag<-5
+#' Env<-Env[(ind-nlag):ind1,]
 #'
 #' # Now we create the environmental list
-#' environmental=list()
-#' environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-#' environmental$years=Env$years
-#' environmental$nlag=nlag
+#' environmental<-list()
+#' environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+#' environmental$years<-Env$years
+#' environmental$nlag<-nlag
 #'
 #' knobi_environmental<-knobi_env(knobi_results,environmental)
 #' knobi_environmental
 #'
-#' environmental$multicovar=T
-#' knobi_env(knobi_results,environmental,plot_out=T)
+#' environmental$multicovar<-TRUE
+#' knobi_env(knobi_results,environmental,plot_out=TRUE)
 #' }
 #'
 #' @export
 
 
 
-knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,plot_dir=NULL){
+knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NULL,plot_dir=NULL){
 
-  if(is.null(environmental$ar_cor)==T) {environmental$ar_cor=F}
+  if(is.null(environmental$ar_cor)==TRUE) {environmental$ar_cor=FALSE}
 
-  env0=as.data.frame(environmental$data)
-  env_names=names(env0)
-  y_env=environmental$years
-  if(is.null(environmental$start_c)){start_c=c(1,1)} else {
-    start_c=environmental$start_c}
+  env0<-as.data.frame(environmental$data)
+  env_names<-names(env0)
+  y_env<-environmental$years
+  if(is.null(environmental$start_c)){start_c<-c(1,1)} else {
+    start_c<-environmental$start_c}
 
   if(plot_out==T){
-    old_dir=getwd()
-    if (is.null(plot_dir)) {plot_dir=knobi_results$control$plot_settings$plot_dir}
+    old_dir<-getwd()
+    if (is.null(plot_dir)) {plot_dir<-knobi_results$control$plot_settings$plot_dir}
     setwd(plot_dir)
-    if (is.null(plot_filename)){plot_filename=knobi_results$control$plot_settings$plot_filename}
-    if (plot_filename %in% list.dirs(full.names=F)){
+    if (is.null(plot_filename)){plot_filename<-knobi_results$control$plot_settings$plot_filename}
+    if (plot_filename %in% list.dirs(full.names=FALSE)){
       setwd(paste0(plot_dir,"/",plot_filename))} else {
         dir.create(plot_filename)
         setwd(paste0(plot_dir,"/",plot_filename))}
   }
 
-  df=data.frame(KBPM_residuals=knobi_results$fit$error$residuals,
+  df<-data.frame(KBPM_residuals=knobi_results$fit$error$residuals,
                 x = knobi_results$data$Average_Biomass,
                 y = knobi_results$data$SP, Year=knobi_results$data$years)
 
 
-  f_year=knobi_results$data$years[1]
-  l_year=knobi_results$data$years[length(knobi_results$data$years)]
+  f_year<-knobi_results$data$years[1]
+  l_year<-knobi_results$data$years[length(knobi_results$data$years)]
 
-  env=list()
-  res_env=list()
-  df_env=df
+  env<-list()
+  res_env<-list()
+  df_env<-df
 
-  res_env$selected_lag=array(NA,dim=c(length(env_names),2))
-  colnames(res_env$selected_lag)=c("lag","correlation")
-  rownames(res_env$selected_lag)=env_names
+  res_env$selected_lag<-array(NA,dim=c(length(env_names),2))
+  colnames(res_env$selected_lag)<-c("lag","correlation")
+  rownames(res_env$selected_lag)<-env_names
 
   if (is.null(environmental$lag)){
 
-    lag=environmental$nlag
+    lag<-environmental$nlag
 
   } else {
 
-    lag=max(environmental$lag)
+    lag<-max(environmental$lag)
 
-    res_env$selected_lag[,1]=environmental$lag
+    res_env$selected_lag[,1]<-environmental$lag
 
   }
 
-  data_env=list()
+  data_env<-list()
 
-  res_env$lag_cor=array(NA,dim=c(length(env_names),lag+1))
+  res_env$lag_cor<-array(NA,dim=c(length(env_names),lag+1))
 
-  vec_env="lag_0"
+  vec_env<-"lag_0"
   for (i in 1:lag){
-    vec_env=c(vec_env,paste0("lag_",i))
+    vec_env<-c(vec_env,paste0("lag_",i))
   }
 
-  colnames(res_env$lag_cor)=vec_env
-  rownames(res_env$lag_cor)=env_names
+  colnames(res_env$lag_cor)<-vec_env
+  rownames(res_env$lag_cor)<-env_names
 
 
   for(j in env_names){
 
-    data_env[[j]]=df
+    data_env[[j]]<-df
 
     if(!is.na(knobi_results$data$Recruitment[1])){
-      data_env[[j]]=data.frame(data_env[[j]],knobi_results$data$Recruitment)}
+      data_env[[j]]<-data.frame(data_env[[j]],knobi_results$data$Recruitment)}
 
-    ind=which(y_env==f_year)
-    ind1=which(y_env==l_year)
-    if(length(ind)>0){data_env[[j]]$env0=env0[ind:ind1,j]} else {
+    ind<-which(y_env==f_year)
+    ind1<-which(y_env==l_year)
+    if(length(ind)>0){data_env[[j]]$env0<-env0[ind:ind1,j]} else {
       warning('The length of the environmental variable is not enough to use the number of input lags')}
 
     for (i in 1:lag){
-      ind=which(y_env==(f_year-i))
-      ind1=which(y_env==(l_year-i))
+      ind<-which(y_env==(f_year-i))
+      ind1<-which(y_env==(l_year-i))
       if(!is.na(knobi_results$data$Recruitment[1])){
-        if(length(ind)>0){data_env[[j]][,6+i]=env0[[j]][ind:ind1]} else {
+        if(length(ind)>0){data_env[[j]][,6+i]<-env0[[j]][ind:ind1]} else {
           warning('The length of the environmental variable is not enough to use the number of input lags')}
       } else {
-        if(length(ind)>0){data_env[[j]][,5+i]=env0[[j]][ind:ind1]} else {
+        if(length(ind)>0){data_env[[j]][,5+i]<-env0[[j]][ind:ind1]} else {
           warning('The length of the environmental variable is not enough to use the number of input lags')}
       }
     }
 
     if(knobi_results$control$method=="Biomass"){
       if(!is.na(knobi_results$data$Recruitment[1])){
-        colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years","R",vec_env)
-      } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","B","years",vec_env)}
+        colnames(data_env[[j]])<-c("KBPM_residuals","SP","B","years","R",vec_env)
+      } else {colnames(data_env[[j]])<-c("KBPM_residuals","SP","B","years",vec_env)}
     } else {
       if(!is.na(knobi_results$data$Recruitment[1])){
-        colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years","R",vec_env)
-      } else {colnames(data_env[[j]])=c("KBPM_residuals","SP","SSB","years",vec_env)}
+        colnames(data_env[[j]])<-c("KBPM_residuals","SP","SSB","years","R",vec_env)
+      } else {colnames(data_env[[j]])<-c("KBPM_residuals","SP","SSB","years",vec_env)}
     }
 
     env[[j]]<-data_env[[j]][,c("KBPM_residuals",vec_env)]
 
-    cor=round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
-    cor=cor[,1]; cor=cor[-1]
+    cor<-round(cor(as.matrix(env[[j]]),use="na.or.complete"),4)
+    cor<-cor[,1]; cor<-cor[-1]
 
     if (is.null(environmental$lag)){
 
-      res_env$selected_lag[j,2]=cor[[which(max(abs(cor))==abs(cor))[1]]]
-      res_env$selected_lag[j,1]=which(max(abs(cor))==abs(cor))[1]-1
+      res_env$selected_lag[j,2]<-cor[[which(max(abs(cor))==abs(cor))[1]]]
+      res_env$selected_lag[j,1]<-which(max(abs(cor))==abs(cor))[1]-1
 
     } else {
 
-      res_env$selected_lag[j,2]=cor[res_env$selected_lag[j,1]+1]
+      res_env$selected_lag[j,2]<-cor[res_env$selected_lag[j,1]+1]
 
     }
 
-    df_env[,j]=scale(env[[j]][,res_env$selected_lag[j,1]+2])
+    df_env[,j]<-scale(env[[j]][,res_env$selected_lag[j,1]+2])
 
-    res_env$lag_cor[j,]=cor
+    res_env$lag_cor[j,]<-cor
 
   }
 
-  if(environmental$ar_cor==T){
+  if(environmental$ar_cor==TRUE){
 
-    KBPM_residuals=knobi_results$fit$error$residuals
-    pacf_res=stats::pacf(KBPM_residuals)$acf[,1,1]
+    KBPM_residuals<-knobi_results$fit$error$residuals
+    pacf_res<-stats::pacf(KBPM_residuals)$acf[,1,1]
 
-    ref=stats::qnorm(0.975)/sqrt(length(KBPM_residuals))
+    ref<-stats::qnorm(0.975)/sqrt(length(KBPM_residuals))
 
-    auto=max(which(abs(pacf_res)>=ref))
+    auto<-max(which(abs(pacf_res)>=ref))
 
     fit_base <- stats::arima0(KBPM_residuals, order = c(auto, 0, 0))
 
-    prenv_aic=array(NA,dim=c(length(env_names),lag+1))
-    colnames(prenv_aic)=vec_env; rownames(prenv_aic)=env_names
+    prenv_aic<-array(NA,dim=c(length(env_names),lag+1))
+    colnames(prenv_aic)<-vec_env; rownames(prenv_aic)<-env_names
 
     for(j in env_names){
       for(i in vec_env){
         env_fit <- stats::arima0(KBPM_residuals, order = c(auto, 0, 0), xreg = env[[j]][,i])
-        prenv_aic[j,i]=env_fit$aic
+        prenv_aic[j,i]<-env_fit$aic
       }
     }
 
-    env_aic=cbind(base=rep(fit_base$aic,length(env_names)),prenv_aic)
-    res_env$env_aic=env_aic
+    env_aic<-cbind(base=rep(fit_base$aic,length(env_names)),prenv_aic)
+    res_env$env_aic<-env_aic
 
-    env_aic_c=env_aic-fit_base$aic+2
-    min_aic=env_aic_c[which.min(env_aic_c)]
+    env_aic_c<-env_aic-fit_base$aic+2
+    min_aic<-env_aic_c[which.min(env_aic_c)]
     if(min_aic>=0){
       warning("AR models considering environmental variable(s) do not really improve AR model considering only the residuals")
     }
 
   }
 
-  if(environmental$ar_cor==F){
+  if(environmental$ar_cor==FALSE){
 
-    lagf=NULL
-    corlist=NULL
+    lagf<-NULL
+    corlist<-NULL
 
     for(i in vec_env){
-      lagf=c(lagf,rep(i,length(env_names)))
-      corlist=c(corlist,res_env$lag_cor[,i])
+      lagf<-c(lagf,rep(i,length(env_names)))
+      corlist<-c(corlist,res_env$lag_cor[,i])
     }
 
-    envcorplot_df=data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+    envcorplot_df<-data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
 
-    envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
+    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
       ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(-1,1) +
       ggplot2::labs(title="Environmental correlation with base KBPM SP residuals", subtitle=knobi_results$data$Stock,
                     y="Correlation",x="") +
@@ -272,20 +272,20 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
   } else {
 
-    lagf=NULL
-    corlist=NULL
+    lagf<-NULL
+    corlist<-NULL
 
     for(i in vec_env){
-      lagf=c(lagf,rep(i,length(env_names)))
-      corlist=c(corlist,res_env$env_aic[,i])
+      lagf<-c(lagf,rep(i,length(env_names)))
+      corlist<-c(corlist,res_env$env_aic[,i])
     }
 
-    maximo=max(env_aic)
-    minimo=min(env_aic)
+    maximo<-max(env_aic)
+    minimo<-min(env_aic)
 
-    envcorplot_df=data.frame(AIC=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+    envcorplot_df<-data.frame(AIC=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
 
-    envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=AIC,group=factor,color=factor)) +
+    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=AIC,group=factor,color=factor)) +
       ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(minimo,maximo) +
       ggplot2::labs(title="AIC comparison", subtitle=knobi_results$data$Stock,
                     y="AIC",x="") +
@@ -299,76 +299,76 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   }
 
 
-  if (plot_out==T){
+  if (plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("corplot.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
     grDevices::dev.off()}
 
   if(is.null(environmental$multicovar)){
-    multicovar=F
+    multicovar=FALSE
   } else {
-    multicovar=environmental$multicovar
+    multicovar<-environmental$multicovar
   }
 
-  if(multicovar==F){
+  if(multicovar==FALSE){
 
     if(is.null(environmental$selected_var)){
 
-      if(environmental$ar_cor==F){
-        selected_var=env_names[which.max(abs(res_env$selected_lag[,2]))]
+      if(environmental$ar_cor==FALSE){
+        selected_var<-env_names[which.max(abs(res_env$selected_lag[,2]))]
       } else {
-        indi=which(env_aic == min(env_aic[,-1]), arr.ind=TRUE)
-        selected_var=env_names[indi[1]]
+        indi<-which(env_aic == min(env_aic[,-1]), arr.ind=TRUE)
+        selected_var<-env_names[indi[1]]
       }
 
     } else {
 
-      selected_var=environmental$selected_var
+      selected_var<-environmental$selected_var
 
     }
 
-    res_env$selected_var=selected_var
+    res_env$selected_var<-selected_var
 
-    Data=list(env=df_env[,selected_var],data=df, start_r=as.numeric(knobi_results$fit$Parameter_estimates[[1]]),
-              start_K=as.numeric(knobi_results$fit$Parameter_estimates[[2]]),
-              start_c=start_c[1], start_p=1)
+    Data<-list(env=df_env[,selected_var],data=df, start_r=as.numeric(knobi_results$fit$Parameter_estimates[[1]]),
+               start_K=as.numeric(knobi_results$fit$Parameter_estimates[[2]]),
+               start_c=start_c[1], start_p=1)
 
     if (knobi_results$control$pella){
 
       # Pella Mult
 
-      class(Data)="Pella_Mult"
+      class(Data)<-"Pella_Mult"
       model_Pella_Mult <-fitting(Data)
-      res_env$model_env_Multiplicative = model_Pella_Mult
-      class(model_Pella_Mult) = class(Data)
-      ref_pts_mult = RF(model_Pella_Mult)
+      res_env$model_env_Multiplicative <- model_Pella_Mult
+      class(model_Pella_Mult) <- class(Data)
+      ref_pts_mult <- RF(model_Pella_Mult)
 
       # Pella Additive
 
-      class(Data)="Pella_Add"
+      class(Data)<-"Pella_Add"
       model_Pella_Add <-fitting(Data)
-      res_env$model_env_Additive = model_Pella_Add
-      class(model_Pella_Add) = class(Data)
-      ref_pts_add = RF(model_Pella_Add)
+      res_env$model_env_Additive <- model_Pella_Add
+      class(model_Pella_Add) <- class(Data)
+      ref_pts_add <- RF(model_Pella_Add)
 
-      res_env$ref_pts = list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
+      res_env$ref_pts <- list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
 
-      model_Pella_Mult=list(model_Pella_Mult)
-      model_Pella_Mult$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Pella_Mult$data$B=df$x} else {
-        model_Pella_Mult$data$SSB=df$x}
-      model_Pella_Mult$data$env=as.numeric(df_env[,selected_var])
-      class(model_Pella_Mult)="Pella_Mult"
+      model_Pella_Mult<-list(model_Pella_Mult)
+      model_Pella_Mult$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Pella_Mult$data$B<-df$x} else {
+        model_Pella_Mult$data$SSB<-df$x}
+      model_Pella_Mult$data$env<-as.numeric(df_env[,selected_var])
+      class(model_Pella_Mult)<-"Pella_Mult"
 
-      model_Pella_Add=list(model_Pella_Add)
-      model_Pella_Add$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Pella_Add$data$B=df$x} else {
-        model_Pella_Add$data$SSB=df$x}
-      model_Pella_Add$data$env=as.numeric(df_env[,selected_var])
-      class(model_Pella_Add)="Pella_Add"
+      model_Pella_Add<-list(model_Pella_Add)
+      model_Pella_Add$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Pella_Add$data$B<-df$x} else {
+        model_Pella_Add$data$SSB<-df$x}
+      model_Pella_Add$data$env<-as.numeric(df_env[,selected_var])
+      class(model_Pella_Add)<-"Pella_Add"
 
-      class(knobi_results$fit)="Pella_Year"
+      class(knobi_results$fit)<-"Pella_Year"
       bv <- predict_model(knobi_results$fit)
       bv1 <- predict_model(model_Pella_Mult)
       bv2 <- predict_model(model_Pella_Add)
@@ -377,46 +377,46 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
       # Schaefer Mult
 
-      class(Data)="Schaefer_Mult"
+      class(Data)<-"Schaefer_Mult"
       model_Schaefer_Mult <-fitting(Data)
-      res_env$model_env_Multiplicative = model_Schaefer_Mult
-      class(model_Schaefer_Mult) = class(Data)
-      ref_pts_mult = RF(model_Schaefer_Mult)
+      res_env$model_env_Multiplicative <- model_Schaefer_Mult
+      class(model_Schaefer_Mult) <- class(Data)
+      ref_pts_mult <- RF(model_Schaefer_Mult)
 
       # Schaefer Additive
 
-      class(Data)="Schaefer_Add"
+      class(Data)<-"Schaefer_Add"
       model_Schaefer_Add <-fitting(Data)
-      res_env$model_env_Additive = model_Schaefer_Add
-      class(model_Schaefer_Add) = class(Data)
-      ref_pts_add = RF(model_Schaefer_Add)
+      res_env$model_env_Additive <- model_Schaefer_Add
+      class(model_Schaefer_Add) <- class(Data)
+      ref_pts_add <- RF(model_Schaefer_Add)
 
-      res_env$ref_pts = list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
+      res_env$ref_pts <- list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
 
-      model_Schaefer_Mult=list(model_Schaefer_Mult)
-      model_Schaefer_Mult$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){ model_Schaefer_Mult$data$B=df$x} else {
-        model_Schaefer_Mult$data$SSB=df$x}
-      model_Schaefer_Mult$data$env=as.numeric(df_env[,selected_var])
-      class(model_Schaefer_Mult)="Schaefer_Mult"
+      model_Schaefer_Mult<-list(model_Schaefer_Mult)
+      model_Schaefer_Mult$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){ model_Schaefer_Mult$data$B<-df$x} else {
+        model_Schaefer_Mult$data$SSB<-df$x}
+      model_Schaefer_Mult$data$env<-as.numeric(df_env[,selected_var])
+      class(model_Schaefer_Mult)<-"Schaefer_Mult"
 
 
-      model_Schaefer_Add=list(model_Schaefer_Add)
-      model_Schaefer_Add$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Schaefer_Add$data$B=df$x} else {
-        model_Schaefer_Add$data$SSB=df$x}
-      model_Schaefer_Add$data$env=as.numeric(df_env[,selected_var])
-      class(model_Schaefer_Add)="Schaefer_Add"
+      model_Schaefer_Add<-list(model_Schaefer_Add)
+      model_Schaefer_Add$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Schaefer_Add$data$B<-df$x} else {
+        model_Schaefer_Add$data$SSB<-df$x}
+      model_Schaefer_Add$data$env<-as.numeric(df_env[,selected_var])
+      class(model_Schaefer_Add)<-"Schaefer_Add"
 
-      class(knobi_results$fit)="Schaefer_Year"
+      class(knobi_results$fit)<-"Schaefer_Year"
       bv <- predict_model(knobi_results$fit)
       bv1 <- predict_model(model_Schaefer_Mult)
       bv2 <- predict_model(model_Schaefer_Add)
     }
 
-    res_env$scaled_environmental_var=df_env[,selected_var]
-    colnames(res_env$scaled_environmental_var)=selected_var
-    rownames(res_env$scaled_environmental_var)=df_env$Year-as.numeric(res_env$selected_lag[selected_var,1])
+    res_env$scaled_environmental_var<-df_env[,selected_var]
+    colnames(res_env$scaled_environmental_var)<-selected_var
+    rownames(res_env$scaled_environmental_var)<-df_env$Year-as.numeric(res_env$selected_lag[selected_var,1])
 
     x <- knobi_results$data$Average_Biomass
     y <- df_env[,selected_var]
@@ -425,20 +425,20 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
     r_a<-res_env$model_env_Additive[1]
     K_a<-res_env$model_env_Additive[2]
     c_a<-res_env$model_env_Additive[3]
-    if(knobi_results$control$pella==T){
+    if(knobi_results$control$pella==TRUE){
       p_a<-res_env$model_env_Additive[4]
-    } else {p_a=1}
+    } else {p_a<-1}
 
     r_m<-res_env$model_env_Multiplicative[1]
     K_m<-res_env$model_env_Multiplicative[2]
     c_m<-res_env$model_env_Multiplicative[3]
-    if(knobi_results$control$pella==T){
+    if(knobi_results$control$pella==TRUE){
       p_m<-res_env$model_env_Multiplicative[4]
-    } else {p_m=1}
+    } else {p_m<-1}
 
 
-    grid.lines = 400
-    cut_a=max(K_a+c_a*K_a*max(y),K_a+c_a*K_a*min(y))
+    grid.lines <- 400
+    cut_a<-max(K_a+c_a*K_a*max(y),K_a+c_a*K_a*min(y))
     x.pred_a <- seq(0, cut_a, length.out = grid.lines)
     x.pred_m <- seq(0, K_m, length.out = grid.lines)
 
@@ -451,8 +451,8 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
     z.pred_a <- matrix(z.pred_a,nrow=grid.lines,ncol=grid.lines)
     z.pred_m <- matrix(z.pred_m,nrow=grid.lines,ncol=grid.lines)
 
-    y2 = y * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
-    y.pred2 = y.pred * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
+    y2 <- y * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
+    y.pred2 <- y.pred * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
 
     cat("\n This can take a while... \n")
 
@@ -465,7 +465,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
                       main = "Additive model: Production curve", sub = knobi_results$data$Stock)
     plot3d_add<-grDevices::recordPlot()
 
-    if (plot_out==T){
+    if (plot_out==TRUE){
       grDevices::jpeg("additive_model.jpeg",width=2500, height=2500,res=300)
       grDevices::replayPlot(plot3d_add)
       grDevices::dev.off()
@@ -482,24 +482,24 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
                       main = "Multiplicative model: Production curve", sub = knobi_results$data$Stock)
     plot3d_mult<-grDevices::recordPlot()
 
-    if (plot_out==T){
+    if (plot_out==TRUE){
       grDevices::jpeg("multiplicative_model.jpeg",width=2500, height=2500,res=300)
       grDevices::replayPlot(plot3d_mult)
       grDevices::dev.off()
     }
 
-    res_env$plots3D=list(additive_plot=plot3d_add,multiplicative_plot=plot3d_mult)
+    res_env$plots3D<-list(additive_plot=plot3d_add,multiplicative_plot=plot3d_mult)
 
 
   } else {
 
-    envs=df_env[,-c(1:4)]
+    envs<-df_env[,-c(1:4)]
 
-    cor=round(cor(as.matrix(envs),use="na.or.complete"),4)
+    cor<-round(cor(as.matrix(envs),use="na.or.complete"),4)
     for(i in 1:ncol(cor)){
-      cor[i,i]=0
+      cor[i,i]<-0
     }
-    cor=max(abs(cor))
+    cor<-max(abs(cor))
     if(cor>=0.35){
       p.mat <- cor.mtest(envs)
       corrplot::corrplot(round(cor(as.matrix(envs),use="na.or.complete"),2),
@@ -513,93 +513,93 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
     if(ncol(envs)==1){stop("The number of covariables is too short. Almost two environmental variables are required.")}
     if(ncol(envs)>=6){stop("The number of covariables is too big. Consider reducing the amount of environmental variables.")}
 
-    Data=list(env=envs,data=df, start_r=as.numeric(knobi_results$fit$Parameter_estimates[[1]]),
+    Data<-list(env=envs,data=df, start_r=as.numeric(knobi_results$fit$Parameter_estimates[[1]]),
               start_K=as.numeric(knobi_results$fit$Parameter_estimates[[2]]),
               start_c=start_c[1], start_p=1)
 
     if (knobi_results$control$pella){
 
-      class(Data)=paste0("Pella_Mult_",ncol(envs))
+      class(Data)<-paste0("Pella_Mult_",ncol(envs))
       model_Pella_Mult <-fitting(Data)
 
-      class(Data)=paste0("Pella_Add_",ncol(envs))
+      class(Data)<-paste0("Pella_Add_",ncol(envs))
       model_Pella_Add <-fitting(Data)
 
-      res_env$model_env_Multiplicative = model_Pella_Mult
-      res_env$model_env_Additive = model_Pella_Add
+      res_env$model_env_Multiplicative <- model_Pella_Mult
+      res_env$model_env_Additive <- model_Pella_Add
 
-      class(model_Pella_Mult) = "Pella_Mult_m"
-      ref_pts_mult = RF(model_Pella_Mult)
-      class(model_Pella_Add) = "Pella_Add_m"
-      ref_pts_add = RF(model_Pella_Add)
-      res_env$ref_pts = list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
+      class(model_Pella_Mult) <- "Pella_Mult_m"
+      ref_pts_mult <- RF(model_Pella_Mult)
+      class(model_Pella_Add) <- "Pella_Add_m"
+      ref_pts_add <- RF(model_Pella_Add)
+      res_env$ref_pts <- list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
 
-      model_Pella_Mult=list(model_Pella_Mult)
-      model_Pella_Mult$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Pella_Mult$data$B=df$x} else {
-        model_Pella_Mult$data$SSB=df$x}
-      model_Pella_Mult$data$env=envs
-      class(model_Pella_Mult)="Pella_Mult_m"
+      model_Pella_Mult<-list(model_Pella_Mult)
+      model_Pella_Mult$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Pella_Mult$data$B<-df$x} else {
+        model_Pella_Mult$data$SSB<-df$x}
+      model_Pella_Mult$data$env<-envs
+      class(model_Pella_Mult)<-"Pella_Mult_m"
 
-      model_Pella_Add=list(model_Pella_Add)
-      model_Pella_Add$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Pella_Add$data$B=df$x} else {
-        model_Pella_Add$data$SSB=df$x}
-      model_Pella_Add$data$env=envs
-      class(model_Pella_Add)="Pella_Add_m"
+      model_Pella_Add<-list(model_Pella_Add)
+      model_Pella_Add$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Pella_Add$data$B<-df$x} else {
+        model_Pella_Add$data$SSB<-df$x}
+      model_Pella_Add$data$env<-envs
+      class(model_Pella_Add)<-"Pella_Add_m"
 
-      class(knobi_results$fit)="Pella_Year"
+      class(knobi_results$fit)<-"Pella_Year"
       bv <- predict_model(knobi_results$fit)
       bv1 <- predict_model(model_Pella_Mult)
       bv2 <- predict_model(model_Pella_Add)
 
     } else {
 
-      class(Data)=paste0("Schaefer_Mult_",ncol(envs))
+      class(Data)<-paste0("Schaefer_Mult_",ncol(envs))
       model_Schaefer_Mult <-fitting(Data)
 
-      class(Data)=paste0("Schaefer_Add_",ncol(envs))
+      class(Data)<-paste0("Schaefer_Add_",ncol(envs))
       model_Schaefer_Add <-fitting(Data)
 
-      res_env$model_env_Multiplicative = model_Schaefer_Mult
-      res_env$model_env_Additive = model_Schaefer_Add
+      res_env$model_env_Multiplicative <- model_Schaefer_Mult
+      res_env$model_env_Additive <- model_Schaefer_Add
 
-      class(model_Schaefer_Mult) = "Schaefer_Mult_m"
-      ref_pts_mult = RF(model_Schaefer_Mult)
-      class(model_Schaefer_Add) = "Schaefer_Add_m"
-      ref_pts_add = RF(model_Schaefer_Add)
-      res_env$ref_pts = list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
+      class(model_Schaefer_Mult) <- "Schaefer_Mult_m"
+      ref_pts_mult <- RF(model_Schaefer_Mult)
+      class(model_Schaefer_Add) <- "Schaefer_Add_m"
+      ref_pts_add <- RF(model_Schaefer_Add)
+      res_env$ref_pts <- list(ref_pts_mult=ref_pts_mult,ref_pts_add=ref_pts_add)
 
-      model_Schaefer_Mult=list(model_Schaefer_Mult)
-      model_Schaefer_Mult$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){ model_Schaefer_Mult$data$B=df$x} else {
-        model_Schaefer_Mult$data$SSB=df$x}
-      model_Schaefer_Mult$data$env=envs
-      class(model_Schaefer_Mult)="Schaefer_Mult_m"
+      model_Schaefer_Mult<-list(model_Schaefer_Mult)
+      model_Schaefer_Mult$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){ model_Schaefer_Mult$data$B<-df$x} else {
+        model_Schaefer_Mult$data$SSB<-df$x}
+      model_Schaefer_Mult$data$env<-envs
+      class(model_Schaefer_Mult)<-"Schaefer_Mult_m"
 
-      model_Schaefer_Add=list(model_Schaefer_Add)
-      model_Schaefer_Add$data$SP=df$y
-      if(knobi_results$control$method=="Biomass"){model_Schaefer_Add$data$B=df$x} else {
-        model_Schaefer_Add$data$SSB=df$x}
-      model_Schaefer_Add$data$env=envs
-      class(model_Schaefer_Add)="Schaefer_Add_m"
+      model_Schaefer_Add<-list(model_Schaefer_Add)
+      model_Schaefer_Add$data$SP<-df$y
+      if(knobi_results$control$method=="Biomass"){model_Schaefer_Add$data$B<-df$x} else {
+        model_Schaefer_Add$data$SSB<-df$x}
+      model_Schaefer_Add$data$env<-envs
+      class(model_Schaefer_Add)<-"Schaefer_Add_m"
 
-      class(knobi_results$fit)="Schaefer_Year"
+      class(knobi_results$fit)<-"Schaefer_Year"
       bv <- predict_model(knobi_results$fit)
       bv1 <- predict_model(model_Schaefer_Mult)
       bv2 <- predict_model(model_Schaefer_Add)
     }
-    res_env$environmental_variables=envs
+    res_env$environmental_variables<-envs
   }
 
-  Environmental=res_env
+  Environmental<-res_env
 
-  envplot_df=data.frame(SP=c(df$y,bv,bv2,bv1),Year=rep(df$Year,4),
-                        factor=c(rep("Observed",length(bv)),rep("Base model",length(bv)),
-                                 rep("Environmental Additive",length(bv)),
-                                 rep("Environmental Multiplicative",length(bv))))
+  envplot_df<-data.frame(SP=c(df$y,bv,bv2,bv1),Year=rep(df$Year,4),
+                         factor=c(rep("Observed",length(bv)),rep("Base model",length(bv)),
+                                  rep("Environmental Additive",length(bv)),
+                                  rep("Environmental Multiplicative",length(bv))))
 
-  env_plot=ggplot2::ggplot(data=envplot_df,ggplot2::aes(x=Year,y=SP,color=factor)) + ggplot2::theme_bw() +
+  env_plot<-ggplot2::ggplot(data=envplot_df,ggplot2::aes(x=Year,y=SP,color=factor)) + ggplot2::theme_bw() +
     ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min(envplot_df$SP),max(envplot_df$SP)) +
     ggplot2::labs(title="Environmental fits", subtitle=knobi_results$data$Stock,
@@ -610,20 +610,20 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
   print(env_plot)
 
-  if (plot_out==T){
+  if (plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("fits_env.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
     grDevices::dev.off()}
 
-  Environmental$error <- error(knobi_results, Environmental, plot_out)
+  Environmental$error <- knobi_error(knobi_results, Environmental, plot_out)
 
-  if (plot_out==T){
+  if (plot_out==TRUE){
     cat(paste0("\n ... Done! :) \n \n Plots successfully saved in '",getwd(),"'"),". \n")
     setwd(old_dir)
   } else {cat("\n ... Done! :) \n")}
 
-  class(Environmental)="knobi"
+  class(Environmental)<-"knobi"
 
   return(Environmental)
 

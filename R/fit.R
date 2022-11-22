@@ -1,14 +1,14 @@
-fitting=function(Data){
+fitting<-function(Data){
   UseMethod("fitting",Data)
 }
 
 
-fitting.Pella=function(Data){
+fitting.Pella<-function(Data){
 
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_p=Data$start_p
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_p<-Data$start_p
 
   my_model <- function(x, r, K, p) {
     (r/p)*x*(1-(x/K)^(p))
@@ -27,10 +27,10 @@ fitting.Pella=function(Data){
 }
 
 
-fitting.Schaefer=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
+fitting.Schaefer<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
 
   my_model <- function(x, r, K) {
     (r*x*(1-(x/K)))
@@ -48,12 +48,12 @@ fitting.Schaefer=function(Data){
   return(out)
 }
 
-fitting.Schaefer_Mult=function(Data){
+fitting.Schaefer_Mult<-function(Data){
 
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
 
   my_model <- function(x,env, r, K,c) {
@@ -75,12 +75,12 @@ fitting.Schaefer_Mult=function(Data){
 
 }
 
-fitting.Schaefer_Add=function(Data){
+fitting.Schaefer_Add<-function(Data){
 
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
 
   my_model <- function(x,env, r, K,c) {
@@ -102,13 +102,13 @@ fitting.Schaefer_Add=function(Data){
 }
 
 
-fitting.Pella_Mult=function(Data){
+fitting.Pella_Mult<-function(Data){
 
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
 
   my_model <- function(x,env, r, K,c,p) {
@@ -129,13 +129,13 @@ fitting.Pella_Mult=function(Data){
   return(out$par)
 }
 
-fitting.Pella_Add=function(Data){
+fitting.Pella_Add<-function(Data){
 
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
 
   my_model <- function(x,env, r, K,c,p) {
@@ -157,16 +157,16 @@ fitting.Pella_Add=function(Data){
 }
 
 
-fitting.Pella_Mult_2=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_p=Data$start_p
-  start_c=Data$start_c
+fitting.Pella_Mult_2<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_p<-Data$start_p
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]
+  env1<-env[,1]; env2<-env[,2]
 
   my_model <- function(x,env1,env2, r, K,c1,c2,p) {
     exp(1)^{c1*env1+c2*env2}*((r/p)*x*(1-(x/K)^(p)))
@@ -185,16 +185,16 @@ fitting.Pella_Mult_2=function(Data){
 }
 
 
-fitting.Pella_Mult_3=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_p=Data$start_p
-  start_c=Data$start_c
+fitting.Pella_Mult_3<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_p<-Data$start_p
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]
 
   my_model <- function(x,env1,env2, env3, r, K,c1,c2,c3,p) {
     exp(1)^{c1*env1+c2*env2+c3*env3}*((r/p)*x*(1-(x/K)^(p)))
@@ -212,16 +212,16 @@ fitting.Pella_Mult_3=function(Data){
 }
 
 
-fitting.Pella_Mult_4=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_p=Data$start_p
-  start_c=Data$start_c
+fitting.Pella_Mult_4<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_p<-Data$start_p
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]
 
   my_model <- function(x,env1,env2, env3, env4,r, K,c1,c2,c3,c4,p) {
     exp(1)^{c1*env1+c2*env2+c3*env3+c4*env4}*((r/p)*x*(1-(x/K)^(p)))
@@ -239,17 +239,17 @@ fitting.Pella_Mult_4=function(Data){
 }
 
 
-fitting.Pella_Mult_5=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_p=Data$start_p
-  start_c=Data$start_c
+fitting.Pella_Mult_5<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_p<-Data$start_p
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]; env5=env[,5]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]; env5<-env[,5]
 
   my_model <- function(x,env1,env2, env3, env4, env5, r, K,c1,c2,c3,c4,c5,p) {
     exp(1)^{c1*env1+c2*env2+c3*env3+c4*env4+c5*env5}*((r/p)*x*(1-(x/K)^(p)))
@@ -264,24 +264,19 @@ fitting.Pella_Mult_5=function(Data){
                         upper=c(2,Inf,rep(20,ncol(env)),3.5),lower=c(0.05,0,rep(-20,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3,env4=env4,env5=env5)
 
-
-
-  # if(ncol(env)==1){cat("The number of covariables is too short. Almost two environmental variables are required")}
-  # if(ncol(env)>=6){cat("The number of covariables is too big. Consider reducing the amount of environmental variables")}
-
   return(out$par)
 }
 
 
-fitting.Schaefer_Mult_2=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Mult_2<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]
+  env1<-env[,1]; env2<-env[,2]
 
   my_model <- function(x,env1,env2, r, K,c1,c2) {
     exp(1)^{c1*env1+c2*env2}*((r*x*(1-(x/K))))
@@ -300,15 +295,15 @@ fitting.Schaefer_Mult_2=function(Data){
 
 
 
-fitting.Schaefer_Mult_3=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Mult_3<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]
 
   my_model <- function(x,env1,env2, env3, r, K,c1,c2,c3) {
     exp(1)^{c1*env1+c2*env2+c3*env3}*((r*x*(1-(x/K))))
@@ -326,15 +321,15 @@ fitting.Schaefer_Mult_3=function(Data){
 }
 
 
-fitting.Schaefer_Mult_4=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Mult_4<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]
 
   my_model <- function(x,env1,env2, env3, env4,r, K,c1,c2,c3,c4) {
     exp(1)^{c1*env1+c2*env2+c3*env3+c4*env4}*((r*x*(1-(x/K))))
@@ -352,15 +347,15 @@ fitting.Schaefer_Mult_4=function(Data){
 }
 
 
-fitting.Schaefer_Mult_5=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Mult_5<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]; env5=env[,5]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]; env5<-env[,5]
 
   my_model <- function(x,env1,env2, env3, env4, env5, r, K,c1,c2,c3,c4,c5) {
     exp(1)^{c1*env1+c2*env2+c3*env3+c4*env4+c5*env5}*((r*x*(1-(x/K))))
@@ -378,16 +373,16 @@ fitting.Schaefer_Mult_5=function(Data){
 }
 
 
-fitting.Pella_Add_2=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+fitting.Pella_Add_2<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]
+  env1<-env[,1]; env2<-env[,2]
 
   my_model <- function(x,env1,env2, r, K,c1,c2,p) {
     ((r/p)*x*(1-(x/K)^(p))+(c1*env1+c2*env2)*x)
@@ -405,16 +400,16 @@ fitting.Pella_Add_2=function(Data){
 }
 
 
-fitting.Pella_Add_3=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+fitting.Pella_Add_3<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]
 
   my_model <- function(x,env1,env2, env3, r, K,c1,c2,c3,p) {
     ((r/p)*x*(1-(x/K)^(p))+(c1*env1+c2*env2+c3*env3)*x)
@@ -432,16 +427,16 @@ fitting.Pella_Add_3=function(Data){
 }
 
 
-fitting.Pella_Add_4=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+fitting.Pella_Add_4<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]
 
   my_model <- function(x,env1,env2, env3, env4,r, K,c1,c2,c3,c4,p) {
     ((r/p)*x*(1-(x/K)^(p))+(c1*env1+c2*env2+c3*env3+c4*env4)*x)
@@ -458,16 +453,16 @@ fitting.Pella_Add_4=function(Data){
   return(out$par)
 }
 
-fitting.Pella_Add_5=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
-  start_p=Data$start_p
+fitting.Pella_Add_5<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
+  start_p<-Data$start_p
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]; env5=env[,5]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]; env5<-env[,5]
 
   my_model <- function(x,env1,env2, env3, env4, env5, r, K,c1,c2,c3,c4,c5,p) {
     ((r/p)*x*(1-(x/K)^(p))+(c1*env1+c2*env2+c3*env3+c4*env4+c5*env5)*x)
@@ -486,15 +481,15 @@ fitting.Pella_Add_5=function(Data){
 
 
 
-fitting.Schaefer_Add_2=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Add_2<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]
+  env1<-env[,1]; env2<-env[,2]
 
   my_model <- function(x,env1,env2, r, K,c1,c2) {
     ((r*x*(1-(x/K)))+(c1*env1+c2*env2))*x
@@ -512,15 +507,15 @@ fitting.Schaefer_Add_2=function(Data){
 }
 
 
-fitting.Schaefer_Add_3=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Add_3<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]
 
   my_model <- function(x,env1,env2, env3, r, K,c1,c2,c3) {
     ((r*x*(1-(x/K)))+(c1*env1+c2*env2+c3*env3)*x)
@@ -538,15 +533,15 @@ fitting.Schaefer_Add_3=function(Data){
 }
 
 
-fitting.Schaefer_Add_4=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Add_4<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]
 
   my_model <- function(x,env1,env2, env3, env4,r, K,c1,c2,c3,c4) {
     ((r*x*(1-(x/K)))+(c1*env1+c2*env2+c3*env3+c4*env4)*x)
@@ -564,15 +559,15 @@ fitting.Schaefer_Add_4=function(Data){
 }
 
 
-fitting.Schaefer_Add_5=function(Data){
-  data=Data$data
-  start_r=Data$start_r
-  start_K=Data$start_K
-  start_c=Data$start_c
+fitting.Schaefer_Add_5<-function(Data){
+  data<-Data$data
+  start_r<-Data$start_r
+  start_K<-Data$start_K
+  start_c<-Data$start_c
 
-  env=Data$env
+  env<-Data$env
 
-  env1=env[,1]; env2=env[,2]; env3=env[,3]; env4=env[,4]; env5=env[,5]
+  env1<-env[,1]; env2<-env[,2]; env3<-env[,3]; env4<-env[,4]; env5<-env[,5]
 
   my_model <- function(x,env1,env2, env3, env4, env5, r, K,c1,c2,c3,c4,c5) {
     ((r*x*(1-(x/K)))+(c1*env1+c2*env2+c3*env3+c4*env4+c5*env5)*x)

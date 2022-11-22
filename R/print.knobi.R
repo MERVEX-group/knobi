@@ -22,8 +22,8 @@
 
 print.knobi<-function(x, ...){
 
-  if(is.null(x$fit)==F){
-    if(x$control$pella==T){
+  if(is.null(x$fit)==FALSE){
+    if(x$control$pella==TRUE){
       cat("\n Formula:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p) \n \n")
     } else {
       cat("\n Formula:\n","SP_t = r*B_t*(1-B_t/K) \n \n")}
@@ -33,13 +33,13 @@ print.knobi<-function(x, ...){
     cat(names(x$fit$Parameter_estimates)[1]," ",x$fit$Parameter_estimates[1],"\n")
     cat(names(x$fit$Parameter_estimates)[2]," ",x$fit$Parameter_estimates[2],"\n")
 
-    if(x$control$pella==T){
+    if(x$control$pella==TRUE){
       cat(names(x$fit$Parameter_estimates)[3]," ",x$fit$Parameter_estimates[3],"\n \n")
     } else {cat("\n")}
 
   }
 
-  if(is.null(x$model_env_Multiplicative)==F){
+  if(is.null(x$model_env_Multiplicative)==FALSE){
 
     if("p" %in% names(x$model_env_Multiplicative)){
 
@@ -50,7 +50,7 @@ print.knobi<-function(x, ...){
 
     cat("Parameter estimates:\n")
 
-    npms=length(x$model_env_Multiplicative)
+    npms<-length(x$model_env_Multiplicative)
 
     for(i in 1:npms){
       cat(names(x$model_env_Multiplicative)[i]," ",x$model_env_Multiplicative[i],"\n")
@@ -75,7 +75,7 @@ print.knobi<-function(x, ...){
 
   }
 
-  if(is.null(x$biomass)==F){
+  if(is.null(x$biomass)==FALSE){
     cat("\n Biomass projections: \n \n")
     print(subset(x$biomass[,-3],x$biomass$scenario!="input"))
     cat("\n")

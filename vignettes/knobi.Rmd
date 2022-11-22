@@ -95,15 +95,15 @@ head(hake_n,n=3)
 tail(hake_n,n=3)
 
 data<-list()
-data$Biomass=hake_n$biomass           # Biomass or
-data$Spawning_Biomass=hake_n$SSB      # Spawning stock biomass
-data$Catch=hake_n$catches             # Catch
-data$F_input=hake_n$F                 # Fishing mortality (optional)
-data$Recruitment=hake_n$recruitment   # Recruitment (optional)
-data$RP=list(F_MSY=0.26)              # Reference points (optional)
+data$Biomass<-hake_n$biomass           # Biomass or
+data$Spawning_Biomass<-hake_n$SSB      # Spawning stock biomass
+data$Catch<-hake_n$catches             # Catch
+data$F_input<-hake_n$F                 # Fishing mortality (optional)
+data$Recruitment<-hake_n$recruitment   # Recruitment (optional)
+data$RP<-list(F_MSY=0.26)              # Reference points (optional)
                                       # in this case, Fmsy is provided by ICES        
-data$classF_input="average"           # Fishing mortality class (optional)
-data$years=hake_n$Year                # Years
+data$classF_input<-"average"           # Fishing mortality class (optional)
+data$years<-hake_n$Year                # Years
 ```
 
 &nbsp;
@@ -119,9 +119,9 @@ Below, we provide values for the mandatory ones.
 &nbsp;
 
 ```{r}
-control=list()
-control$pella="TRUE"            # "TRUE" for Pella-Tomlinson model or "FALSE" for Schaefer (by default)
-control$method="SSB"                # "SSB" or "Biomass" according to the data
+control<-list()
+control$pella<-"TRUE"            # "TRUE" for Pella-Tomlinson model or "FALSE" for Schaefer (by default)
+control$method<-"SSB"                # "SSB" or "Biomass" according to the data
                                     # (required if both time series are provided)
 ```
 
@@ -131,7 +131,7 @@ After preparing both lists, `data` and `control`, we can apply the `knobi_fit` o
 
 ```{r,eval=FALSE}
 hake_n_results<-knobi_fit(data,control,
-                          plot_out=T,                 # This argument allows us to create, in addition 
+                          plot_out=TRUE,              # This argument allows us to create, in addition 
                                                       # to the internal plots of R, an external folder
                                                       # with the corresponding files. FALSE by default.
                           plot_filename="hake_n",     # Optional name of the folder if plot_out=T. 
@@ -145,7 +145,7 @@ Note that if the length of the input catch time series does not match with the b
 Furthermore, the plots are shown in the plot window and also saved (if `plot_out=TRUE`) on the provided directory or in the current directory (if the directory is not provided). Plots of the following input quantities are shown: time series of fishing mortality; SSB or biomass according to the data entered or the chosen method; the surplus production (SP) calculated from the equation explained above; and catch time series. Next plots show us the catch versus fishing mortality and fishing mortality over SSB if the information about fishing mortality is provided, and also the relation between catch over SSB. After that, the fitted surplus production curve is plotted with the SSB and SP observations and also with the catch and SP observations. The last four plots show a comparison between the KBPM and the ICES (in our case, provided by Stock Synthesis model) estimates of fishing  mortality and SSB, in absolute and relative (*F/F<sub>MSY* and *SSB/SSB<sub>MSY*, respectively) terms. In those plots that show absolute quantities, the horizontal lines represent the ICES (if they are provided) and the KBPM estimates of *F<sub>MSY* and *SSB<sub>MSY*. Fishing mortality is calculated as *F<sub>t</sub>=C<sub>t</sub>/<SPAN STYLE="text-decoration:overline">B</SPAN><sub>t*.
 
 ```{r,echo=FALSE, fig.width=8, fig.height=6}
-hake_n_results<-knobi_fit(data,control,plot_out=F)
+hake_n_results<-knobi_fit(data,control,plot_out=FALSE)
 ```
 
 &nbsp;
@@ -211,13 +211,13 @@ Once the KBPM fit is carried out using `knobi_fit`, its robustness to the system
 ```{r,eval=FALSE}
 hake_n_retros<-knobi_retro(hake_n_results,             # previous results
                                    nR=5,               # number of patterns
-                                   plot_out=T,
+                                   plot_out=TRUE,
                                    plot_filename="hake_n",
                                    plot_dir="Z:/knobi/HAKE/")
 ```
 
 ```{r,echo=FALSE, fig.width=8, fig.height=6}
-hake_n_retros<-knobi_retro(hake_n_results,nR=5,plot_out=F)
+hake_n_retros<-knobi_retro(hake_n_results,nR=5,plot_out=FALSE)
 ```
 
 &nbsp;
@@ -237,7 +237,7 @@ There is also the possibility of choosing the time series of the retrospective a
 * `yR0`: Optional vector with the first years corresponding to `yR`.
 
 ```{r, fig.width=8, fig.height=6}
-knobi_retro(hake_n_results,yR=c(2005,2010,2015),plot_out=F)
+knobi_retro(hake_n_results,yR=c(2005,2010,2015),plot_out=FALSE)
 ```
 
 &nbsp;
@@ -246,7 +246,7 @@ knobi_retro(hake_n_results,yR=c(2005,2010,2015),plot_out=F)
 knobi_retro(hake_n_results,
                            yR= c(2005,2010,2015),
                            yR0=c(1990,1995,1995),
-                           plot_out=F)
+                           plot_out=FALSE)
 ```
 &nbsp;
 &nbsp;
@@ -274,7 +274,7 @@ $$SP_{t}=  \frac{r}{p}\overline{B}_{t}\left(1-\left( \frac{\overline{B}_{t}}{K}\
 * `nlag`: this argument is used to test all the lags smaller or equal to `nlag` (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lag environmental covariable values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included.
 
 ```{r}
-Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
+Env<-data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
   -0.041,-0.098,-0.235,-0.093,-0.23,-0.29,-0.297,0.044,-0.028,-0.106,-0.061,-0.155,-0.242,
   -0.234,-0.2,0.112,-0.082,0.028,0.349,0.094,0.004,0.095,0.041,0.207,0.182,0.268,0.242,
   0.123,0.114,0.015,0.325,0.078,0.189,0.142,0.077,0.09,0.318,0.291,0.045,0.15,0.279),
@@ -284,23 +284,23 @@ Env=data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.20
 
 # The environmental data series must start in the first year of the KBPM fit data
 # minus the provided nlag or lag
-years=hake_n_results$data$years # See knobi_fit example to obtain the knobi_results object
-ind=which(Env[,1]==years[1])
-ind1=which(Env[,1]==years[length(years)])
-nlag=5
-Env=Env[(ind-nlag):ind1,]
+years<-hake_n_results$data$years # See knobi_fit example to obtain the knobi_results object
+ind<-which(Env[,1]==years[1])
+ind1<-which(Env[,1]==years[length(years)])
+nlag<-5
+Env<-Env[(ind-nlag):ind1,]
 
 # Now we create the environmental list
-environmental=list()
-environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years=Env$years
-environmental$nlag=nlag
+environmental<-list()
+environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years<-Env$years
+environmental$nlag<-nlag
 ```
 
 ```{r,eval=FALSE}
 hake_n_environmental<-knobi_env(hake_n_results,        # previous results
                                 environmental,         # the environmental information
-                                plot_out=T,
+                                plot_out=TRUE,
                                 plot_filename="hake_n",
                                 plot_dir="Z:/knobi/HAKE/"))
 ```
@@ -365,7 +365,7 @@ hake_n_environmental$model_env_Multiplicative
 When more than one environmental variable is introduced in `data`, the fit is made with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
 
 ```{r, eval=FALSE}
-environmental$selected_var="AMO"
+environmental$selected_var<-"AMO"
 knobi_env(hake_n_results,environmental)
 ```
 
@@ -376,11 +376,11 @@ There is the possibility of fixing lag value(s) in the relation among the surplu
 It is also possible to fit the environmental model considering more environmental variables, up to a total of 5 covariates, using `multicovar = TRUE`. This means that *cX<sub>t</sub>* is replaced by *sum<sub>{i in 1...n}</sub>(c<sub>i</sub>X<sub>t,i</sub>)* in equations (4) and (5), where index *n* represents each environmental variable.
 
 ```{r, eval=FALSE}
-environmental=list()
-environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years=Env$years
-environmental$lag=c(2,3)
-environmental$multicovar=TRUE
+environmental<-list()
+environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years<-Env$years
+environmental$lag<-c(2,3)
+environmental$multicovar<-TRUE
 hake_n_multi<-knobi_env(hake_n_results,environmental)
 ```
 
@@ -413,11 +413,11 @@ This test is performed using the argument `ar_cor=T` in `environmental`. By defa
 
 
 ```{r, eval=FALSE}
-environmental=list()
-environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years=Env$years
-environmental$nlag=3
-environmental$ar_cor=TRUE
+environmental<-list()
+environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years<-Env$years
+environmental$nlag<-3
+environmental$ar_cor<-TRUE
 hake_n_ar<-knobi_env(hake_n_results,environmental)
 ```
 
@@ -450,30 +450,30 @@ In this case, `env_aic` is also returned, a data frame with the AIC values obtai
 # In this illustration, catch values for all the projected years are constant and equal to the 
 # catch value in the last year multiplied by 1, 1.2 and 0.8.
 
-catch=rep(hake_n_results$data$Catch[length(hake_n_results$data$Catch)],5)
+catch<-rep(hake_n_results$data$Catch[length(hake_n_results$data$Catch)],5)
 
-Ct=data.frame(catch=catch,
-              catch08=0.8*catch,
-              catch12=1.2*catch)
+Ct<-data.frame(catch=catch,
+               catch08=0.8*catch,
+               catch12=1.2*catch)
 
 
 # Then, create the data frame containing the environmental covariable values
 # for the projected years.
 
-env=data.frame(Tmax_cte=c(19,19,19,19,19),
-               Tmax_05=c(19,19.5,20,20.5,21),
-               Tmax_1=c(19,20,21,22,23))
+env<-data.frame(Tmax_cte=c(19,19,19,19,19),
+                Tmax_05=c(19,19.5,20,20.5,21),
+                Tmax_1=c(19,20,21,22,23))
 ```
 
 
 Based on the previous objects we can apply the projection function.
 
 ```{r}
-projections=knobi_proj(hake_n_results,          # knobi_fit results
-                       hake_n_environmental,    # knobi_env results
-                       Ct=Ct,                   # catch for projections
-                       n_y=5,                   # years projected
-                       env=env )                # environmental data for projections
+projections<-knobi_proj(hake_n_results,         # knobi_fit results
+                        hake_n_environmental,   # knobi_env results
+                        Ct=Ct,                  # catch for projections
+                        n_y=5,                  # years projected
+                        env=env )               # environmental data for projections
 ```
 
 The plots results are displayed in the plot window and are also saved (if `plot_out="TRUE"`) in the  provided directory or in the same directory as `knobi_fit`.
@@ -515,7 +515,7 @@ projections$catch
 Another example without environmental information for the projections is given below. The number of projection years is also extended.
 
 ```{r, eval=FALSE}
-Ct=rbind(Ct,Ct[1:3,])
+Ct<-rbind(Ct,Ct[1:3,])
 knobi_proj(hake_n_results, Ct=Ct, end_y=2027)
 ```
 
@@ -523,9 +523,9 @@ Alternatively, projections can be based on fishing mortality.
 The scenarios presented below have been created from the estimated *F<sub>msy</sub>* of `knobi_fit` analysis.
 
 ```{r, eval=FALSE}
-fmsy=hake_n_results$fit$RP$F_MSY
-ff=rep(fmsy,5)
-f=data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
+fmsy<-hake_n_results$fit$RP$F_MSY
+ff<-rep(fmsy,5)
+f<-data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
 
 knobi_proj(hake_n_results, f=f, n_y=5, env_results=hake_n_results, env=env)
 ```
@@ -533,19 +533,19 @@ knobi_proj(hake_n_results, f=f, n_y=5, env_results=hake_n_results, env=env)
 The example without environmental information for the projections is given below. The number of projection years is also extended.
 
 ```{r, eval=FALSE}
-f=rbind(f,f[1:3,])
+f<-rbind(f,f[1:3,])
 knobi_proj(hake_n_results, f=f, end_y=2027)
 ```
 
 At last, in case of `multicovar=T` in `knobi_env`, an example of the list that is required which each item is a data frame for each environmental scenario.
 
 ```{r, eval=FALSE}
-env=list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
-                              Tmax_Vigo=c(19,19,20,20,21)),
-         climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
-                              Tmax_Vigo=c(19,20,21,22,23)))
+env<-list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
+                               Tmax_Vigo=c(19,19,20,20,21)),
+          climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
+                               Tmax_Vigo=c(19,20,21,22,23)))
 
-multiproj=knobi_proj(hake_n_results, hake_n_multi, Ct=Ct[1:5,], n_y=5, env=env)
+multiproj<-knobi_proj(hake_n_results, hake_n_multi, Ct=Ct[1:5,], n_y=5, env=env)
 ```
 
 ## References ##

@@ -43,9 +43,9 @@
 #' # In this illustration, catch values for all the projected years are constant and
 #' # equal to the catch value in the last year multiplied by 1, 1.2 and 0.8.
 #'
-#' catch=rep(knobi_results$data$Catch[length(knobi_results$data$Catch)],5)
+#' catch<-rep(knobi_results$data$Catch[length(knobi_results$data$Catch)],5)
 #'
-#' Ct=data.frame(catch=catch,
+#' Ct<-data.frame(catch=catch,
 #'               catch08=0.8*catch,
 #'               catch12=1.2*catch)
 #'
@@ -53,7 +53,7 @@
 #' # Then, create the data frame containing the environmental covariable values
 #' # for the projected years.
 #'
-#' env=data.frame(Tmax_cte=c(19,19,19,19,19),
+#' env<-data.frame(Tmax_cte=c(19,19,19,19,19),
 #'                Tmax_05=c(19,19.5,20,20.5,21),
 #'                Tmax_1=c(19,20,21,22,23))
 #'
@@ -65,32 +65,32 @@
 #' # An example without environmental information for the projections is given below.
 #' # The number of projection years is also extended.
 #'
-#' Ct=rbind(Ct,Ct[1:3,])
+#' Ct<-rbind(Ct,Ct[1:3,])
 #' knobi_proj(knobi_results, Ct=Ct, end_y=2027)
 #'
 #'  # Alternatively, projections can be based on fishing mortality.
 #'  # The scenarios presented below have been created from the estimated F_msy of
 #'  # knobi_fit analysis.
 #'
-#' fmsy=knobi_results$fit$RP$F_MSY
-#' ff=rep(fmsy,5)
-#' f=data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
+#' fmsy<-knobi_results$fit$RP$F_MSY
+#' ff<-rep(fmsy,5)
+#' f<-data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
 #'
 #' knobi_proj(knobi_results, f=f, n_y=5, env_results=env_results, env=env)
 #'
 #' # The example without environmental information for the projections is given below.
 #' # The number of projection years is also extended.
 #'
-#' f=rbind(f,f[1:3,])
+#' f<-rbind(f,f[1:3,])
 #' knobi_proj(knobi_results, f=f, end_y=2027)
 #'
 #'
-#' # In case of multicovar=T in knobi_env, a list is required which each
+#' # In case of multicovar<-TRUE in knobi_env, a list is required which each
 #' # item is a data frame for each environmental scenario
 #'
-#' env=list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
+#' env<-list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
 #'                               Tmax_Vigo=c(19,19,20,20,21)),
-#'          climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
+#'           climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
 #'                               Tmax_Vigo=c(19,20,21,22,23)))
 #'
 #' knobi_proj(knobi_results, knobi_environmental2, Ct=Ct[1:5,], n_y=5, env=env)
@@ -100,43 +100,43 @@
 
 knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
                      end_y=NULL, n_y=NULL,
-                     plot_out=F, plot_filename=NULL, plot_dir=NULL){
+                     plot_out=FALSE, plot_filename=NULL, plot_dir=NULL){
 
 
-  years=knobi_results$data$years
-  lastyear=years[length(years)]
+  years<-knobi_results$data$years
+  lastyear<-years[length(years)]
 
-  if(plot_out==T){
-    old_dir=getwd()
-    if (is.null(plot_dir)) {plot_dir=knobi_results$control$plot_settings$plot_dir}
+  if(plot_out==TRUE){
+    old_dir<-getwd()
+    if (is.null(plot_dir)) {plot_dir<-knobi_results$control$plot_settings$plot_dir}
     setwd(plot_dir)
-    if (is.null(plot_filename)){plot_filename=knobi_results$control$plot_settings$plot_filename}
-    if (plot_filename %in% list.dirs(full.names=F)){
+    if (is.null(plot_filename)){plot_filename<-knobi_results$control$plot_settings$plot_filename}
+    if (plot_filename %in% list.dirs(full.names=FALSE)){
       setwd(paste0(plot_dir,"/",plot_filename))} else {
         dir.create(plot_filename)
         setwd(paste0(plot_dir,"/",plot_filename))}
   }
 
-  if(is.null(n_y)==T){
-    newyears=c(lastyear:end_y)
+  if(is.null(n_y)==TRUE){
+    newyears<-c(lastyear:end_y)
   } else {
-    newyears=c(lastyear:c(lastyear+n_y))
+    newyears<-c(lastyear:c(lastyear+n_y))
   }
 
-  ly=length(newyears)
+  ly<-length(newyears)
 
 
-  if(is.null(Ct)==T){
+  if(is.null(Ct)==TRUE){
 
-    if(is.null(f)==T){stop('You must provide catch or f time series')}
+    if(is.null(f)==TRUE){stop('You must provide catch or f time series')}
 
     if(ly-1!=(nrow(as.matrix(f)))){stop('Length of f time series is different than the length of years vector')}
 
   } else {
 
-    if(is.null(f)==F){stop('You must provide only catch or f time series, not both')}
+    if(is.null(f)==FALSE){stop('You must provide only catch or f time series, not both')}
 
-    Ct=Ct
+    Ct<-Ct
 
     if(ly-1!=(nrow(as.matrix(Ct)))){stop('Length of catch time series is different than the length of years vector')}
 
@@ -144,53 +144,53 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
   if(knobi_results$control$method=="Biomass"){
-    B0=knobi_results$data$Biomass[length(knobi_results$data$Biomass)]
-    Bt_ini=knobi_results$data$Biomass
+    B0<-knobi_results$data$Biomass[length(knobi_results$data$Biomass)]
+    Bt_ini<-knobi_results$data$Biomass
   } else {
-    B0=knobi_results$data$Spawning_Biomass[length(knobi_results$data$Spawning_Biomass)]
-    Bt_ini=knobi_results$data$Spawning_Biomass
+    B0<-knobi_results$data$Spawning_Biomass[length(knobi_results$data$Spawning_Biomass)]
+    Bt_ini<-knobi_results$data$Spawning_Biomass
   }
 
 
-  params=knobi_results$fit$Parameter_estimates
-  r=params[1]
-  K=params[2]
+  params<-knobi_results$fit$Parameter_estimates
+  r<-params[1]
+  K<-params[2]
   if(knobi_results$control$pella){
-    p=params[3]
-  } else {p=1}
+    p<-params[3]
+  } else {p<-1}
 
 
 
-  if(is.null(env_results)==F){
+  if(is.null(env_results)==FALSE){
 
-    additive=env_results$model_env_Additive
+    additive<-env_results$model_env_Additive
     if(knobi_results$control$pella){
-      p_a=additive[length(additive)]
-      n_p=3
+      p_a<-additive[length(additive)]
+      n_p<-3
     } else {
-      p_a=1
-      n_p=2}
-    r_a=additive[1]
-    K_a=additive[2]
-    cs_length=length(additive)-n_p
-    c_a=additive[3:c(2+cs_length)]
+      p_a<-1
+      n_p<-2}
+    r_a<-additive[1]
+    K_a<-additive[2]
+    cs_length<-length(additive)-n_p
+    c_a<-additive[3:c(2+cs_length)]
 
-    multiplicative=env_results$model_env_Multiplicative
+    multiplicative<-env_results$model_env_Multiplicative
     if(knobi_results$control$pella){
-      p_m=multiplicative[length(multiplicative)]
-      n_p=3
+      p_m<-multiplicative[length(multiplicative)]
+      n_p<-3
     } else {
-      p_m=1
-      n_p=2}
-    r_m=multiplicative[1]
-    K_m=multiplicative[2]
-    cs_length=length(multiplicative)-n_p
-    c_m=multiplicative[3:c(2+cs_length)]
+      p_m<-1
+      n_p<-2}
+    r_m<-multiplicative[1]
+    K_m<-multiplicative[2]
+    cs_length<-length(multiplicative)-n_p
+    c_m<-multiplicative[3:c(2+cs_length)]
   }
 
 
 
-  if(is.null(f)==T){
+  if(is.null(f)==TRUE){
 
     model <- function(Bt1,Bt,Ct,K,r,p) {
       Bt+(r/p)*((Bt1+Bt)/2)*(1-((Bt1+Bt)^p)/(K^p*2^p))-Ct-Bt1
@@ -221,502 +221,502 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
 
-  n_esc=max(ncol(f),ncol(Ct),ifelse(is.vector(Ct)==T,1,NA),ifelse(is.vector(f)==T,1,NA),na.rm=T)
+  n_esc<-max(ncol(f),ncol(Ct),ifelse(is.vector(Ct)==T,1,NA),ifelse(is.vector(f)==T,1,NA),na.rm=T)
 
 
   if(n_esc!=1){
-    if(is.null(f)==T){
-      if(is.data.frame(Ct)){sc_names=names(Ct)} else {
-        sc_names=NULL
+    if(is.null(f)==TRUE){
+      if(is.data.frame(Ct)){sc_names<-names(Ct)} else {
+        sc_names<-NULL
         for(i in 1:n_esc){
-          sc_names=c(sc_names,paste0(i,"_projection"))}
+          sc_names<-c(sc_names,paste0(i,"_projection"))}
       }
-      colnames(Ct)=sc_names
+      colnames(Ct)<-sc_names
     } else {
-      if(is.data.frame(f)){sc_names=names(f)} else {
-        sc_names=NULL
+      if(is.data.frame(f)){sc_names<-names(f)} else {
+        sc_names<-NULL
         for(i in 1:n_esc){
-          sc_names=c(sc_names,paste0(i,"_projection"))}
+          sc_names<-c(sc_names,paste0(i,"_projection"))}
       }
-      colnames(f)=sc_names
+      colnames(f)<-sc_names
     }
   } else {
-    if(is.null(f)==T){
-      Ct=matrix(Ct,ncol=1)
-      colnames(Ct)="Projection"
-      sc_names=colnames(Ct)
+    if(is.null(f)==TRUE){
+      Ct<-matrix(Ct,ncol=1)
+      colnames(Ct)<-"Projection"
+      sc_names<-colnames(Ct)
     } else {
-      f=matrix(f,ncol=1)
-      colnames(f)="Projection"
-      sc_names=colnames(f)
+      f<-matrix(f,ncol=1)
+      colnames(f)<-"Projection"
+      sc_names<-colnames(f)
     }
   }
 
 
-  base_Bt=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(base_Bt)=sc_names
-  base_SP=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_SP)=sc_names
-  base_Baver=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_Baver)=sc_names
+  base_Bt<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(base_Bt)<-sc_names
+  base_SP<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_SP)<-sc_names
+  base_Baver<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_Baver)<-sc_names
 
-  if(is.null(f)==T){
-    base_Ct=Ct; colnames(base_Ct)=sc_names
+  if(is.null(f)==TRUE){
+    base_Ct<-Ct; colnames(base_Ct)<-sc_names
   } else {
-    base_f=f; colnames(base_f)=sc_names}
+    base_f<-f; colnames(base_f)<-sc_names}
 
   for(i in 1:(ly-1)){
 
     for(j in sc_names){
 
-      Bi=base_Bt[i,j]
+      Bi<-base_Bt[i,j]
 
       if(Bi==0){
-        if(is.null(f)==T){
-          base_Ct[i,j]=0} else {base_f[i,j]=0}
-        Bt1=0
+        if(is.null(f)==TRUE){
+          base_Ct[i,j]<-0} else {base_f[i,j]<-0}
+        Bt1<-0
       } else {
 
-        if(is.null(f)==T){
-          Ci=base_Ct[i,j]
-          v=stats::uniroot(model,c(-1,1),Bt=Bi,Ct=Ci,K=K,r=r,p=p,extendInt = "yes")
+        if(is.null(f)==TRUE){
+          Ci<-base_Ct[i,j]
+          v<-stats::uniroot(model,c(-1,1),Bt=Bi,Ct=Ci,K=K,r=r,p=p,extendInt = "yes")
         } else {
-          v=stats::uniroot(model,c(-1,1),Bt=Bi,ef=base_f[i,j],K=K,r=r,p=p,extendInt = "yes")
-          Ci=base_f[i,j]*((Bi+v$root)/2)
+          v<-stats::uniroot(model,c(-1,1),Bt=Bi,ef=base_f[i,j],K=K,r=r,p=p,extendInt = "yes")
+          Ci<-base_f[i,j]*((Bi+v$root)/2)
         }
 
-        Bt1=v$root}
+        Bt1<-v$root}
 
       if(Bt1<=1e-10){
 
-        base_Bt[c(i+1),j]=0
-        base_SP[i,j]=(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
+        base_Bt[c(i+1),j]<-0
+        base_SP[i,j]<-(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
 
-        if(is.null(f)==T){
-          base_Ct[i,j]=Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
+        if(is.null(f)==TRUE){
+          base_Ct[i,j]<-Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p))
         } else {
-          base_f[i,j]=(Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p)))/(ifelse(Bi==0,1,0.5*Bi))
+          base_f[i,j]<-(Bi+(r/p)*((Bi)/2)*(1-((Bi)^p)/(K^p*2^p)))/(ifelse(Bi==0,1,0.5*Bi))
         }
 
-        base_Baver[i,j]=Bi/2
+        base_Baver[i,j]<-Bi/2
 
       } else {
 
-        base_Bt[c(i+1),j]=Bt1
-        base_SP[i,j]=as.numeric(Bt1-Bi+Ci)
-        base_Baver[i,j]=(Bt1+Bi)/2
+        base_Bt[c(i+1),j]<-Bt1
+        base_SP[i,j]<-as.numeric(Bt1-Bi+Ci)
+        base_Baver[i,j]<-(Bt1+Bi)/2
 
       }
     }
   }
 
   if(any(base_Bt==0)){
-    index=which(base_Bt[nrow(base_Bt),]==0)
+    index<-which(base_Bt[nrow(base_Bt),]==0)
     for(i in index){
-      if(is.null(f)==T){
+      if(is.null(f)==TRUE){
         warning(paste0("Introduced catch in ",sc_names[i]," scenario lead to stock collapse"))
       } else {
         warning(paste0("Introduced fishing mortality in ",sc_names[i],"scenario lead to stock collapse"))
       }}
   }
 
-  if(is.null(f)==T){
+  if(is.null(f)==TRUE){
 
-    base_f=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_f)=sc_names
+    base_f<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(base_f)<-sc_names
 
     for(i in 1:(ly-1)){
       for(j in sc_names){
-        if(base_Baver[i,j]==0){base_f[i,j]=0} else {base_f[i,j]=base_Ct[i,j]/base_Baver[i,j]}
+        if(base_Baver[i,j]==0){base_f[i,j]<-0} else {base_f[i,j]<-base_Ct[i,j]/base_Baver[i,j]}
       }}
 
   } else {
-    base_Ct=base_f*base_Baver
+    base_Ct<-base_f*base_Baver
   }
 
 
 
-  if(is.null(env_results)==F & is.null(env)==T) {stop('Environmental data is required')}
-  if(is.null(env_results)==T & is.null(env)==F) {stop('Environmental fit results are required')}
+  if(is.null(env_results)==FALSE & is.null(env)==TRUE) {stop('Environmental data is required')}
+  if(is.null(env_results)==TRUE & is.null(env)==FALSE) {stop('Environmental fit results are required')}
 
 
-  if(is.null(env_results)==F){
+  if(is.null(env_results)==FALSE){
 
-    env=env
+    env<-env
 
-    if(is.data.frame(env)==F & is.matrix(env)==F){
+    if(is.data.frame(env)==FALSE & is.matrix(env)==FALSE){
 
-      n_env_esc=length(env)
+      n_env_esc<-length(env)
 
-      add_Bt=list(); mult_Bt=list()
-      add_SP=list(); mult_SP=list()
-      add_Baver=list(); mult_Baver=list()
-      add_Ct=list(); mult_Ct=list()
-      add_f=list(); mult_f=list()
+      add_Bt<-list(); mult_Bt<-list()
+      add_SP<-list(); mult_SP<-list()
+      add_Baver<-list(); mult_Baver<-list()
+      add_Ct<-list(); mult_Ct<-list()
+      add_f<-list(); mult_f<-list()
 
       for(n in 1:n_env_esc){
 
-        Xt=env[[n]]
+        Xt<-env[[n]]
 
         if(cs_length!=(ncol(Xt))){
           stop('Number of environmental covariables is different than ist number in knobi_env')}
 
         for(j in 1:ncol(Xt)){
-          Xt[,j]=(Xt[,j]-attr(env_results$environmental_variables[,j],
+          Xt[,j]<-(Xt[,j]-attr(env_results$environmental_variables[,j],
                               "scaled:center"))/attr(env_results$environmental_variables[,j],
                                                      "scaled:scale")
         }
 
 
-        add_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(add_Bt[[n]])=sc_names
-        add_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])=sc_names
-        add_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])=sc_names
+        add_Bt[[n]]<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(add_Bt[[n]])<-sc_names
+        add_SP[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])<-sc_names
+        add_Baver[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])<-sc_names
 
-        if(is.null(f)==T){
-          add_Ct[[n]]=Ct; colnames(add_Ct[[n]])=sc_names
+        if(is.null(f)==TRUE){
+          add_Ct[[n]]<-Ct; colnames(add_Ct[[n]])<-sc_names
         } else {
-          add_f[[n]]=f; colnames(add_f[[n]])=sc_names}
+          add_f[[n]]<-f; colnames(add_f[[n]])<-sc_names}
 
-        mult_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])=sc_names
-        mult_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])=sc_names
-        mult_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])=sc_names
+        mult_Bt[[n]]<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])<-sc_names
+        mult_SP[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])<-sc_names
+        mult_Baver[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])<-sc_names
 
-        if(is.null(f)==T){
-          mult_Ct[[n]]=Ct; colnames(mult_Ct[[n]])=sc_names
+        if(is.null(f)==TRUE){
+          mult_Ct[[n]]<-Ct; colnames(mult_Ct[[n]])<-sc_names
         } else {
-          mult_f[[n]]=f; colnames(mult_f[[n]])=sc_names
+          mult_f[[n]]<-f; colnames(mult_f[[n]])<-sc_names
         }
 
         for(i in 1:(ly-1)){
 
           for(j in sc_names){
 
-            Bi_a=add_Bt[[n]][i,j]
+            Bi_a<-add_Bt[[n]][i,j]
 
             if(Bi_a==0){
-              if(is.null(f)==T){
-                add_Ct[[n]][i,j]=0} else {add_f[[n]][i,j]=0}
-              Bt1=0
+              if(is.null(f)==TRUE){
+                add_Ct[[n]][i,j]<-0} else {add_f[[n]][i,j]<-0}
+              Bt1<-0
 
             } else {
 
-              if(is.null(f)==T){
-                Ci=add_Ct[[n]][i,j]
-                v=stats::uniroot(model_a,c(-1,1),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]),extendInt = "yes")
+              if(is.null(f)==TRUE){
+                Ci<-add_Ct[[n]][i,j]
+                v<-stats::uniroot(model_a,c(-1,1),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]),extendInt = "yes")
               } else {
-                v=stats::uniroot(model_a,c(-1,1),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]),extendInt = "yes")
-                Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
+                v<-stats::uniroot(model_a,c(-1,1),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=as.matrix(Xt[i,]),extendInt = "yes")
+                Ci<-add_f[[n]][i,j]*((Bi_a+v$root)/2)
               }
 
-              Bt1=v$root}
+              Bt1<-v$root}
 
             if(Bt1<=1e-10){
 
-              add_Bt[[n]][c(i+1),j]=0
-              add_SP[[n]][i,j]=(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
+              add_Bt[[n]][c(i+1),j]<-0
+              add_SP[[n]][i,j]<-(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
 
-              if(is.null(f)==T){
-                add_Ct[[n]][i,j]=Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a
+              if(is.null(f)==TRUE){
+                add_Ct[[n]][i,j]<-Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a
               } else {
-                add_f[[n]][i,j]=(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
+                add_f[[n]][i,j]<-(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+as.matrix(Xt[i,])%*%c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
               }
 
-              add_Baver[[n]][i,j]=Bi_a/2
+              add_Baver[[n]][i,j]<-Bi_a/2
 
             } else {
 
-              add_Bt[[n]][c(i+1),j]=Bt1
-              add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
-              add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
+              add_Bt[[n]][c(i+1),j]<-Bt1
+              add_SP[[n]][i,j]<-as.numeric(Bt1-Bi_a+Ci)
+              add_Baver[[n]][i,j]<-(Bt1+Bi_a)/2
 
             }
 
-            Bi_m=mult_Bt[[n]][i,j]
+            Bi_m<-mult_Bt[[n]][i,j]
 
             if(Bi_m==0){
-              if(is.null(f)==T){
-                mult_Ct[[n]][i,j]=0} else {mult_f[[n]][i,j]=0}
-              Bt1=0
+              if(is.null(f)==TRUE){
+                mult_Ct[[n]][i,j]<-0} else {mult_f[[n]][i,j]<-0}
+              Bt1<-0
             } else {
 
-              if(is.null(f)==T){
-                Ci=mult_Ct[[n]][i,j]
-                v=stats::uniroot(model_m,c(-1,1),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]),extendInt = "yes")
+              if(is.null(f)==TRUE){
+                Ci<-mult_Ct[[n]][i,j]
+                v<-stats::uniroot(model_m,c(-1,1),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]),extendInt = "yes")
               } else {
-                v=stats::uniroot(model_m,c(-1,1),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]),extendInt = "yes")
-                Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
+                v<-stats::uniroot(model_m,c(-1,1),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=as.matrix(Xt[i,]),extendInt = "yes")
+                Ci<-mult_f[[n]][i,j]*((Bi_m+v$root)/2)
               }
 
-              Bt1=v$root}
+              Bt1<-v$root}
 
             if(Bt1<=1e-10){
 
-              mult_Bt[[n]][c(i+1),j]=0
-              mult_SP[[n]][i,j]=(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
+              mult_Bt[[n]][c(i+1),j]<-0
+              mult_SP[[n]][i,j]<-(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
 
-              if(is.null(f)==T){
-                mult_Ct[[n]][i,j]=Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m)
+              if(is.null(f)==TRUE){
+                mult_Ct[[n]][i,j]<-Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m)
               } else {
-                mult_f[[n]][i,j]=(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
+                mult_f[[n]][i,j]<-(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(as.matrix(Xt[i,])%*%c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
               }
 
-              mult_Baver[[n]][i,j]=Bi_m/2
+              mult_Baver[[n]][i,j]<-Bi_m/2
 
             } else {
 
-              mult_Bt[[n]][c(i+1),j]=Bt1
-              mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
-              mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
+              mult_Bt[[n]][c(i+1),j]<-Bt1
+              mult_SP[[n]][i,j]<-as.numeric(Bt1-Bi_m+Ci)
+              mult_Baver[[n]][i,j]<-(Bt1+Bi_m)/2
 
             }
 
           }
         }
 
-        if(is.null(f)==T){
+        if(is.null(f)==TRUE){
 
-          add_f[[n]]=add_Ct[[n]]
-          mult_f[[n]]=mult_Ct[[n]]
+          add_f[[n]]<-add_Ct[[n]]
+          mult_f[[n]]<-mult_Ct[[n]]
 
           for(i in 1:(ly-1)){
             for(j in sc_names){
 
-              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]=0} else {
-                add_f[[n]][i,j]=add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
+              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]<-0} else {
+                add_f[[n]][i,j]<-add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
 
-              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]=0} else {
-                mult_f[[n]][i,j]=mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
+              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]<-0} else {
+                mult_f[[n]][i,j]<-mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
             }}
 
         } else {
-          add_Ct[[n]]=add_f[[n]]*add_Baver[[n]]
-          mult_Ct[[n]]=mult_f[[n]]*mult_Baver[[n]]
+          add_Ct[[n]]<-add_f[[n]]*add_Baver[[n]]
+          mult_Ct[[n]]<-mult_f[[n]]*mult_Baver[[n]]
         }
       }
 
 
-      if(is.null(names(env))==F){
-        names(add_Baver)=names(add_Bt)=names(add_Ct)=names(add_f)=names(add_SP)=
-          names(mult_Baver)=names(mult_Bt)=names(mult_Ct)=names(mult_f)=names(mult_SP)=names(env)
+      if(is.null(names(env))==FALSE){
+        names(add_Baver)<-names(add_Bt)<-names(add_Ct)<-names(add_f)<-names(add_SP)<-
+          names(mult_Baver)<-names(mult_Bt)<-names(mult_Ct)<-names(mult_f)<-names(mult_SP)<-names(env)
       } else {
         for(n in 1:n_env_esc){
-          names(env)[[n]]=paste0("env_scenario",n)
+          names(env)[[n]]<-paste0("env_scenario",n)
         }
-        names(add_Baver)=names(add_Bt)=names(add_Ct)=names(add_f)=names(add_SP)=
-          names(mult_Baver)=names(mult_Bt)=names(mult_Ct)=names(mult_f)=names(mult_SP)=names(env)
+        names(add_Baver)<-names(add_Bt)<-names(add_Ct)<-names(add_f)<-names(add_SP)<-
+          names(mult_Baver)<-names(mult_Bt)<-names(mult_Ct)<-names(mult_f)<-names(mult_SP)<-names(env)
       }
 
     } else {
 
-      if(is.vector(env)==T){
-        env=matrix(env,ncol=1)
-        colnames(env)=colnames(env_results$scaled_environmental_var)
+      if(is.vector(env)==TRUE){
+        env<-matrix(env,ncol=1)
+        colnames(env)<-colnames(env_results$scaled_environmental_var)
       } else {
-        env=as.matrix(env)
-        if(is.null(colnames(env))==T){
+        env<-as.matrix(env)
+        if(is.null(colnames(env))==TRUE){
           for(i in 1:ncol(env)){
-            colnames(env)[i]=paste0(colnames(env_results$scaled_environmental_var),"_",i)
+            colnames(env)[i]<-paste0(colnames(env_results$scaled_environmental_var),"_",i)
           }
         }}
 
-      n_env_esc=ncol(env)
+      n_env_esc<-ncol(env)
 
-      add_Bt=list(); mult_Bt=list()
-      add_SP=list(); mult_SP=list()
-      add_Baver=list(); mult_Baver=list()
-      add_Ct=list(); mult_Ct=list()
-      add_f=list(); mult_f=list()
+      add_Bt<-list(); mult_Bt<-list()
+      add_SP<-list(); mult_SP<-list()
+      add_Baver<-list(); mult_Baver<-list()
+      add_Ct<-list(); mult_Ct<-list()
+      add_f<-list(); mult_f<-list()
 
       for(n in 1:n_env_esc){
 
-        Xt=env[,n]
+        Xt<-env[,n]
 
-        Xt=(Xt-attr(env_results$scaled_environmental_var,
+        Xt<-(Xt-attr(env_results$scaled_environmental_var,
                     "scaled:center"))/attr(env_results$scaled_environmental_var,"scaled:scale")
 
-        add_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(add_Bt[[n]])=sc_names
-        add_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])=sc_names
-        add_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])=sc_names
+        add_Bt[[n]]<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(add_Bt[[n]])<-sc_names
+        add_SP[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])<-sc_names
+        add_Baver[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_Baver[[n]])<-sc_names
 
-        if(is.null(f)==T){
-          add_Ct[[n]]=Ct; colnames(add_Ct[[n]])=sc_names
+        if(is.null(f)==TRUE){
+          add_Ct[[n]]<-Ct; colnames(add_Ct[[n]])<-sc_names
         } else {
-          add_f[[n]]=f; colnames(add_f[[n]])=sc_names}
+          add_f[[n]]<-f; colnames(add_f[[n]])<-sc_names}
 
-        mult_Bt[[n]]=array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])=sc_names
-        mult_SP[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])=sc_names
-        mult_Baver[[n]]=array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])=sc_names
+        mult_Bt[[n]]<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(mult_Bt[[n]])<-sc_names
+        mult_SP[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_SP[[n]])<-sc_names
+        mult_Baver[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(mult_Baver[[n]])<-sc_names
 
-        if(is.null(f)==T){
-          mult_Ct[[n]]=Ct; colnames(mult_Ct[[n]])=sc_names
+        if(is.null(f)==TRUE){
+          mult_Ct[[n]]<-Ct; colnames(mult_Ct[[n]])<-sc_names
         } else {
-          mult_f[[n]]=f; colnames(mult_f[[n]])=sc_names
+          mult_f[[n]]<-f; colnames(mult_f[[n]])<-sc_names
         }
 
         for(i in 1:(ly-1)){
 
           for(j in sc_names){
 
-            Bi_a=add_Bt[[n]][i,j]
+            Bi_a<-add_Bt[[n]][i,j]
 
             if(Bi_a==0){
-              if(is.null(f)==T){
-                add_Ct[[n]][i,j]=0} else {add_f[[n]][i,j]=0}
-              Bt1=0
+              if(is.null(f)==TRUE){
+                add_Ct[[n]][i,j]<-0} else {add_f[[n]][i,j]<-0}
+              Bt1<-0
 
             } else {
 
-              if(is.null(f)==T){
-                Ci=add_Ct[[n]][i,j]
-                v=stats::uniroot(model_a,c(-1,1),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i],extendInt = "yes")
+              if(is.null(f)==TRUE){
+                Ci<-add_Ct[[n]][i,j]
+                v<-stats::uniroot(model_a,c(-1,1),Bt=Bi_a,Ct=Ci,K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i],extendInt = "yes")
               } else {
-                v=stats::uniroot(model_a,c(-1,1),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i],extendInt = "yes")
-                Ci=add_f[[n]][i,j]*((Bi_a+v$root)/2)
+                v<-stats::uniroot(model_a,c(-1,1),Bt=Bi_a,ef=f[i,j],K=K_a,r=r_a,p=p_a,c=c_a,Xt=Xt[i],extendInt = "yes")
+                Ci<-add_f[[n]][i,j]*((Bi_a+v$root)/2)
               }
 
-              Bt1=v$root}
+              Bt1<-v$root}
 
             if(Bt1<=1e-10){
 
-              add_Bt[[n]][c(i+1),j]=0
-              add_SP[[n]][i,j]=(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
+              add_Bt[[n]][c(i+1),j]<-0
+              add_SP[[n]][i,j]<-(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))
 
-              if(is.null(f)==T){
-                add_Ct[[n]][i,j]=Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a
+              if(is.null(f)==TRUE){
+                add_Ct[[n]][i,j]<-Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a
               } else {
-                add_f[[n]][i,j]=(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
+                add_f[[n]][i,j]<-(Bi_a+(r_a/p_a)*((Bi_a)/2)*(1-((Bi_a)^p_a)/(K_a^p_a*2^p_a))+Xt[i]*c_a*Bi_a)/(ifelse(Bi_a==0,1,0.5*Bi_a))
               }
 
-              add_Baver[[n]][i,j]=Bi_a/2
+              add_Baver[[n]][i,j]<-Bi_a/2
 
             } else {
 
-              add_Bt[[n]][c(i+1),j]=Bt1
-              add_SP[[n]][i,j]=as.numeric(Bt1-Bi_a+Ci)
-              add_Baver[[n]][i,j]=(Bt1+Bi_a)/2
+              add_Bt[[n]][c(i+1),j]<-Bt1
+              add_SP[[n]][i,j]<-as.numeric(Bt1-Bi_a+Ci)
+              add_Baver[[n]][i,j]<-(Bt1+Bi_a)/2
 
             }
 
 
-            Bi_m=mult_Bt[[n]][i,j]
+            Bi_m<-mult_Bt[[n]][i,j]
 
             if(Bi_m==0){
-              if(is.null(f)==T){
-                mult_Ct[[n]][i,j]=0} else {mult_f[[n]][i,j]=0}
-              Bt1=0
+              if(is.null(f)==TRUE){
+                mult_Ct[[n]][i,j]<-0} else {mult_f[[n]][i,j]<-0}
+              Bt1<-0
             } else {
 
-              if(is.null(f)==T){
-                Ci=mult_Ct[[n]][i,j]
-                v=stats::uniroot(model_m,c(-1,1),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i],extendInt = "yes")
+              if(is.null(f)==TRUE){
+                Ci<-mult_Ct[[n]][i,j]
+                v<-stats::uniroot(model_m,c(-1,1),Bt=Bi_m,Ct=Ci,K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i],extendInt = "yes")
               } else {
-                v=stats::uniroot(model_m,c(-1,1),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i],extendInt = "yes")
-                Ci=mult_f[[n]][i,j]*((Bi_m+v$root)/2)
+                v<-stats::uniroot(model_m,c(-1,1),Bt=Bi_m,ef=f[i,j],K=K_m,r=r_m,p=p_m,c=c_m,Xt=Xt[i],extendInt = "yes")
+                Ci<-mult_f[[n]][i,j]*((Bi_m+v$root)/2)
               }
 
-              Bt1=v$root}
+              Bt1<-v$root}
 
             if(Bt1<=1e-10){
 
-              mult_Bt[[n]][c(i+1),j]=0
-              mult_SP[[n]][i,j]=(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
+              mult_Bt[[n]][c(i+1),j]<-0
+              mult_SP[[n]][i,j]<-(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))
 
-              if(is.null(f)==T){
-                mult_Ct[[n]][i,j]=Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m)
+              if(is.null(f)==TRUE){
+                mult_Ct[[n]][i,j]<-Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m)
               } else {
-                mult_f[[n]][i,j]=(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
+                mult_f[[n]][i,j]<-(Bi_m+(r_m/p_m)*((Bi_m)/2)*(1-((Bi_m)^p_m)/(K_m^p_m*2^p_m))*exp(Xt[i]*c_m))/(ifelse(Bi_m==0,1,0.5*Bi_m))
               }
 
-              mult_Baver[[n]][i,j]=Bi_m/2
+              mult_Baver[[n]][i,j]<-Bi_m/2
 
             } else {
 
-              mult_Bt[[n]][c(i+1),j]=Bt1
-              mult_SP[[n]][i,j]=as.numeric(Bt1-Bi_m+Ci)
-              mult_Baver[[n]][i,j]=(Bt1+Bi_m)/2
+              mult_Bt[[n]][c(i+1),j]<-Bt1
+              mult_SP[[n]][i,j]<-as.numeric(Bt1-Bi_m+Ci)
+              mult_Baver[[n]][i,j]<-(Bt1+Bi_m)/2
 
             }
 
           }
         }
 
-        if(is.null(f)==T){
+        if(is.null(f)==TRUE){
 
-          add_f[[n]]=add_Ct[[n]]
-          mult_f[[n]]=mult_Ct[[n]]
+          add_f[[n]]<-add_Ct[[n]]
+          mult_f[[n]]<-mult_Ct[[n]]
 
           for(i in 1:(ly-1)){
             for(j in sc_names){
 
-              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]=0} else {
-                add_f[[n]][i,j]=add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
+              if(add_Baver[[n]][i,j]==0){add_f[[n]][i,j]<-0} else {
+                add_f[[n]][i,j]<-add_Ct[[n]][i,j]/add_Baver[[n]][i,j]}
 
-              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]=0} else {
-                mult_f[[n]][i,j]=mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
+              if(mult_Baver[[n]][i,j]==0){mult_f[[n]][i,j]<-0} else {
+                mult_f[[n]][i,j]<-mult_Ct[[n]][i,j]/mult_Baver[[n]][i,j]}
             }}
 
         } else {
-          add_Ct[[n]]=add_f[[n]]*add_Baver[[n]]
-          mult_Ct[[n]]=mult_f[[n]]*mult_Baver[[n]]
+          add_Ct[[n]]<-add_f[[n]]*add_Baver[[n]]
+          mult_Ct[[n]]<-mult_f[[n]]*mult_Baver[[n]]
         }
       }
 
-      names(add_Baver)=names(add_Bt)=names(add_Ct)=names(add_f)=names(add_SP)=
-        names(mult_Baver)=names(mult_Bt)=names(mult_Ct)=names(mult_f)=names(mult_SP)=colnames(env)
+      names(add_Baver)<-names(add_Bt)<-names(add_Ct)<-names(add_f)<-names(add_SP)<-
+        names(mult_Baver)<-names(mult_Bt)<-names(mult_Ct)<-names(mult_f)<-names(mult_SP)<-colnames(env)
 
     }
   }
 
 
-  proj_years=newyears[-1]
-  total_years=c(years,proj_years,proj_years[length(proj_years)]+1)
+  proj_years<-newyears[-1]
+  total_years<-c(years,proj_years,proj_years[length(proj_years)]+1)
 
 
-  base_model=array(NA,dim=c(length(total_years),4,n_esc),
+  base_model<-array(NA,dim=c(length(total_years),4,n_esc),
                    dimnames=list(total_years,c("Biomass","Catch","F","SP"),sc_names))
 
 
   for(i in 1:n_esc){
-    base_model[,1,i]=c(Bt_ini,base_Bt[-1,i])
-    base_model[,2,i]=c(knobi_results$data$Catch,base_Ct[,i],NA)
-    base_model[,3,i]=c(knobi_results$data$F_output,base_f[,i],NA)
-    base_model[,4,i]=c(knobi_results$data$SP,base_SP[,i],NA)
+    base_model[,1,i]<-c(Bt_ini,base_Bt[-1,i])
+    base_model[,2,i]<-c(knobi_results$data$Catch,base_Ct[,i],NA)
+    base_model[,3,i]<-c(knobi_results$data$F_output,base_f[,i],NA)
+    base_model[,4,i]<-c(knobi_results$data$SP,base_SP[,i],NA)
   }
 
 
-  if(is.null(env_results)==F){
+  if(is.null(env_results)==FALSE){
 
-    additive_model=array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
+    additive_model<-array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
                          dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        additive_model[,1,j,i]=c(Bt_ini,add_Bt[[j]][-1,i])
-        additive_model[,2,j,i]=c(knobi_results$data$Catch,add_Ct[[j]][,i],NA)
-        additive_model[,3,j,i]=c(knobi_results$data$F_output,add_f[[j]][,i],NA)
-        additive_model[,4,j,i]=c(knobi_results$data$SP,add_SP[[j]][,i],NA)
+        additive_model[,1,j,i]<-c(Bt_ini,add_Bt[[j]][-1,i])
+        additive_model[,2,j,i]<-c(knobi_results$data$Catch,add_Ct[[j]][,i],NA)
+        additive_model[,3,j,i]<-c(knobi_results$data$F_output,add_f[[j]][,i],NA)
+        additive_model[,4,j,i]<-c(knobi_results$data$SP,add_SP[[j]][,i],NA)
       }
     }
 
 
-    multiplicative_model=array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
+    multiplicative_model<-array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
                                dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        multiplicative_model[,1,j,i]=c(Bt_ini,mult_Bt[[j]][-1,i])
-        multiplicative_model[,2,j,i]=c(knobi_results$data$Catch,mult_Ct[[j]][,i],NA)
-        multiplicative_model[,3,j,i]=c(knobi_results$data$F_output,mult_f[[j]][,i],NA)
-        multiplicative_model[,4,j,i]=c(knobi_results$data$SP,mult_SP[[j]][,i],NA)
+        multiplicative_model[,1,j,i]<-c(Bt_ini,mult_Bt[[j]][-1,i])
+        multiplicative_model[,2,j,i]<-c(knobi_results$data$Catch,mult_Ct[[j]][,i],NA)
+        multiplicative_model[,3,j,i]<-c(knobi_results$data$F_output,mult_f[[j]][,i],NA)
+        multiplicative_model[,4,j,i]<-c(knobi_results$data$SP,mult_SP[[j]][,i],NA)
       }
     }
   }
 
 
-  base_plot=data.frame(years=c(years[(length(years)-9):length(years)],proj_years[1]),
+  base_plot<-data.frame(years=c(years[(length(years)-9):length(years)],proj_years[1]),
                        biomass=Bt_ini[(length(years)-9):(length(years)+1)],
                        catch=c(knobi_results$data$Catch[(length(years)-9):length(years)],NA),
                        f=c(knobi_results$data$F_output[(length(years)-9):length(years)],NA),
                        SP=c(knobi_results$data$SP[(length(years)-9):length(years)],NA))
 
 
-  biomass=data.frame(years=c(years,proj_years[1]),
+  biomass<-data.frame(years=c(years,proj_years[1]),
                      biomass=Bt_ini,
                      type=rep("data",length(Bt_ini)),
                      scenario=rep("input",length(Bt_ini)),
@@ -724,32 +724,32 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
                      model=rep("input",length(Bt_ini)))
 
   for(i in 1:n_esc){
-    scenario=sc_names[i]
-    new_b=data.frame(years=c(proj_years[-1],proj_years[length(proj_years)]+1),
+    scenario<-sc_names[i]
+    new_b<-data.frame(years=c(proj_years[-1],proj_years[length(proj_years)]+1),
                      biomass=base_Bt[-1,i],
                      type=rep("forecast",ly-1),
                      scenario=rep(scenario,ly-1),
                      env_scenario=rep("without_env",ly-1),
                      model=rep("base_model",ly-1))
-    biomass=rbind(biomass,new_b)
+    biomass<-rbind(biomass,new_b)
   }
 
 
-  if(is.null(env_results)==T){
+  if(is.null(env_results)==TRUE){
 
-    biomass=biomass[,-c(5,6)]
+    biomass<-biomass[,-c(5,6)]
 
-    biomass_plot=biomass[(length(years)-10):nrow(biomass),-3]
-    biomass_plot=rbind(biomass_plot,data.frame(years=rep(biomass$years[length(years)+1],n_esc),
+    biomass_plot<-biomass[(length(years)-10):nrow(biomass),-3]
+    biomass_plot<-rbind(biomass_plot,data.frame(years=rep(biomass$years[length(years)+1],n_esc),
                                                biomass=rep(biomass$biomass[length(years)+1],n_esc),
                                                scenario=sc_names))
 
-    vec=min(biomass_plot$years)
-    vec1=max(biomass_plot$years)
-    vec2=min(biomass_plot$biomass)
-    vec3=max(biomass_plot$biomass)
+    vec<-min(biomass_plot$years)
+    vec1<-max(biomass_plot$years)
+    vec2<-min(biomass_plot$biomass)
+    vec3<-max(biomass_plot$biomass)
 
-    biomass_plots = ggplot2::ggplot(data=biomass_plot,ggplot2::aes(x=years,y=biomass)) +
+    biomass_plots <- ggplot2::ggplot(data=biomass_plot,ggplot2::aes(x=years,y=biomass)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
                          ggplot2::aes(color=scenario)) +
@@ -768,70 +768,70 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        i_name=sc_names[i]
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        i_name<-sc_names[i]
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        scenario=rep(i_name,2*(ly-1))
-        env_scenario=rep(j_name,2*(ly-1))
-        factor=rep("forecast",2*(ly-1))
-        model=c(rep("additive",ly-1),rep("multiplicative",ly-1))
-        ij_biomass=c(add_Bt[[j]][-1,i],mult_Bt[[j]][-1,i])
-        new_b=data.frame(years=rep(c(proj_years[-1],proj_years[length(proj_years)]+1),2),
+          j_name<-colnames(env)[j]}
+        scenario<-rep(i_name,2*(ly-1))
+        env_scenario<-rep(j_name,2*(ly-1))
+        factor<-rep("forecast",2*(ly-1))
+        model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
+        ij_biomass<-c(add_Bt[[j]][-1,i],mult_Bt[[j]][-1,i])
+        new_b<-data.frame(years=rep(c(proj_years[-1],proj_years[length(proj_years)]+1),2),
                          biomass=ij_biomass,
                          type=factor,
                          scenario=scenario,
                          env_scenario=env_scenario,
                          model=model)
-        biomass=rbind(biomass,new_b)
+        biomass<-rbind(biomass,new_b)
       }}
 
-    biomass_plot=list()
-    b_years=c(proj_years,proj_years[length(proj_years)]+1)
+    biomass_plot<-list()
+    b_years<-c(proj_years,proj_years[length(proj_years)]+1)
 
     for(i in sc_names){
-      i_biomass=base_Bt[,i]
-      model=rep("Base KBPM",length(base_Bt[,i]))
-      biomass_plot[[i]]=data.frame(years=b_years,biomass=i_biomass,model=model)
+      i_biomass<-base_Bt[,i]
+      model<-rep("Base KBPM",length(base_Bt[,i]))
+      biomass_plot[[i]]<-data.frame(years=b_years,biomass=i_biomass,model=model)
     }
 
     for(i in sc_names){
-      env_scenario=rep("Without environmental effect",length(base_Bt[,i]))
-      biomass_plot[[i]]$env_scenario=env_scenario
+      env_scenario<-rep("Without environmental effect",length(base_Bt[,i]))
+      biomass_plot[[i]]$env_scenario<-env_scenario
     }
 
 
     for(i in sc_names){
       for(j in 1:n_env_esc){
-        ij_biomass=c(add_Bt[[j]][,i],mult_Bt[[j]][,i])
-        model=c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        ij_biomass<-c(add_Bt[[j]][,i],mult_Bt[[j]][,i])
+        model<-c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        env_scenario=rep(j_name,2*(ly))
-        new_b=data.frame(years=b_years,biomass=ij_biomass,model=model,env_scenario=env_scenario)
-        biomass_plot[[i]]=rbind(biomass_plot[[i]],new_b)
+          j_name<-colnames(env)[j]}
+        env_scenario<-rep(j_name,2*(ly))
+        new_b<-data.frame(years=b_years,biomass=ij_biomass,model=model,env_scenario=env_scenario)
+        biomass_plot[[i]]<-rbind(biomass_plot[[i]],new_b)
       }}
 
-    biomass_plots=list()
+    biomass_plots<-list()
 
     for(i in sc_names){
 
-      i_b_plot=biomass_plot[[i]]
-      i_b_plot=rbind(data.frame(years=base_plot$years,
+      i_b_plot<-biomass_plot[[i]]
+      i_b_plot<-rbind(data.frame(years=base_plot$years,
                                 biomass=base_plot$biomass,
                                 model="input",env_scenario="input"),
                      i_b_plot)
 
 
-      vec=min(i_b_plot$years)
-      vec1=max(i_b_plot$years)
-      vec2=min(i_b_plot$biomass)
-      vec3=max(i_b_plot$biomass)
+      vec<-min(i_b_plot$years)
+      vec1<-max(i_b_plot$years)
+      vec2<-min(i_b_plot$biomass)
+      vec3<-max(i_b_plot$biomass)
 
-      biomass_plots[[i]] = ggplot2::ggplot(data=i_b_plot,ggplot2::aes(x=years,y=biomass)) +
+      biomass_plots[[i]] <- ggplot2::ggplot(data=i_b_plot,ggplot2::aes(x=years,y=biomass)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_b_plot,model!="input"),lwd=1.03,
                            ggplot2::aes(linetype=model,color=env_scenario)) +
@@ -851,9 +851,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   }
 
 
-  Ct_ini=knobi_results$data$Catch
+  Ct_ini<-knobi_results$data$Catch
 
-  catch=data.frame(years=c(years),
+  catch<-data.frame(years=c(years),
                    catch=Ct_ini,
                    type=rep("data",length(Ct_ini)),
                    scenario=rep("input",length(Ct_ini)),
@@ -861,32 +861,32 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
                    model=rep("input",length(Ct_ini)))
 
   for(i in 1:n_esc){
-    scenario=sc_names[i]
-    new_c=data.frame(years=proj_years,
+    scenario<-sc_names[i]
+    new_c<-data.frame(years=proj_years,
                      catch=base_Ct[,i],
                      type=rep("forecast",ly-1),
                      scenario=rep(scenario,ly-1),
                      env_scenario=rep("without_env",ly-1),
                      model=rep("base_model",ly-1))
-    catch=rbind(catch,new_c)
+    catch<-rbind(catch,new_c)
   }
 
 
-  if(is.null(env_results)==T){
+  if(is.null(env_results)==TRUE){
 
-    catch=catch[,-c(5,6)]
+    catch<-catch[,-c(5,6)]
 
-    catch_plot=catch[(length(years)-10):nrow(catch),-3]
-    catch_plot=rbind(catch_plot,data.frame(years=rep(catch$years[length(years)],n_esc),
+    catch_plot<-catch[(length(years)-10):nrow(catch),-3]
+    catch_plot<-rbind(catch_plot,data.frame(years=rep(catch$years[length(years)],n_esc),
                                            catch=rep(catch$catch[length(years)],n_esc),
                                            scenario=sc_names))
 
-    vec=min(catch_plot$years)
-    vec1=max(catch_plot$years)
-    vec2=min(catch_plot$catch)
-    vec3=max(catch_plot$catch)
+    vec<-min(catch_plot$years)
+    vec1<-max(catch_plot$years)
+    vec2<-min(catch_plot$catch)
+    vec3<-max(catch_plot$catch)
 
-    catch_plots = ggplot2::ggplot(data=catch_plot,ggplot2::aes(x=years,y=catch)) +
+    catch_plots <- ggplot2::ggplot(data=catch_plot,ggplot2::aes(x=years,y=catch)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
                          ggplot2::aes(color=scenario)) +
@@ -905,73 +905,73 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        i_name=sc_names[i]
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        i_name<-sc_names[i]
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        scenario=rep(i_name,2*(ly-1))
-        env_scenario=rep(j_name,2*(ly-1))
-        factor=rep("forecast",2*(ly-1))
-        model=c(rep("additive",ly-1),rep("multiplicative",ly-1))
-        ij_c=c(add_Ct[[j]][,i],mult_Ct[[j]][,i])
-        new_c=data.frame(years=rep(proj_years,2),
+          j_name<-colnames(env)[j]}
+        scenario<-rep(i_name,2*(ly-1))
+        env_scenario<-rep(j_name,2*(ly-1))
+        factor<-rep("forecast",2*(ly-1))
+        model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
+        ij_c<-c(add_Ct[[j]][,i],mult_Ct[[j]][,i])
+        new_c<-data.frame(years=rep(proj_years,2),
                          catch=ij_c,
                          type=factor,
                          scenario=scenario,
                          env_scenario=env_scenario,
                          model=model)
-        catch=rbind(catch,new_c)
+        catch<-rbind(catch,new_c)
       }}
 
 
-    catch_plot=list()
-    c_years=c(proj_years[1]-1,proj_years)
+    catch_plot<-list()
+    c_years<-c(proj_years[1]-1,proj_years)
 
     for(i in sc_names){
-      i_c=c(Ct_ini[length(Ct_ini)],base_Ct[,i])
-      model=rep("Base KBPM",length(base_Ct[,i])+1)
-      catch_plot[[i]]=data.frame(years=c_years,catch=i_c,model=model)
+      i_c<-c(Ct_ini[length(Ct_ini)],base_Ct[,i])
+      model<-rep("Base KBPM",length(base_Ct[,i])+1)
+      catch_plot[[i]]<-data.frame(years=c_years,catch=i_c,model=model)
     }
 
     for(i in sc_names){
-      env_scenario=rep("Without environmental effect",length(base_Ct[,i])+1)
-      catch_plot[[i]]$env_scenario=env_scenario
+      env_scenario<-rep("Without environmental effect",length(base_Ct[,i])+1)
+      catch_plot[[i]]$env_scenario<-env_scenario
     }
 
 
     for(i in sc_names){
       for(j in 1:n_env_esc){
-        ij_c=c(Ct_ini[length(Ct_ini)],add_Ct[[j]][,i],Ct_ini[length(Ct_ini)],mult_Ct[[j]][,i])
-        model=c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        ij_c<-c(Ct_ini[length(Ct_ini)],add_Ct[[j]][,i],Ct_ini[length(Ct_ini)],mult_Ct[[j]][,i])
+        model<-c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        env_scenario=rep(j_name,2*(ly))
-        new_c=data.frame(years=c_years,catch=ij_c,model=model,env_scenario=env_scenario)
-        catch_plot[[i]]=rbind(catch_plot[[i]],new_c)
+          j_name<-colnames(env)[j]}
+        env_scenario<-rep(j_name,2*(ly))
+        new_c<-data.frame(years=c_years,catch=ij_c,model=model,env_scenario=env_scenario)
+        catch_plot[[i]]<-rbind(catch_plot[[i]],new_c)
       }}
 
 
 
-    catch_plots=list()
+    catch_plots<-list()
 
     for(i in sc_names){
 
-      i_c_plot=catch_plot[[i]]
-      i_c_plot=rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
+      i_c_plot<-catch_plot[[i]]
+      i_c_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
                                 catch=base_plot$catch[-length(base_plot$years)],
                                 model="input",env_scenario="input"),
                      i_c_plot)
 
 
-      vec=min(i_c_plot$years)
-      vec1=max(i_c_plot$years)
-      vec2=min(i_c_plot$catch)
-      vec3=max(i_c_plot$catch)
+      vec<-min(i_c_plot$years)
+      vec1<-max(i_c_plot$years)
+      vec2<-min(i_c_plot$catch)
+      vec3<-max(i_c_plot$catch)
 
-      catch_plots[[i]] = ggplot2::ggplot(data=i_c_plot,ggplot2::aes(x=years,y=catch)) +
+      catch_plots[[i]] <- ggplot2::ggplot(data=i_c_plot,ggplot2::aes(x=years,y=catch)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_c_plot,model!="input"),lwd=1.03,
                            ggplot2::aes(linetype=model,color=env_scenario)) +
@@ -991,9 +991,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
 
-  f_ini=knobi_results$data$F_output
+  f_ini<-knobi_results$data$F_output
 
-  f=data.frame(years=c(years),
+  f<-data.frame(years=c(years),
                f=f_ini,
                type=rep("data",length(f_ini)),
                scenario=rep("input",length(f_ini)),
@@ -1001,32 +1001,32 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
                model=rep("input",length(f_ini)))
 
   for(i in 1:n_esc){
-    scenario=sc_names[i]
-    new_f=data.frame(years=proj_years,
+    scenario<-sc_names[i]
+    new_f<-data.frame(years=proj_years,
                      f=base_f[,i],
                      type=rep("forecast",ly-1),
                      scenario=rep(scenario,ly-1),
                      env_scenario=rep("without_env",ly-1),
                      model=rep("base_model",ly-1))
-    f=rbind(f,new_f)
+    f<-rbind(f,new_f)
   }
 
 
-  if(is.null(env_results)==T){
+  if(is.null(env_results)==TRUE){
 
-    f=f[,-c(5,6)]
+    f<-f[,-c(5,6)]
 
-    f_plot=f[(length(years)-10):nrow(f),-3]
-    f_plot=rbind(f_plot,data.frame(years=rep(f$years[length(years)],n_esc),
+    f_plot<-f[(length(years)-10):nrow(f),-3]
+    f_plot<-rbind(f_plot,data.frame(years=rep(f$years[length(years)],n_esc),
                                    f=rep(f$f[length(years)],n_esc),
                                    scenario=sc_names))
 
-    vec=min(f_plot$years)
-    vec1=max(f_plot$years)
-    vec2=min(f_plot$f)
-    vec3=max(f_plot$f)
+    vec<-min(f_plot$years)
+    vec1<-max(f_plot$years)
+    vec2<-min(f_plot$f)
+    vec3<-max(f_plot$f)
 
-    f_plots = ggplot2::ggplot(data=f_plot,ggplot2::aes(x=years,y=f)) +
+    f_plots <- ggplot2::ggplot(data=f_plot,ggplot2::aes(x=years,y=f)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
                          ggplot2::aes(color=scenario)) +
@@ -1045,72 +1045,72 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        i_name=sc_names[i]
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        i_name<-sc_names[i]
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        scenario=rep(i_name,2*(ly-1))
-        env_scenario=rep(j_name,2*(ly-1))
-        factor=rep("forecast",2*(ly-1))
-        model=c(rep("additive",ly-1),rep("multiplicative",ly-1))
-        ij_f=c(add_f[[j]][,i],mult_f[[j]][,i])
-        new_f=data.frame(years=rep(proj_years,2),
+          j_name<-colnames(env)[j]}
+        scenario<-rep(i_name,2*(ly-1))
+        env_scenario<-rep(j_name,2*(ly-1))
+        factor<-rep("forecast",2*(ly-1))
+        model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
+        ij_f<-c(add_f[[j]][,i],mult_f[[j]][,i])
+        new_f<-data.frame(years=rep(proj_years,2),
                          f=ij_f,
                          type=factor,
                          scenario=scenario,
                          env_scenario=env_scenario,
                          model=model)
-        f=rbind(f,new_f)
+        f<-rbind(f,new_f)
       }}
 
 
-    f_plot=list()
-    f_years=c_years
+    f_plot<-list()
+    f_years<-c_years
 
     for(i in sc_names){
-      i_f=c(f_ini[length(f_ini)],base_f[,i])
-      model=rep("Base KBPM",length(base_f[,i])+1)
-      f_plot[[i]]=data.frame(years=f_years,f=i_f,model=model)
+      i_f<-c(f_ini[length(f_ini)],base_f[,i])
+      model<-rep("Base KBPM",length(base_f[,i])+1)
+      f_plot[[i]]<-data.frame(years=f_years,f=i_f,model=model)
     }
 
     for(i in sc_names){
-      env_scenario=rep("Without environmental effect",length(base_f[,i])+1)
-      f_plot[[i]]$env_scenario=env_scenario
+      env_scenario<-rep("Without environmental effect",length(base_f[,i])+1)
+      f_plot[[i]]$env_scenario<-env_scenario
     }
 
 
     for(i in sc_names){
       for(j in 1:n_env_esc){
-        ij_f=c(f_ini[length(f_ini)],add_f[[j]][,i],f_ini[length(f_ini)],mult_f[[j]][,i])
-        model=c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        ij_f<-c(f_ini[length(f_ini)],add_f[[j]][,i],f_ini[length(f_ini)],mult_f[[j]][,i])
+        model<-c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        env_scenario=rep(j_name,2*(ly))
-        new_f=data.frame(years=f_years,f=ij_f,model=model,env_scenario=env_scenario)
-        f_plot[[i]]=rbind(f_plot[[i]],new_f)
+          j_name<-colnames(env)[j]}
+        env_scenario<-rep(j_name,2*(ly))
+        new_f<-data.frame(years=f_years,f=ij_f,model=model,env_scenario=env_scenario)
+        f_plot[[i]]<-rbind(f_plot[[i]],new_f)
       }}
 
 
-    f_plots=list()
+    f_plots<-list()
 
     for(i in sc_names){
 
-      i_f_plot=f_plot[[i]]
-      i_f_plot=rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
+      i_f_plot<-f_plot[[i]]
+      i_f_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
                                 f=base_plot$f[-length(base_plot$years)],
                                 model="input",env_scenario="input"),
                      i_f_plot)
 
 
-      vec=min(i_f_plot$years)
-      vec1=max(i_f_plot$years)
-      vec2=min(i_f_plot$f)
-      vec3=max(i_f_plot$f)
+      vec<-min(i_f_plot$years)
+      vec1<-max(i_f_plot$years)
+      vec2<-min(i_f_plot$f)
+      vec3<-max(i_f_plot$f)
 
-      f_plots[[i]] = ggplot2::ggplot(data=i_f_plot,ggplot2::aes(x=years,y=f)) +
+      f_plots[[i]] <- ggplot2::ggplot(data=i_f_plot,ggplot2::aes(x=years,y=f)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_f_plot,model!="input"),lwd=1.03,
                            ggplot2::aes(linetype=model,color=env_scenario)) +
@@ -1129,9 +1129,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   }
 
 
-  SP_ini=knobi_results$data$SP
+  SP_ini<-knobi_results$data$SP
 
-  SP=data.frame(years=c(years),
+  SP<-data.frame(years=c(years),
                 SP=SP_ini,
                 type=rep("data",length(SP_ini)),
                 scenario=rep("input",length(SP_ini)),
@@ -1139,32 +1139,32 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
                 model=rep("input",length(SP_ini)))
 
   for(i in 1:n_esc){
-    scenario=sc_names[i]
-    new_sp=data.frame(years=proj_years,
+    scenario<-sc_names[i]
+    new_sp<-data.frame(years=proj_years,
                       SP=base_SP[,i],
                       type=rep("forecast",ly-1),
                       scenario=rep(scenario,ly-1),
                       env_scenario=rep("without_env",ly-1),
                       model=rep("base_model",ly-1))
-    SP=rbind(SP,new_sp)
+    SP<-rbind(SP,new_sp)
   }
 
 
-  if(is.null(env_results)==T){
+  if(is.null(env_results)==TRUE){
 
-    SP=SP[,-c(5,6)]
+    SP<-SP[,-c(5,6)]
 
-    SP_plot=SP[(length(years)-10):nrow(SP),-3]
-    SP_plot=rbind(SP_plot,data.frame(years=rep(SP$years[length(years)],n_esc),
+    SP_plot<-SP[(length(years)-10):nrow(SP),-3]
+    SP_plot<-rbind(SP_plot,data.frame(years=rep(SP$years[length(years)],n_esc),
                                      SP=rep(SP$SP[length(years)],n_esc),
                                      scenario=sc_names))
 
-    vec=min(SP_plot$years)
-    vec1=max(SP_plot$years)
-    vec2=min(SP_plot$SP)
-    vec3=max(SP_plot$SP)
+    vec<-min(SP_plot$years)
+    vec1<-max(SP_plot$years)
+    vec2<-min(SP_plot$SP)
+    vec3<-max(SP_plot$SP)
 
-    SP_plots = ggplot2::ggplot(data=SP_plot,ggplot2::aes(x=years,y=SP)) +
+    SP_plots <- ggplot2::ggplot(data=SP_plot,ggplot2::aes(x=years,y=SP)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
                          ggplot2::aes(color=scenario)) +
@@ -1183,71 +1183,71 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
-        i_name=sc_names[i]
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        i_name<-sc_names[i]
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        scenario=rep(i_name,2*(ly-1))
-        env_scenario=rep(j_name,2*(ly-1))
-        factor=rep("forecast",2*(ly-1))
-        model=c(rep("additive",ly-1),rep("multiplicative",ly-1))
-        ij_sp=c(add_SP[[j]][,i],mult_SP[[j]][,i])
-        new_sp=data.frame(years=rep(proj_years,2),
+          j_name<-colnames(env)[j]}
+        scenario<-rep(i_name,2*(ly-1))
+        env_scenario<-rep(j_name,2*(ly-1))
+        factor<-rep("forecast",2*(ly-1))
+        model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
+        ij_sp<-c(add_SP[[j]][,i],mult_SP[[j]][,i])
+        new_sp<-data.frame(years=rep(proj_years,2),
                           SP=ij_sp,
                           type=factor,
                           scenario=scenario,
                           env_scenario=env_scenario,
                           model=model)
-        SP=rbind(SP,new_sp)
+        SP<-rbind(SP,new_sp)
       }}
 
 
-    SP_plot=list()
-    sp_years=c_years
+    SP_plot<-list()
+    sp_years<-c_years
 
     for(i in sc_names){
-      i_sp=c(SP_ini[length(SP_ini)],base_SP[,i])
-      model=rep("Base KBPM",length(base_SP[,i])+1)
-      SP_plot[[i]]=data.frame(years=sp_years,SP=i_sp,model=model)
+      i_sp<-c(SP_ini[length(SP_ini)],base_SP[,i])
+      model<-rep("Base KBPM",length(base_SP[,i])+1)
+      SP_plot[[i]]<-data.frame(years=sp_years,SP=i_sp,model=model)
     }
 
     for(i in sc_names){
-      env_scenario=rep("Without environmental effect",length(base_SP[,i])+1)
-      SP_plot[[i]]$env_scenario=env_scenario
+      env_scenario<-rep("Without environmental effect",length(base_SP[,i])+1)
+      SP_plot[[i]]$env_scenario<-env_scenario
     }
 
     for(i in sc_names){
       for(j in 1:n_env_esc){
-        ij_sp=c(SP_ini[length(SP_ini)],add_SP[[j]][,i],SP_ini[length(SP_ini)],mult_SP[[j]][,i])
-        model=c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
-        if(is.list(env)==T){
-          j_name=names(env)[j]
+        ij_sp<-c(SP_ini[length(SP_ini)],add_SP[[j]][,i],SP_ini[length(SP_ini)],mult_SP[[j]][,i])
+        model<-c(rep("Environmental additive",ly),rep("Environmental multiplicative",ly))
+        if(is.list(env)==TRUE){
+          j_name<-names(env)[j]
         } else {
-          j_name=colnames(env)[j]}
-        env_scenario=rep(j_name,2*(ly))
-        new_sp=data.frame(years=sp_years,SP=ij_sp,model=model,env_scenario=env_scenario)
-        SP_plot[[i]]=rbind(SP_plot[[i]],new_sp)
+          j_name<-colnames(env)[j]}
+        env_scenario<-rep(j_name,2*(ly))
+        new_sp<-data.frame(years=sp_years,SP=ij_sp,model=model,env_scenario=env_scenario)
+        SP_plot[[i]]<-rbind(SP_plot[[i]],new_sp)
       }}
 
 
-    SP_plots=list()
+    SP_plots<-list()
 
     for(i in sc_names){
 
-      i_sp_plot=SP_plot[[i]]
-      i_sp_plot=rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
+      i_sp_plot<-SP_plot[[i]]
+      i_sp_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
                                  SP=base_plot$SP[-length(base_plot$years)],
                                  model="input",env_scenario="input"),
                       i_sp_plot)
 
 
-      vec=min(i_sp_plot$years)
-      vec1=max(i_sp_plot$years)
-      vec2=min(i_sp_plot$SP)
-      vec3=max(i_sp_plot$SP)
+      vec<-min(i_sp_plot$years)
+      vec1<-max(i_sp_plot$years)
+      vec2<-min(i_sp_plot$SP)
+      vec3<-max(i_sp_plot$SP)
 
-      SP_plots[[i]] = ggplot2::ggplot(data=i_sp_plot,ggplot2::aes(x=years,y=SP)) +
+      SP_plots[[i]] <- ggplot2::ggplot(data=i_sp_plot,ggplot2::aes(x=years,y=SP)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_sp_plot,model!="input"),lwd=1.03,
                            ggplot2::aes(linetype=model,color=env_scenario)) +
@@ -1266,11 +1266,11 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   }
 
 
-  if(is.null(env_results)==T){
+  if(is.null(env_results)==TRUE){
 
-    forecast=list(base_model=base_model,biomass=biomass,catch=catch,f=f,SP=SP)
+    forecast<-list(base_model=base_model,biomass=biomass,catch=catch,f=f,SP=SP)
 
-    if(plot_out==T){
+    if(plot_out==TRUE){
       grDevices::jpeg("projections.jpeg",width=2500, height=2000,res=300)
       ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots,f_plots, nrow = 2, ncol=2,
                         common.legend = TRUE, legend="bottom")
@@ -1279,36 +1279,36 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       setwd(old_dir)
     }
 
-    f1=ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots, f_plots, nrow = 2, ncol=2,
+    f1<-ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots, f_plots, nrow = 2, ncol=2,
                          common.legend = TRUE, legend="bottom")
 
     print(f1)
 
   } else {
 
-    forecast=list(base_model=base_model,additive_model=additive_model,
+    forecast<-list(base_model=base_model,additive_model=additive_model,
                   multiplicative_model=multiplicative_model,
                   biomass=biomass,catch=catch,f=f,SP=SP)
 
     for(i in sc_names){
 
-      if(plot_out==T){
+      if(plot_out==TRUE){
         grDevices::jpeg(paste0("projections_",i,".jpeg"),width=2500, height=2000,res=300)
         ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
                           nrow = 2, ncol=2, common.legend = TRUE, legend="bottom")
         grDevices::dev.off()
       }
 
-      f1=ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
+      f1<-ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
                            nrow = 2, ncol=2, common.legend = TRUE, legend="right")
 
       print(f1)
     }
   }
 
-  class(forecast)="knobi"
+  class(forecast)<-"knobi"
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
     setwd(old_dir)
   }

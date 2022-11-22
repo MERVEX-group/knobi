@@ -12,7 +12,7 @@ knobi_proj(
   env = NULL,
   end_y = NULL,
   n_y = NULL,
-  plot_out = F,
+  plot_out = FALSE,
   plot_filename = NULL,
   plot_dir = NULL
 )
@@ -64,9 +64,9 @@ This function projects the stock biomass  (or stock spawning biomass) time serie
 # In this illustration, catch values for all the projected years are constant and
 # equal to the catch value in the last year multiplied by 1, 1.2 and 0.8.
 
-catch=rep(knobi_results$data$Catch[length(knobi_results$data$Catch)],5)
+catch<-rep(knobi_results$data$Catch[length(knobi_results$data$Catch)],5)
 
-Ct=data.frame(catch=catch,
+Ct<-data.frame(catch=catch,
               catch08=0.8*catch,
               catch12=1.2*catch)
 
@@ -74,7 +74,7 @@ Ct=data.frame(catch=catch,
 # Then, create the data frame containing the environmental covariable values
 # for the projected years.
 
-env=data.frame(Tmax_cte=c(19,19,19,19,19),
+env<-data.frame(Tmax_cte=c(19,19,19,19,19),
                Tmax_05=c(19,19.5,20,20.5,21),
                Tmax_1=c(19,20,21,22,23))
 
@@ -86,32 +86,32 @@ knobi_proj(knobi_results, knobi_environmental, Ct=Ct, n_y=5, env=env)
 # An example without environmental information for the projections is given below.
 # The number of projection years is also extended.
 
-Ct=rbind(Ct,Ct[1:3,])
+Ct<-rbind(Ct,Ct[1:3,])
 knobi_proj(knobi_results, Ct=Ct, end_y=2027)
 
  # Alternatively, projections can be based on fishing mortality.
  # The scenarios presented below have been created from the estimated F_msy of
  # knobi_fit analysis.
 
-fmsy=knobi_results$fit$RP$F_MSY
-ff=rep(fmsy,5)
-f=data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
+fmsy<-knobi_results$fit$RP$F_MSY
+ff<-rep(fmsy,5)
+f<-data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
 
 knobi_proj(knobi_results, f=f, n_y=5, env_results=env_results, env=env)
 
 # The example without environmental information for the projections is given below.
 # The number of projection years is also extended.
 
-f=rbind(f,f[1:3,])
+f<-rbind(f,f[1:3,])
 knobi_proj(knobi_results, f=f, end_y=2027)
 
 
-# In case of multicovar=T in knobi_env, a list is required which each
+# In case of multicovar<-TRUE in knobi_env, a list is required which each
 # item is a data frame for each environmental scenario
 
-env=list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
+env<-list(climate_1=data.frame(AMO=c(0.2,0.2,0.3,0.3,0.4),
                               Tmax_Vigo=c(19,19,20,20,21)),
-         climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
+          climate_2=data.frame(AMO=c(0.2,0.3,0.4,0.5,0.6),
                               Tmax_Vigo=c(19,20,21,22,23)))
 
 knobi_proj(knobi_results, knobi_environmental2, Ct=Ct[1:5,], n_y=5, env=env)

@@ -87,26 +87,26 @@
 #' # Then, create the data object.
 #'
 #' data<-list()
-#' data$Spawning_Biomass=Database$SSB # We take the SSB in our Database.
-#' data$Catch=Database$catches # We take the catch in our Database.
-#' data$F_input=Database$F # We take the F in our Database.
+#' data$Spawning_Biomass<-Database$SSB # We take the SSB in our Database.
+#' data$Catch<-Database$catches # We take the catch in our Database.
+#' data$F_input<-Database$F # We take the F in our Database.
 #' # Reference points estimates from ICES stock assessment model:
 #' # ICES. 2021. Working Group for the Bay of Biscay and the Iberian Waters Ecoregion
 #' # (WGBIE). ICES Scientific Reports. 3:48.1101 pp.
-#' data$RP=list(F_MSY=0.259, B_MSY=207398, MSY=75052, B_0=NA)
-#' # In this case, B_MSY is equal to SSB_MSY, since control$method="SSB"
+#' data$RP<-list(F_MSY=0.259, B_MSY=207398, MSY=75052, B_0=NA)
+#' # In this case, B_MSY is equal to SSB_MSY, since control$method<-"SSB"
 #' # (see control list below).
-#' data$classF_input="average" # Character indicating the type of F.
-#' data$years=Database$Year    # Years corresponding to the catch values
+#' data$classF_input<-"average" # Character indicating the type of F.
+#' data$years<-Database$Year    # Years corresponding to the catch values
 #' # (can be different than the years corresponding to SSB or biomass).
 #'
 #'
 #' # Now we define the control.
 #'
-#' control=list()
-#' control$pella="TRUE" # Logical. TRUE means that Pella-Tomlinson model is used.
+#' control<-list()
+#' control$pella<-"TRUE" # Logical. TRUE means that Pella-Tomlinson model is used.
 #'                          # FALSE means that Schaefer model is employed.
-#' control$method="SSB" # Information for the fit: "SSB" or "Biomass".
+#' control$method<-"SSB" # Information for the fit: "SSB" or "Biomass".
 #'
 #'
 #' # Finally, we can fit the model
@@ -142,13 +142,13 @@
 #' # Once the total SSB and catch are available
 #' # we follow previous KBPM illustration
 #' data<-list()
-#' data$Spawning_Biomass=sardine$SSB
-#' data$Catch=sardine$catch
-#' data$years=sardine$years
+#' data$Spawning_Biomass<-sardine$SSB
+#' data$Catch<-sardine$catch
+#' data$years<-sardine$years
 #'
-#' control=list()
-#' control$pella="TRUE"
-#' control$method="SSB"
+#' control<-list()
+#' control$pella<-"TRUE"
+#' control$method<-"SSB"
 #'
 #' knobi_results2<-knobi_fit(data,control)
 #' knobi_results2$fit
@@ -159,51 +159,51 @@
 #' MacCall, A. (2002). Use of Known-Biomass Production Models to Determine Productivity of West Coast Groundsh Stocks. North American Journal of Fisheries Management, 22, 272-279.
 #' @export
 
-knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NULL){
+knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir=NULL){
 
-  if(plot_out==T){
-    old_dir=getwd()
-    if (is.null(plot_dir)) {plot_dir=old_dir}
+  if(plot_out==TRUE){
+    old_dir<-getwd()
+    if (is.null(plot_dir)) {plot_dir<-old_dir}
     setwd(plot_dir)
-    if (is.null(plot_filename)){plot_filename="knobi_results"}
-    if (plot_filename %in% list.dirs(full.names=F)){
+    if (is.null(plot_filename)){plot_filename<-"knobi_results"}
+    if (plot_filename %in% list.dirs(full.names=FALSE)){
       setwd(paste0(plot_dir,"/",plot_filename))} else {
         dir.create(plot_filename)
         setwd(paste0(plot_dir,"/",plot_filename))}
-    plot_settings=list(plot_filename=plot_filename,plot_dir=plot_dir)
-    control$plot_settings=plot_settings
+    plot_settings<-list(plot_filename=plot_filename,plot_dir=plot_dir)
+    control$plot_settings<-plot_settings
   }
 
-  if(is.null(control)){control=list()}
+  if(is.null(control)){control<-list()}
   set.seed(123)
 
   # Check input data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  C=data$Catch
-  years=data$years
+  C<-data$Catch
+  years<-data$years
 
   if(is.null(data$Biomass)){
-    data$Biomass=NA
-    control$method="SSB"
+    data$Biomass<-NA
+    control$method<-"SSB"
   }
 
   if(is.null(data$Spawning_Biomass)){
-    data$Spawning_Biomass=NA
-    control$method="Biomass"
+    data$Spawning_Biomass<-NA
+    control$method<-"Biomass"
   }
 
-  if(is.na(data$Biomass[1])==T){control$method="SSB"}
-  if(is.na(data$Spawning_Biomass[1])==T){control$method="Biomass"}
+  if(is.na(data$Biomass[1])==TRUE){control$method<-"SSB"}
+  if(is.na(data$Spawning_Biomass[1])==TRUE){control$method<-"Biomass"}
 
   if(length(years)!=(length(C))){stop('Length of catch time series is different than the length of years vector')}
 
   if(control$method=="Biomass"){
-    B=data$Biomass
+    B<-data$Biomass
     if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to biomass time series length')}
   }
 
   if(control$method=="SSB"){
-    B=data$Spawning_Biomass
+    B<-data$Spawning_Biomass
     if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to spawning biomass time series length')}
   }
 
@@ -213,46 +213,46 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   # Compute SP values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SP=B[-1]; l=length(B); B_aver=B[-1]
+  SP<-B[-1]; l<-length(B); B_aver<-B[-1]
   for (i in 1:(l-1)){
-    SP[i]=as.numeric(B[i+1]-B[i]+C[i])
-    B_aver[i]=(B[i+1]+B[i])/2
+    SP[i]<-as.numeric(B[i+1]-B[i]+C[i])
+    B_aver[i]<-(B[i+1]+B[i])/2
   }
-  B=B_aver
+  B<-B_aver
 
   # Update correctly dimension ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   if (length(C)!=length(B)){
-    lb=length(B)
-    C=C[1:lb]
-    years=years[1:lb]
-    data$Catch=C
-    data$years=years
+    lb<-length(B)
+    C<-C[1:lb]
+    years<-years[1:lb]
+    data$Catch<-C
+    data$years<-years
   }
 
-  if(is.null(data$F_input)){data$F_input=NA} else {
-    data$F_input=data$F_input[1:length(data$Catch)]}
+  if(is.null(data$F_input)){data$F_input<-NA} else {
+    data$F_input<-data$F_input[1:length(data$Catch)]}
 
-  if(is.null(data$Recruitment)){data$Recruitment=NA} else {
-    data$Recruitment=data$Recruitment[1:length(data$Catch)]}
+  if(is.null(data$Recruitment)){data$Recruitment<-NA} else {
+    data$Recruitment<-data$Recruitment[1:length(data$Catch)]}
 
   # Save SP, F and average biomass ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  data$Average_Biomass=B_aver
-  data$SP=SP
-  F_out=C/B_aver
+  data$Average_Biomass<-B_aver
+  data$SP<-SP
+  F_out<-C/B_aver
 
   # Care with 0 values
-  ind=which(B_aver==0)
-  F_out[ind]=NA
-  data$F_output=F_out
+  ind<-which(B_aver==0)
+  F_out[ind]<-NA
+  data$F_output<-F_out
 
   # Plots input data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # Plot trends
-  data=data
-  class(data)=gsub(" ", "", paste("KBPM_", control$method))
-  class(control)=gsub(" ", "", paste("KBPM_", control$method))
+  data<-data
+  class(data)<-gsub(" ", "", paste("KBPM_", control$method))
+  class(control)<-gsub(" ", "", paste("KBPM_", control$method))
 
   plotInput(data,plot_out)
 
@@ -261,64 +261,64 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   # Define new data.frame with the required info
   df <- data.frame(x = data$Average_Biomass, y = data$SP, Year=years)
-  Year=years
+  Year<-years
 
   # Fit the model ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  if(is.null(control$pella)){control$pella="FALSE"}
+  if(is.null(control$pella)){control$pella=FALSE}
 
-  if(is.null(control$start_r)){start_r=0.5000000} else {start_r=control$start_r}
-  if(is.null(control$start_K)){start_K=max(df$x)} else {start_K=control$start_K}
-  if(is.null(control$start_p)){start_p=1.0000000} else {start_p=control$start_p}
+  if(is.null(control$start_r)){start_r<-0.5000000} else {start_r<-control$start_r}
+  if(is.null(control$start_K)){start_K<-max(df$x)} else {start_K<-control$start_K}
+  if(is.null(control$start_p)){start_p<-1.0000000} else {start_p<-control$start_p}
 
-  Data=list(data=df,start_r=start_r,start_K=start_K,start_p=start_p)
+  Data<-list(data=df,start_r=start_r,start_K=start_K,start_p=start_p)
   if (control$pella){
-    class(Data)="Pella"
-  } else{class(Data)="Schaefer"}
-  model=fitting(Data)
+    class(Data)<-"Pella"
+  } else{class(Data)<-"Schaefer"}
+  model<-fitting(Data)
 
-  fit=list(model$par)
-  names(fit)=c("Parameter_estimates")
+  fit<-list(model$par)
+  names(fit)<-c("Parameter_estimates")
 
-  fit=fit
-  fit$optimr=list()
-  fit$optimr$value=model$value
-  fit$optimr$convergence=model$convergence
-  fit$optimr$message=model$message
-  fit$data$SP=df$y
-  if(control$method=="Biomass"){fit$data$B=df$x} else {fit$data$SSB=df$x}
-  class(fit)=class(Data)
+  fit<-fit
+  fit$optimr<-list()
+  fit$optimr$value<-model$value
+  fit$optimr$convergence<-model$convergence
+  fit$optimr$message<-model$message
+  fit$data$SP<-df$y
+  if(control$method=="Biomass"){fit$data$B<-df$x} else {fit$data$SSB<-df$x}
+  class(fit)<-class(Data)
 
 
   # Output plots  fit ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  x=fit$data[[2]]
-  r=fit[[1]][1]
-  K=fit[[1]][2]
+  x<-fit$data[[2]]
+  r<-fit[[1]][1]
+  K<-fit[[1]][2]
   if (control$pella){
-    n=fit[[1]][3]
-  } else{n=2}
-  cut=K
+    n<-fit[[1]][3]
+  } else{n<-2}
+  cut<-K
   av <- seq(0, cut, length.out = 3*length(x))
-  bv <- predict_model(fit); fit_base=fit
+  bv <- predict_model(fit); fit_base<-fit
 
 
-  if(!is.null(data$Stock)){subtitle=data$Stock} else {subtitle=NULL}
+  if(!is.null(data$Stock)){subtitle<-data$Stock} else {subtitle<-NULL}
 
-  df_aux=data.frame(av,bv)
+  df_aux<-data.frame(av,bv)
   if(control$method=="Biomass"){
-    xtit="SP curve and observed Biomass and SP"
-    xaxis="Biomass"
-    xleg="observed biomass"
+    xtit<-"SP curve and observed Biomass and SP"
+    xaxis<-"Biomass"
+    xleg<-"observed biomass"
   } else {
-    xtit="SP curve and observed SSB and SP"
-    xaxis="Spawn Biomass (SSB)"
-    xleg="observed SSB"
+    xtit<-"SP curve and observed SSB and SP"
+    xaxis<-"Spawn Biomass (SSB)"
+    xleg<-"observed SSB"
   }
 
-  vec=min(df_aux$bv,df$y)
-  vec1=max(df_aux$bv,df$y)
+  vec<-min(df_aux$bv,df$y)
+  vec1<-max(df_aux$bv,df$y)
 
-  fit_plot=ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
+  fit_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=3,color=Year)) +
     ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=2,color=Year,
@@ -332,11 +332,11 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),
                    axis.line=ggplot2::element_line())
   if(!is.null(subtitle)){
-    fit_plot=fit_plot+ggplot2::labs(subtitle=subtitle)
+    fit_plot<-fit_plot+ggplot2::labs(subtitle=subtitle)
   }
   print(fit_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("fit.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -345,12 +345,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
 
 
-  df$C=C
+  df$C<-C
 
-  vec=min(df_aux$bv,df$C)
-  vec1=max(df_aux$bv,df$C)
+  vec<-min(df_aux$bv,df$C)
+  vec1<-max(df_aux$bv,df$C)
 
-  fitc_plot=ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
+  fitc_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=3,color=Year)) +
     ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=2,color=Year,
@@ -365,11 +365,11 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
 
   if(!is.null(subtitle)){
-    fitc_plot=fitc_plot+ggplot2::labs(subtitle=subtitle)
+    fitc_plot<-fitc_plot+ggplot2::labs(subtitle=subtitle)
   }
   print(fitc_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("fit_catch.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -379,52 +379,52 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   # Compute reference points ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # (Jacobson et al. 2002) and Winker et al. (2018)
 
-  fit=RF(fit)
+  fit<-RF(fit)
 
   # Extract
 
-  Bmsy=fit$B_MSY
-  Fmsy=fit$F_MSY
+  Bmsy<-fit$B_MSY
+  Fmsy<-fit$F_MSY
 
   # Plots RF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # F over years
 
-  F_out=data$F_output
-  if(is.na(data$F_input[1])) {F_inp=rep(NA,length(F_out))} else {F_inp=data$F_input}
-  if(is.null(data$RP$F_MSY)) {Fmsy_inp=NA} else {Fmsy_inp=data$RP$F_MSY}
-  Frel_out=F_out/Fmsy
-  Frel_inp=F_inp/Fmsy_inp
+  F_out<-data$F_output
+  if(is.na(data$F_input[1])) {F_inp<-rep(NA,length(F_out))} else {F_inp<-data$F_input}
+  if(is.null(data$RP$F_MSY)) {Fmsy_inp<-NA} else {Fmsy_inp<-data$RP$F_MSY}
+  Frel_out<-F_out/Fmsy
+  Frel_inp<-F_inp/Fmsy_inp
 
-  if(is.null(data$RP$B_MSY)) {Bmsy_inp=NA} else {Bmsy_inp=data$RP$B_MSY}
-  Brel_out=B_aver/Bmsy
-  Brel_inp=B_aver/Bmsy_inp
+  if(is.null(data$RP$B_MSY)) {Bmsy_inp<-NA} else {Bmsy_inp<-data$RP$B_MSY}
+  Brel_out<-B_aver/Bmsy
+  Brel_inp<-B_aver/Bmsy_inp
 
-  max_f=max(c(F_inp,F_out,Fmsy,Fmsy_inp)*1.1,na.rm = TRUE)
-  min_f=min(c(F_inp,F_out,Fmsy,Fmsy_inp),na.rm = TRUE)
-  max_b=max(c(B_aver,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
-  min_b=min(c(B_aver,Bmsy,Bmsy_inp),na.rm = TRUE)
-  max_fr=max(c(Frel_inp,Frel_out,1.1),na.rm = TRUE)
-  min_fr=min(c(Frel_inp,Frel_out,0.9),na.rm = TRUE)
-  max_br=max(c(Brel_inp,Brel_out,1.1),na.rm = TRUE)
-  min_br=min(c(Brel_inp,Brel_out,0.9),na.rm = TRUE)
+  max_f<-max(c(F_inp,F_out,Fmsy,Fmsy_inp)*1.1,na.rm = TRUE)
+  min_f<-min(c(F_inp,F_out,Fmsy,Fmsy_inp),na.rm = TRUE)
+  max_b<-max(c(B_aver,Bmsy,Bmsy_inp)*1.1,na.rm = TRUE)
+  min_b<-min(c(B_aver,Bmsy,Bmsy_inp),na.rm = TRUE)
+  max_fr<-max(c(Frel_inp,Frel_out,1.1),na.rm = TRUE)
+  min_fr<-min(c(Frel_inp,Frel_out,0.9),na.rm = TRUE)
+  max_br<-max(c(Brel_inp,Brel_out,1.1),na.rm = TRUE)
+  min_br<-min(c(Brel_inp,Brel_out,0.9),na.rm = TRUE)
 
-  if(control$method=="SSB"){bfac=c(rep("SSB from KBPM",length(Year)),rep("original SSB",length(Year)))
-  } else {bfac=c(rep("B from KBPM",length(Year)),rep("original B",length(Year)))}
+  if(control$method=="SSB"){bfac<-c(rep("SSB from KBPM",length(Year)),rep("original SSB",length(Year)))
+  } else {bfac<-c(rep("B from KBPM",length(Year)),rep("original B",length(Year)))}
   if(control$method=="SSB"){
-    btit="Spawning Biomass (SSB) over Years"
-    baxis="Spawning biomass (SSB)"
-    Brtit="Relative SSB over Years"} else {
-      btit="Biomass over Years"
-      baxis="Biomass"
-      Brtit="Relative Biomass over Years"}
+    btit<-"Spawning Biomass (SSB) over Years"
+    baxis<-"Spawning biomass (SSB)"
+    Brtit<-"Relative SSB over Years"} else {
+      btit<-"Biomass over Years"
+      baxis<-"Biomass"
+      Brtit<-"Relative Biomass over Years"}
 
 
-  plot_df=data.frame(Year=rep(Year,2),f=c(F_out,F_inp),fr=c(Frel_out,Frel_inp),
+  plot_df<-data.frame(Year=rep(Year,2),f=c(F_out,F_inp),fr=c(Frel_out,Frel_inp),
                      f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
                      b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
 
-  f_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +
+  f_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_f,max_f) +
     ggplot2::labs(title="Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -436,12 +436,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
     ggplot2::theme(legend.position = c(.9,.95), legend.background = ggplot2::element_rect(fill = "transparent"),
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
   if(!is.na(Fmsy_inp)){
-    f_plot = f_plot +
+    f_plot <- f_plot +
       ggplot2::annotate("text",x=Year[1]+1,y=Fmsy_inp,label="original Fmsy",color = "#00BFC4",na.rm=T,size=3,vjust=-1)
   }
   print(f_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("F_absolute.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -450,7 +450,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   # F over years (relative)
 
-  fr_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(fr)),ggplot2::aes(x=Year,y=fr,color=f_factor)) +
+  fr_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(fr)),ggplot2::aes(x=Year,y=fr,color=f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_fr,max_fr) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::labs(title="Relative Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -460,7 +460,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   print(fr_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("F_relative.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -469,7 +469,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   # Biomass over years
 
-  b_plot=ggplot2::ggplot(data=plot_df,ggplot2::aes(x=Year,y=b,color="#F8766D")) +
+  b_plot<-ggplot2::ggplot(data=plot_df,ggplot2::aes(x=Year,y=b,color="#F8766D")) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_b,max_b) + ggplot2::labs(title=btit,y=baxis) +
     ggplot2::geom_hline(yintercept=c(Bmsy,Bmsy_inp),linetype="dashed",
@@ -478,12 +478,12 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
                       color = "#F8766D",size=3,vjust=-1) +
     ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5))
   if(!is.na(Bmsy_inp)){
-    b_plot = b_plot +
+    b_plot <- b_plot +
       ggplot2::annotate("text",x=Year[1]+1,y=Bmsy_inp,label="original Bmsy",color = "#00BFC4",na.rm=T,size=3,vjust=-1)
   }
   print(b_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("B_absolute.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -491,7 +491,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   }
 
 
-  br_plot=ggplot2::ggplot(data=subset(plot_df,!is.na(br)),ggplot2::aes(x=Year,y=br,color=b_factor)) +
+  br_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(br)),ggplot2::aes(x=Year,y=br,color=b_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() + ggplot2::ylim(min_br,max_br) +
     ggplot2::labs(title=Brtit ,y =baxis) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +
@@ -500,7 +500,7 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
 
   print(br_plot)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     p <- grDevices::recordPlot()
     grDevices::jpeg("B_relative.jpeg",width=2500, height=2500,res=300)
     grDevices::replayPlot(p)
@@ -508,15 +508,15 @@ knobi_fit<-function(data,control=NULL,plot_out=F,plot_filename=NULL,plot_dir=NUL
   }
 
 
-  RP=list(K=fit$K,B_MSY=fit$B_MSY,F_MSY=fit$F_MSY,
+  RP<-list(K=fit$K,B_MSY=fit$B_MSY,F_MSY=fit$F_MSY,
           MSY=fit$MSY,MSYoverK=fit$MSYoverK)
   adjustment<-list(data=data,control=control,fit=list(
     Parameter_estimates=fit$Parameter_estimates,data=fit$data,RP=RP,optimr=fit$optimr))
-  class(adjustment$fit)=class(fit)
+  class(adjustment$fit)<-class(fit)
 
-  adjustment$fit$error=error(adjustment,plot_out=plot_out)
+  adjustment$fit$error<-knobi_error(adjustment,plot_out=plot_out)
 
-  if(plot_out==T){
+  if(plot_out==TRUE){
     setwd(old_dir)}
 
 
