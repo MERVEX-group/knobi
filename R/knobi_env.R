@@ -57,8 +57,6 @@
 #' \item{M. Grazia Pennino}
 #' }
 #'
-#' @importFrom rlang .data
-#'
 #' @examples
 #'
 #' \dontrun{
@@ -262,7 +260,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
 
     envcorplot_df<-data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
 
-    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=.data$lag,y=.data$correlation,group=factor,color=factor)) +
+    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
       ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(-1,1) +
       ggplot2::labs(title="Environmental correlation with base KBPM SP residuals", subtitle=knobi_results$data$Stock,
                     y="Correlation",x="") +
@@ -287,7 +285,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
 
     envcorplot_df<-data.frame(AIC=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
 
-    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=.data$lag,y=.data$AIC,group=factor,color=factor)) +
+    envcorplot<-ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=AIC,group=factor,color=factor)) +
       ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(minimo,maximo) +
       ggplot2::labs(title="AIC comparison", subtitle=knobi_results$data$Stock,
                     y="AIC",x="") +
@@ -601,7 +599,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
                                   rep("Environmental Additive",length(bv)),
                                   rep("Environmental Multiplicative",length(bv))))
 
-  env_plot<-ggplot2::ggplot(data=envplot_df,ggplot2::aes(x=.data$Year,y=.data$SP,color=factor)) + ggplot2::theme_bw() +
+  env_plot<-ggplot2::ggplot(data=envplot_df,ggplot2::aes(x=Year,y=SP,color=factor)) + ggplot2::theme_bw() +
     ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min(envplot_df$SP),max(envplot_df$SP)) +
     ggplot2::labs(title="Environmental fits", subtitle=knobi_results$data$Stock,

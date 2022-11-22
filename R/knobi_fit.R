@@ -71,8 +71,6 @@
 #' The recruitment values, the F_input estimates and the type of F estimation are included to have an overview of the stock status but are not required for the KBPM fitting. Similarly, the input reference points are only used for comparison.
 #' On the other hand, KBPMs have also proven their usefulness for the multispecies management objectives. KBPM approach can be applied to analyze the dynamic of the total aggregated biomass and catch of all targeted fish species in a community through knobi_fit function.
 #'
-#' @importFrom rlang .data
-#'
 #' @examples
 #'
 #' library(knobi)
@@ -322,11 +320,11 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   fit_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
-    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=df[c(1,nrow(df)),]$y,size=3,color=Year)) +
-    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=df[c(1,nrow(df)),]$y,size=2,color=Year,
+    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=3,color=Year)) +
+    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=2,color=Year,
                                                             label=Year,vjust=-1), show.legend = FALSE) +
-    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=df$y,color=Year)) +
-    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=df$y,color=Year)) +
+    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
+    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
     ggplot2::labs(title=xtit,x =xaxis, y = "Surplus Production (SP)") +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title=xleg)) +
     ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
@@ -425,9 +423,8 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
                      f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
                      b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
-  plot_df_f=subset(plot_df,!is.na(plot_df$f))
 
-  f_plot<-ggplot2::ggplot(data=plot_df_f,ggplot2::aes(x=Year,y=.data$f,color=.data$f_factor)) +
+  f_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_f,max_f) +
     ggplot2::labs(title="Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -453,9 +450,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   # F over years (relative)
 
-  plot_df_fr=subset(plot_df,!is.na(plot_df$fr))
-
-  fr_plot<-ggplot2::ggplot(data=plot_df_fr,ggplot2::aes(x=Year,y=.data$fr,color=.data$f_factor)) +
+  fr_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(fr)),ggplot2::aes(x=Year,y=fr,color=f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_fr,max_fr) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::labs(title="Relative Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -474,7 +469,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   # Biomass over years
 
-  b_plot<-ggplot2::ggplot(data=plot_df,ggplot2::aes(x=Year,y=.data$b,color="#F8766D")) +
+  b_plot<-ggplot2::ggplot(data=plot_df,ggplot2::aes(x=Year,y=b,color="#F8766D")) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_b,max_b) + ggplot2::labs(title=btit,y=baxis) +
     ggplot2::geom_hline(yintercept=c(Bmsy,Bmsy_inp),linetype="dashed",
@@ -495,9 +490,8 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
     grDevices::dev.off()
   }
 
-  plot_df_br=subset(plot_df,!is.na(plot_df$br))
 
-  br_plot<-ggplot2::ggplot(data=plot_df_br,ggplot2::aes(x=Year,y=.data$br,color=.data$b_factor)) +
+  br_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(br)),ggplot2::aes(x=Year,y=br,color=b_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() + ggplot2::ylim(min_br,max_br) +
     ggplot2::labs(title=Brtit ,y =baxis) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +

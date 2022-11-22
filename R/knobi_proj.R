@@ -221,7 +221,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
 
-  n_esc<-max(ncol(f),ncol(Ct),ifelse(is.vector(Ct)==T,1,NA),ifelse(is.vector(f)==T,1,NA),na.rm=T)
+  n_esc<-max(ncol(f),ncol(Ct),ifelse(is.vector(Ct)==TRUE,1,NA),ifelse(is.vector(f)==TRUE,1,NA),na.rm=TRUE)
 
 
   if(n_esc!=1){
