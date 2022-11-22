@@ -35,7 +35,7 @@ knobi_error <- function(knobi_results,env=NULL,plot_out) {
 
     res_df<-data.frame(Residuals=residuals_b,Year=knobi_results$data$years)
 
-    res_plot<-ggplot2::ggplot(data=res_df,ggplot2::aes(x=Year,y=Residuals)) + ggplot2::theme_bw() +
+    res_plot<-ggplot2::ggplot(data=res_df,ggplot2::aes_(x=~Year,y=~Residuals)) + ggplot2::theme_bw() +
       ggplot2::geom_hline(yintercept=0) + ggplot2::geom_point() +
       ggplot2::ylim(min(res_df$Residuals),max(res_df$Residuals)) +
       ggplot2::labs(title="Pearson Residuals", subtitle=knobi_results$data$Stock) +
@@ -126,7 +126,7 @@ knobi_error <- function(knobi_results,env=NULL,plot_out) {
                               rep("Env. Multiplicative Model",length(residuals_m))),
                       Year=rep(knobi_results$data$years,3))
 
-    res_plot<-ggplot2::ggplot(data=res_df,ggplot2::aes(x=Year,y=Residuals,color=Model)) + ggplot2::theme_bw() +
+    res_plot<-ggplot2::ggplot(data=res_df,ggplot2::aes_(x=~Year,y=~Residuals,color=~Model)) + ggplot2::theme_bw() +
       ggplot2::geom_hline(yintercept=0) + ggplot2::geom_point() +
       ggplot2::ylim(min(res_df$Residuals),max(res_df$Residuals)) +
       ggplot2::labs(title="Pearson Residuals", subtitle=knobi_results$data$Stock) +

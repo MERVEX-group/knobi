@@ -182,14 +182,14 @@ knobi_retro<-function(knobi_results,yR=NULL,yR0=NULL,nR=NULL,plot_out=F,plot_fil
   min_y<-min(df_plot$SP,df$y)
 
   retro_plot<-ggplot2::ggplot() + ggplot2::theme_bw() +
-    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,color=bleg),size=3, show.legend=FALSE) +
-    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,color=bleg,
-                                                            label=Year,vjust=-1),size=4, show.legend = FALSE) +
-    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=y,color=bleg),show.legend=FALSE) +
-    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=bleg)) +
+    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,color=~bleg),size=3, show.legend=FALSE) +
+    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,color=~bleg,label=~Year,vjust=-1),
+                       size=4, show.legend = FALSE) +
+    ggplot2::geom_point(data=df,ggplot2::aes_(x=~x,y=~y,color=~bleg),show.legend=FALSE) +
+    ggplot2::geom_path(data=df,ggplot2::aes_(x=~x,y=~y,color=~bleg)) +
     ggplot2::labs(title=btit, subtitle=knobi_results$data$Stock,
                   x =baxis, y = "Surplus Production (SP)") +
-    ggplot2::geom_line(data=df_plot,ggplot2::aes(x=B,y=SP,color=factor)) + ggplot2::ylim(min_y,max_y) +
+    ggplot2::geom_line(data=df_plot,ggplot2::aes_(x=~B,y=~SP,color=~factor)) + ggplot2::ylim(min_y,max_y) +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Retrospectives")) +
     ggplot2::theme(legend.position = c(.89,0.75), legend.background = ggplot2::element_rect(fill = "transparent"),
                    plot.title = ggplot2::element_text(hjust = 0.5), plot.subtitle = ggplot2::element_text(hjust = 0.5),

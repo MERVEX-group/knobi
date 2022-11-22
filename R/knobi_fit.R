@@ -318,13 +318,13 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
   vec<-min(df_aux$bv,df$y)
   vec1<-max(df_aux$bv,df$y)
 
-  fit_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
+  fit_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes_(x=~av,y=~bv)) + ggplot2::theme_bw() +
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
-    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=3,color=Year)) +
-    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=y,size=2,color=Year,
-                                                            label=Year,vjust=-1), show.legend = FALSE) +
-    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
-    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=y,color=Year)) +
+    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,size=3,color=~Year)) +
+    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,size=2,color=~Year,
+                                                            label=~Year,vjust=-1), show.legend = FALSE) +
+    ggplot2::geom_point(data=df,ggplot2::aes_(x=~x,y=~y,color=~Year)) +
+    ggplot2::geom_path(data=df,ggplot2::aes_(x=~x,y=~y,color=~Year)) +
     ggplot2::labs(title=xtit,x =xaxis, y = "Surplus Production (SP)") +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title=xleg)) +
     ggplot2::scale_color_gradient(breaks=c(Year[1],Year[length(Year)])) +
@@ -350,13 +350,13 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
   vec<-min(df_aux$bv,df$C)
   vec1<-max(df_aux$bv,df$C)
 
-  fitc_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes(x=av,y=bv)) + ggplot2::theme_bw() +
+  fitc_plot<-ggplot2::ggplot(data=df_aux,ggplot2::aes_(x=~av,y=~bv)) + ggplot2::theme_bw() +
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
-    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=3,color=Year)) +
-    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes(x=x,y=C,size=2,color=Year,
-                                                            label=Year,vjust=-1), show.legend = FALSE) +
-    ggplot2::geom_point(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
-    ggplot2::geom_path(data=df,ggplot2::aes(x=x,y=C,color=Year)) +
+    ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~C,size=3,color=~Year)) +
+    ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~C,size=2,color=~Year,
+                                                            label=~Year,vjust=-1), show.legend = FALSE) +
+    ggplot2::geom_point(data=df,ggplot2::aes_(x=~x,y=~C,color=~Year)) +
+    ggplot2::geom_path(data=df,ggplot2::aes_(x=~x,y=~C,color=~Year)) +
     ggplot2::labs(title="SP curve and observed catch and SP",
                   x ="Spawning Biomass (SSB)", y = "Surplus Production (SP)") +
     ggplot2::guides(size="none",col=ggplot2::guide_legend(title="Observed catch")) +
@@ -424,7 +424,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
                      b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
 
-  f_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(f)),ggplot2::aes(x=Year,y=f,color=f_factor)) +
+  f_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(plot_df$f)),ggplot2::aes_(x=~Year,y=~f,color=~f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_f,max_f) +
     ggplot2::labs(title="Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -450,7 +450,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   # F over years (relative)
 
-  fr_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(fr)),ggplot2::aes(x=Year,y=fr,color=f_factor)) +
+  fr_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(plot_df$fr)),ggplot2::aes_(x=~Year,y=~fr,color=~f_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_fr,max_fr) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::labs(title="Relative Fishing Mortality (F) over Years",y = "Fishing mortality (F)") +
@@ -469,7 +469,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   # Biomass over years
 
-  b_plot<-ggplot2::ggplot(data=plot_df,ggplot2::aes(x=Year,y=b,color="#F8766D")) +
+  b_plot<-ggplot2::ggplot(data=plot_df,ggplot2::aes_(x=~Year,y=~b,color="#F8766D")) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() +
     ggplot2::ylim(min_b,max_b) + ggplot2::labs(title=btit,y=baxis) +
     ggplot2::geom_hline(yintercept=c(Bmsy,Bmsy_inp),linetype="dashed",
@@ -491,7 +491,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
   }
 
 
-  br_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(br)),ggplot2::aes(x=Year,y=br,color=b_factor)) +
+  br_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(plot_df$br)),ggplot2::aes_(x=~Year,y=~br,color=~b_factor)) +
     ggplot2::theme_bw() + ggplot2::geom_line() + ggplot2::geom_point() + ggplot2::ylim(min_br,max_br) +
     ggplot2::labs(title=Brtit ,y =baxis) + ggplot2::geom_hline(yintercept=1) +
     ggplot2::guides(col=ggplot2::guide_legend(title="")) +

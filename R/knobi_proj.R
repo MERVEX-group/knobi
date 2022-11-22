@@ -749,10 +749,10 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     vec2<-min(biomass_plot$biomass)
     vec3<-max(biomass_plot$biomass)
 
-    biomass_plots <- ggplot2::ggplot(data=biomass_plot,ggplot2::aes(x=years,y=biomass)) +
+    biomass_plots <- ggplot2::ggplot(data=biomass_plot,ggplot2::aes_(x=~years,y=~biomass)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
-                         ggplot2::aes(color=scenario)) +
+                         ggplot2::aes_(color=~scenario)) +
       ggplot2::theme_bw() +
       ggplot2::scale_linetype_manual(values = c(1,2,3)) +
       ggplot2::geom_vline(xintercept = biomass$years[length(years)+1], linetype = "longdash") +
@@ -831,15 +831,15 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       vec2<-min(i_b_plot$biomass)
       vec3<-max(i_b_plot$biomass)
 
-      biomass_plots[[i]] <- ggplot2::ggplot(data=i_b_plot,ggplot2::aes(x=years,y=biomass)) +
+      biomass_plots[[i]] <- ggplot2::ggplot(data=i_b_plot,ggplot2::aes_(x=~years,y=~biomass)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_b_plot,model!="input"),lwd=1.03,
-                           ggplot2::aes(linetype=model,color=env_scenario)) +
+                           ggplot2::aes_(linetype=~model,color=~env_scenario)) +
         ggplot2::theme_bw() +
         ggplot2::geom_vline(xintercept = biomass$years[length(years)+1],
                             linetype = "longdash") +
         ggplot2::geom_line(data=subset(i_b_plot,model=="input"),lwd=1.03,
-                           ggplot2::aes(x=years,y=biomass)) +
+                           ggplot2::aes_(x=~years,y=~biomass)) +
         ggplot2::scale_linetype_manual(values = c(1,2,3)) +
         ggplot2::labs(title="Biomass projections",
                       subtitle=i,x = "Year", y = "Biomass",
@@ -886,10 +886,10 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     vec2<-min(catch_plot$catch)
     vec3<-max(catch_plot$catch)
 
-    catch_plots <- ggplot2::ggplot(data=catch_plot,ggplot2::aes(x=years,y=catch)) +
+    catch_plots <- ggplot2::ggplot(data=catch_plot,ggplot2::aes_(x=~years,y=~catch)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
-                         ggplot2::aes(color=scenario)) +
+                         ggplot2::aes_(color=~scenario)) +
       ggplot2::theme_bw() +
       ggplot2::scale_linetype_manual(values = c(1,2,3)) +
       ggplot2::geom_vline(xintercept = catch$years[length(years)], linetype = "longdash") +
@@ -971,13 +971,13 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       vec2<-min(i_c_plot$catch)
       vec3<-max(i_c_plot$catch)
 
-      catch_plots[[i]] <- ggplot2::ggplot(data=i_c_plot,ggplot2::aes(x=years,y=catch)) +
+      catch_plots[[i]] <- ggplot2::ggplot(data=i_c_plot,ggplot2::aes_(x=~years,y=~catch)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_c_plot,model!="input"),lwd=1.03,
-                           ggplot2::aes(linetype=model,color=env_scenario)) +
+                           ggplot2::aes_(linetype=~model,color=~env_scenario)) +
         ggplot2::theme_bw() +
         ggplot2::geom_line(data=subset(i_c_plot,model=="input"),lwd=1.03,
-                           ggplot2::aes(x=years,y=catch)) +
+                           ggplot2::aes_(x=~years,y=~catch)) +
         ggplot2::geom_vline(xintercept = catch$years[length(years)], linetype = "longdash") +
         ggplot2::scale_linetype_manual(values = c(1,2,3)) +
         ggplot2::labs(title="Catch projections",
@@ -1026,10 +1026,10 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     vec2<-min(f_plot$f)
     vec3<-max(f_plot$f)
 
-    f_plots <- ggplot2::ggplot(data=f_plot,ggplot2::aes(x=years,y=f)) +
+    f_plots <- ggplot2::ggplot(data=f_plot,ggplot2::aes_(x=~years,y=~f)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
-                         ggplot2::aes(color=scenario)) +
+                         ggplot2::aes_(color=~scenario)) +
       ggplot2::theme_bw() +
       ggplot2::scale_linetype_manual(values = c(1,2,3)) +
       ggplot2::geom_vline(xintercept = f$years[length(years)], linetype = "longdash") +
@@ -1110,14 +1110,14 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       vec2<-min(i_f_plot$f)
       vec3<-max(i_f_plot$f)
 
-      f_plots[[i]] <- ggplot2::ggplot(data=i_f_plot,ggplot2::aes(x=years,y=f)) +
+      f_plots[[i]] <- ggplot2::ggplot(data=i_f_plot,ggplot2::aes_(x=~years,y=~f)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_f_plot,model!="input"),lwd=1.03,
-                           ggplot2::aes(linetype=model,color=env_scenario)) +
+                           ggplot2::aes_(linetype=~model,color=~env_scenario)) +
         ggplot2::theme_bw() +
         ggplot2::geom_vline(xintercept = f$years[length(years)], linetype = "longdash") +
         ggplot2::geom_line(data=subset(i_f_plot,model=="input"),lwd=1.03,
-                           ggplot2::aes(x=years,y=f)) +
+                           ggplot2::aes_(x=~years,y=~f)) +
         ggplot2::scale_linetype_manual(values = c(1,2,3)) +
         ggplot2::labs(title="Fishing mortality projections",
                       subtitle=i, x = "Year", y = "Fishing mortality",
@@ -1164,10 +1164,10 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     vec2<-min(SP_plot$SP)
     vec3<-max(SP_plot$SP)
 
-    SP_plots <- ggplot2::ggplot(data=SP_plot,ggplot2::aes(x=years,y=SP)) +
+    SP_plots <- ggplot2::ggplot(data=SP_plot,ggplot2::aes_(x=~years,y=~SP)) +
       ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
       ggplot2::geom_line(lwd=1.03,
-                         ggplot2::aes(color=scenario)) +
+                         ggplot2::aes_(color=~scenario)) +
       ggplot2::theme_bw() +
       ggplot2::scale_linetype_manual(values = c(1,2,3)) +
       ggplot2::geom_vline(xintercept = SP$years[length(years)], linetype = "longdash") +
@@ -1247,14 +1247,14 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       vec2<-min(i_sp_plot$SP)
       vec3<-max(i_sp_plot$SP)
 
-      SP_plots[[i]] <- ggplot2::ggplot(data=i_sp_plot,ggplot2::aes(x=years,y=SP)) +
+      SP_plots[[i]] <- ggplot2::ggplot(data=i_sp_plot,ggplot2::aes_(x=~years,y=~SP)) +
         ggplot2::xlim(vec,vec1) + ggplot2::ylim(vec2,vec3) +
         ggplot2::geom_path(data=subset(i_sp_plot,model!="input"),lwd=1.03,
-                           ggplot2::aes(linetype=model,color=env_scenario)) +
+                           ggplot2::aes_(linetype=~model,color=~env_scenario)) +
         ggplot2::theme_bw() +
         ggplot2::geom_vline(xintercept = SP$years[length(years)], linetype = "longdash") +
         ggplot2::geom_line(data=subset(i_sp_plot,model=="input"),lwd=1.03,
-                           ggplot2::aes(x=years,y=SP)) +
+                           ggplot2::aes_(x=~years,y=~SP)) +
         ggplot2::scale_linetype_manual(values = c(1,2,3)) +
         ggplot2::labs(title="Surplus Production projections",
                       subtitle=i, x = "Year", y = "Surplus Production",
