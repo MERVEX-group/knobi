@@ -10,6 +10,7 @@
 #' \item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included.
 #' \item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model.
 #' \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
+#' \item ar_cor: optional logical. By default this argument is FALSE, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. If this argument is "TRUE", the correlation is estimated by fitting an autoregressive (AR) model for the KBPM residuals and compare its Akaike information criterion (AIC) with the AIC obtained for the same model considering the environmental variable as a regressive variable. See details.
 #' \item selected_var: optional character. By default, the fit is done using the environmental values according to the lag derived from the previous arguments. However, if this argument is equal to the name of the environmental variable no lag is applied to its values.
 #' \item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental covariable reporting the highest pearson correlation is included (after lagging it if corresponds).}
 #' @param plot_out Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.
@@ -21,9 +22,19 @@
 #' Multiplicative environmental model multiplies the right hand of equation (1) or (2) by \eqn{exp(cX_{t})}.
 #' The subscript t denotes the time (years).
 #'
+#' If ar_cor argument is "TRUE", for the correlation test between the KBPM residuals and the environmental variable(s):
+#' First, an AR model is fitted for the residuals as follows:
+#' \deqn{r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+\epsilon_{t}}
+#' being \eqn{r_t} the KBPM base SP residual for year \eqn{t} and \eqn{p} the AR model order, estimated as the maximum partial autocorrelation function value that is bigger than \eqn{qnorm(0.975)/\sqrt(length(r))} in absolute value.
+#' Then, an AR model is fitted considering the lagged environmental variable(s) considering each variable and lag,
+#' \deqn{r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+X_{t,lag}+\epsilon_{t}}
+#' Being \eqn{X_{t,lag}} the lagged environmental variable for each year {t} and for each lag corresponding to \eqn{lag=0,1,...,nlag}.
+#' For each model, the AIC is estimated, comparing their values in order to see what model has a smaller AIC and its environmental variable with its corresponding lag is used in the environmental adjustment if the environmental variable is not fixed.
+#'
 #' @return A list containing the environmental analysis is provided. \itemize{
 #' \item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
 #' \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
+#' \item env_aic: If ar_cor=T, AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals.
 #' \item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
 #' \item model_env_Multiplicative: Estimates of the multiplicative model parameters.
 #' \item model_env_Additive: Estimates of the additive model parameters.
@@ -88,6 +99,8 @@
 
 
 knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,plot_dir=NULL){
+
+  if(is.null(environmental$ar_cor)==T) {environmental$ar_cor=F}
 
   env0=as.data.frame(environmental$data)
   env_names=names(env0)
@@ -203,25 +216,88 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
   }
 
-  lagf=NULL
-  corlist=NULL
+  if(environmental$ar_cor==T){
 
-  for(i in vec_env){
-    lagf=c(lagf,rep(i,length(env_names)))
-    corlist=c(corlist,res_env$lag_cor[,i])
+    KBPM_residuals=knobi_results$fit$error$residuals
+    pacf_res=stats::pacf(KBPM_residuals)$acf[,1,1]
+
+    ref=stats::qnorm(0.975)/sqrt(length(KBPM_residuals))
+
+    auto=max(which(abs(pacf_res)>=ref))
+
+    fit_base <- stats::arima0(KBPM_residuals, order = c(auto, 0, 0))
+
+    prenv_aic=array(NA,dim=c(length(env_names),lag+1))
+    colnames(prenv_aic)=vec_env; rownames(prenv_aic)=env_names
+
+    for(j in env_names){
+      for(i in vec_env){
+        env_fit <- stats::arima0(KBPM_residuals, order = c(auto, 0, 0), xreg = env[[j]][,i])
+        prenv_aic[j,i]=env_fit$aic
+      }
+    }
+
+    env_aic=cbind(base=rep(fit_base$aic,length(env_names)),prenv_aic)
+    res_env$env_aic=env_aic
+
+    env_aic_c=env_aic-fit_base$aic+2
+    min_aic=env_aic_c[which.min(env_aic_c)]
+    if(min_aic>=0){
+      warning("AR models considering environmental variable(s) do not really improve AR model considering only the residuals")
+    }
+
   }
 
-  envcorplot_df=data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+  if(environmental$ar_cor==F){
 
-  envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
-    ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(-1,1) +
-    ggplot2::labs(title="Environmental correlation with base KBPM SP residuals", subtitle=knobi_results$data$Stock,
-                  y="Correlation",x="") +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                   plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
-                   legend.background = ggplot2::element_rect(fill = "transparent"))
+    lagf=NULL
+    corlist=NULL
 
-  print(envcorplot)
+    for(i in vec_env){
+      lagf=c(lagf,rep(i,length(env_names)))
+      corlist=c(corlist,res_env$lag_cor[,i])
+    }
+
+    envcorplot_df=data.frame(correlation=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+
+    envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=correlation,group=factor,color=factor)) +
+      ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(-1,1) +
+      ggplot2::labs(title="Environmental correlation with base KBPM SP residuals", subtitle=knobi_results$data$Stock,
+                    y="Correlation",x="") +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent"))
+
+    print(envcorplot)
+
+  } else {
+
+    lagf=NULL
+    corlist=NULL
+
+    for(i in vec_env){
+      lagf=c(lagf,rep(i,length(env_names)))
+      corlist=c(corlist,res_env$env_aic[,i])
+    }
+
+    maximo=max(env_aic)
+    minimo=min(env_aic)
+
+    envcorplot_df=data.frame(AIC=corlist,lag=lagf,factor=rep(env_names,length(vec_env)))
+
+    envcorplot=ggplot2::ggplot(data=envcorplot_df,ggplot2::aes(x=lag,y=AIC,group=factor,color=factor)) +
+      ggplot2::theme_bw() + ggplot2::geom_point() + ggplot2::geom_line(linetype = "dashed") + ggplot2::ylim(minimo,maximo) +
+      ggplot2::labs(title="AIC comparison", subtitle=knobi_results$data$Stock,
+                    y="AIC",x="") +
+      ggplot2::geom_hline(yintercept = fit_base$aic) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5),legend.title=ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent"))
+
+    print(envcorplot)
+
+  }
+
 
   if (plot_out==T){
     p <- grDevices::recordPlot()
@@ -239,7 +315,12 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
 
     if(is.null(environmental$selected_var)){
 
-      selected_var=env_names[which.max(abs(res_env$selected_lag[,2]))]
+      if(environmental$ar_cor==F){
+        selected_var=env_names[which.max(abs(res_env$selected_lag[,2]))]
+      } else {
+        indi=which(env_aic == min(env_aic[,-1]), arr.ind=TRUE)
+        selected_var=env_names[indi[1]]
+      }
 
     } else {
 
@@ -547,4 +628,3 @@ knobi_env<-function(knobi_results,environmental,plot_out=F,plot_filename=NULL,pl
   return(Environmental)
 
 }
-

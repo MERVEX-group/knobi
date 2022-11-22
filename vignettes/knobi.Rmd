@@ -393,6 +393,36 @@ In this case, 3D plots are not reported, and the output list slightly differs fr
 For the RP estimation when *X<sub>t* is not equal to 0, you have to replace the term *cX<sub>t* in the previous *RP(X<sub>t</sub>)* equations by *sum<sub>i in 1...n</sub>(c<sub>i</sub>X<sub>t,i</sub>)*, where *n* is the number of covariates.
 
 
+&nbsp;
+
+At last, there is also the possibility of testing the correlation between the KBPM SP residuals and the environmental variable(s) through the study of autoregressive models (AR models). In this case, an AR model is fitted for the residuals in order to determine, in the first place, how the residuals can explain themselves as follows
+
+$$ r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+\epsilon_{t}$$
+
+being $r_t$ the KBPM base SP residual for year $t$ and $p$ the AR model order, estimated as the maximum partial autocorrelation function value that is bigger than $qnorm(0.975)/\sqrt(length(r))$ in absolute value.
+
+Then, an AR model is fitted considering the lagged environmental variable(s) considering each variable and lag as follows
+
+$$r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+X_{t}+\epsilon_{t}$$
+
+being $X_{t,lag}$ the lagged environmental variable, for each lag corresponding to $lag=\{0,1,...,nlag\}$.
+
+For each model, the Akaike information criterion (AIC) is estimated, comparing the value obtained for the AR model with the residuals only and their values for the AR models considering each environmental variable and for each lag (only works with the argument `nlag`)
+
+This test is performed using the argument `ar_cor=T` in `environmental`. By default this argument is `FALSE`, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. The environmental variable whose AR model shows a lower AIC (with its corresponding lag) is used in the environmental adjustment if the environmental variable is not fixed.
+
+
+```{r, eval=FALSE}
+environmental=list()
+environmental$data=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
+environmental$years=Env$years
+environmental$nlag=3
+environmental$ar_cor=TRUE
+hake_n_ar<-knobi_env(hake_n_results,environmental)
+```
+
+In this case, `env_aic` is also returned, a data frame with the AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals and the correlation plot shows this values.
+
 
 
 &nbsp;

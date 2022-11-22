@@ -21,6 +21,7 @@ knobi_env(
 \item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included.
 \item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model.
 \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
+\item ar_cor: optional logical. By default this argument is FALSE, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. If this argument is "TRUE", the correlation is estimated by fitting an autoregressive (AR) model for the KBPM residuals and compare its Akaike information criterion (AIC) with the AIC obtained for the same model considering the environmental variable as a regressive variable. See details.
 \item selected_var: optional character. By default, the fit is done using the environmental values according to the lag derived from the previous arguments. However, if this argument is equal to the name of the environmental variable no lag is applied to its values.
 \item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental covariable reporting the highest pearson correlation is included (after lagging it if corresponds).}}
 
@@ -34,6 +35,7 @@ knobi_env(
 A list containing the environmental analysis is provided. \itemize{
 \item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
 \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
+\item env_aic: If ar_cor=T, AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals.
 \item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
 \item model_env_Multiplicative: Estimates of the multiplicative model parameters.
 \item model_env_Additive: Estimates of the additive model parameters.
@@ -55,6 +57,15 @@ Analyse and model the relationships between surplus production and environmental
 Additive environmental model adds the following term on the right hand of equation (1) or (2) detailed in \code{\link{knobi_fit}} function: \eqn{cX_{t}B_{t}}, being \eqn{X_{t}}the environmental variable and \eqn{B_{t}} the biomass or SSB at time \eqn{t}.
 Multiplicative environmental model multiplies the right hand of equation (1) or (2) by \eqn{exp(cX_{t})}.
 The subscript t denotes the time (years).
+
+If ar_cor argument is "TRUE", for the correlation test between the KBPM residuals and the environmental variable(s):
+First, an AR model is fitted for the residuals as follows:
+\deqn{r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+\epsilon_{t}}
+being \eqn{r_t} the KBPM base SP residual for year \eqn{t} and \eqn{p} the AR model order, estimated as the maximum partial autocorrelation function value that is bigger than \eqn{qnorm(0.975)/\sqrt(length(r))} in absolute value.
+Then, an AR model is fitted considering the lagged environmental variable(s) considering each variable and lag,
+\deqn{r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+X_{t,lag}+\epsilon_{t}}
+Being \eqn{X_{t,lag}} the lagged environmental variable for each year {t} and for each lag corresponding to \eqn{lag=0,1,...,nlag}.
+For each model, the AIC is estimated, comparing their values in order to see what model has a smaller AIC and its environmental variable with its corresponding lag is used in the environmental adjustment if the environmental variable is not fixed.
 }
 \examples{
 
