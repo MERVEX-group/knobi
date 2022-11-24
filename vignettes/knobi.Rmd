@@ -310,9 +310,9 @@ hake_n_environmental<-knobi_env(hake_n_results,        # previous results
 hake_n_environmental<-knobi_env(hake_n_results,environmental)
 ```
 
-Result plots are shown in the plot window and also saved (if `plot_out="TRUE"`) on the provided directory or in the same directory as `knobi_fit`.
+Result plots are shown in the plot window and also saved (if `plot_out=TRUE`) on the provided directory or in the same directory as `knobi_fit`.
  
-The first plot reports the correlation analysis between the environmental variable(s) and the base KBPM surplus production residuals. Next 3D plots reports the surplus production curve conditioned to a grid of environmental values. The last one reports the fitted values of the base model (no environmental information) and of the environmental ones.
+The first plot reports the correlation analysis between the environmental variable(s) and the base KBPM surplus production residuals. The last one reports the fitted values of the base model (no environmental information) and of the environmental ones.
 
 &nbsp;
 
@@ -347,7 +347,6 @@ $$K(X_t)=K+cX_t$$
 Note that *RP(X<sub>t</sub>)* represents the dependence of each RP in relation to the environmental variable.
 
 * `scaled_environmental_var`: Standardized variable used in the fit, with the `scale` and `center` attributes.
-* `plots3D`: List with the 3D plots objects.
 * `error`: List with the error measures:
   + `residuals`: Pearson residuals for each model.
   + `error table`: Array of  measures of estimates accuracy (error measures comparing observed an estimated values) for each model (base KBPM, additive model and multiplicative model): Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).
@@ -362,7 +361,18 @@ hake_n_environmental$model_env_Multiplicative
 
 #### More options ####
 
-When more than one environmental variable is introduced in `data`, the fit is made with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
+There is the possibility of obtain 3D plots that reports the surplus production curve conditioned to a grid of environmental values, through the argument `environmental$plot3d=TRUE`.
+
+```{r, eval=FALSE}
+environmental$plot3d=TRUE
+knobi_env(hake_n_results,environmental)
+```
+
+In this case, a list named `plots3D` is added to the output list of `knobi_env` with the 3D plots objects.
+
+&nbsp;
+
+As mentioned above, when more than one environmental variable is introduced in `data`, the fit is made, by default, with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
 
 ```{r, eval=FALSE}
 environmental$selected_var<-"AMO"
@@ -384,7 +394,7 @@ environmental$multicovar<-TRUE
 hake_n_multi<-knobi_env(hake_n_results,environmental)
 ```
 
-In this case, 3D plots are not reported, and the output list slightly differs from the previous one.
+In this case, 3D plots are never reported, and the output list slightly differs from the previous one.
 
 * Lag(s) from `selected_lag` are now the input value(s) of `lag` argument.
 * `environmental_variables` instead `scaled_environmental_var`, the standardized covariables used in the fit with the `scale` and `center` attributes.

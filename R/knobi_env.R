@@ -11,6 +11,7 @@
 #' \item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model.
 #' \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
 #' \item ar_cor: optional logical. By default this argument is FALSE, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. If this argument is "TRUE", the correlation is estimated by fitting an autoregressive (AR) model for the KBPM residuals and compare its Akaike information criterion (AIC) with the AIC obtained for the same model considering the environmental variable as a regressive variable. See details.
+#' \item plot3d: optional logical. If this argument is TRUE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values. FALSE by default.
 #' \item selected_var: optional character. By default, the fit is done using the environmental values according to the lag derived from the previous arguments. However, if this argument is equal to the name of the environmental variable no lag is applied to its values.
 #' \item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental covariable reporting the highest pearson correlation is included (after lagging it if corresponds).}
 #' @param plot_out Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.
@@ -41,13 +42,13 @@
 #' \item ref_pts: Reference points (RPs) estimates for each model assuming X_t=0 (see vignettes).
 #' \item scaled_environmental_var: Standardized variable used in the fit, with the 'scale' and 'center' attributes.
 #' \item environmental_variables: Standardized covariables used in the fit (if 'multicovar=TRUE'), with the 'scale' and 'center' attributes.
-#' \item plots3D: List with the 3D plots objects.
+#' \item plots3D: List with the 3D plots objects (if 'plot3d=TRUE').
 #' \item error: List of performance and accuracy: \itemize{
 #' \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sd(observations) for each model (base KBPM, additive model and multiplicative model).
 #' \item error_table: Array of performance and accuracy (observed vs. estimated) measures for each model: Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).}}
 #' Result plots are shown in the plot window and also saved (if plot_out="TRUE") on the provided directory or in the same directory as knobi_fit.
 #' The first plot reports the correlation analysis between the environmental variable(s) and the KBPM SP residuals. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
-#' If multicovar=FALSE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
+#' If multicovar=FALSE and plot3d=TRUE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
 #'
 #' @author
 #' \itemize{
@@ -89,9 +90,6 @@
 #'
 #' knobi_environmental<-knobi_env(knobi_results,environmental)
 #' knobi_environmental
-#'
-#' environmental$multicovar<-TRUE
-#' knobi_env(knobi_results,environmental,plot_out=TRUE)
 #' }
 #'
 #' @export
@@ -120,8 +118,8 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
   }
 
   df<-data.frame(KBPM_residuals=knobi_results$fit$error$residuals,
-                x = knobi_results$data$Average_Biomass,
-                y = knobi_results$data$SP, Year=knobi_results$data$years)
+                 x = knobi_results$data$Average_Biomass,
+                 y = knobi_results$data$SP, Year=knobi_results$data$years)
 
 
   f_year<-knobi_results$data$years[1]
@@ -418,78 +416,86 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
     colnames(res_env$scaled_environmental_var)<-selected_var
     rownames(res_env$scaled_environmental_var)<-df_env$Year-as.numeric(res_env$selected_lag[selected_var,1])
 
-    x <- knobi_results$data$Average_Biomass
-    y <- df_env[,selected_var]
-    z <- knobi_results$data$SP
 
-    r_a<-res_env$model_env_Additive[1]
-    K_a<-res_env$model_env_Additive[2]
-    c_a<-res_env$model_env_Additive[3]
-    if(knobi_results$control$pella==TRUE){
-      p_a<-res_env$model_env_Additive[4]
-    } else {p_a<-1}
+    if(is.null(environmental$plot3d)){plots3d<-FALSE} else {plots3d<-environmental$plot3d}
 
-    r_m<-res_env$model_env_Multiplicative[1]
-    K_m<-res_env$model_env_Multiplicative[2]
-    c_m<-res_env$model_env_Multiplicative[3]
-    if(knobi_results$control$pella==TRUE){
-      p_m<-res_env$model_env_Multiplicative[4]
-    } else {p_m<-1}
+    if(plots3d==TRUE){
+
+      x <- knobi_results$data$Average_Biomass
+      y <- df_env[,selected_var]
+      z <- knobi_results$data$SP
+
+      r_a<-res_env$model_env_Additive[1]
+      K_a<-res_env$model_env_Additive[2]
+      c_a<-res_env$model_env_Additive[3]
+      if(knobi_results$control$pella==TRUE){
+        p_a<-res_env$model_env_Additive[4]
+      } else {p_a<-1}
+
+      r_m<-res_env$model_env_Multiplicative[1]
+      K_m<-res_env$model_env_Multiplicative[2]
+      c_m<-res_env$model_env_Multiplicative[3]
+      if(knobi_results$control$pella==TRUE){
+        p_m<-res_env$model_env_Multiplicative[4]
+      } else {p_m<-1}
 
 
-    grid.lines <- 400
-    cut_a<-max(K_a+c_a*K_a*max(y),K_a+c_a*K_a*min(y))
-    x.pred_a <- seq(0, cut_a, length.out = grid.lines)
-    x.pred_m <- seq(0, K_m, length.out = grid.lines)
+      grid.lines <- 400
+      cut_a<-max(K_a+c_a*K_a*max(y),K_a+c_a*K_a*min(y))
+      x.pred_a <- seq(0, cut_a, length.out = grid.lines)
+      x.pred_m <- seq(0, K_m, length.out = grid.lines)
 
-    y.pred <- c(seq(min(y),0,length.out = grid.lines/2),seq(0, max(y), length.out = grid.lines/2))
-    xy_a <- expand.grid(x = x.pred_a, y = y.pred)
-    xy_m <- expand.grid(x = x.pred_m, y = y.pred)
+      y.pred <- c(seq(min(y),0,length.out = grid.lines/2),seq(0, max(y), length.out = grid.lines/2))
+      xy_a <- expand.grid(x = x.pred_a, y = y.pred)
+      xy_m <- expand.grid(x = x.pred_m, y = y.pred)
 
-    z.pred_a <- (r_a/p_a)*xy_a$x*(1-(xy_a$x/K_a)^(p_a))+c_a*xy_a$y*xy_a$x
-    z.pred_m <- exp(1)^{c_m*xy_m$y}*((r_m/p_m)*xy_m$x*(1-(xy_m$x/K_m)^p_m))
-    z.pred_a <- matrix(z.pred_a,nrow=grid.lines,ncol=grid.lines)
-    z.pred_m <- matrix(z.pred_m,nrow=grid.lines,ncol=grid.lines)
+      z.pred_a <- (r_a/p_a)*xy_a$x*(1-(xy_a$x/K_a)^(p_a))+c_a*xy_a$y*xy_a$x
+      z.pred_m <- exp(1)^{c_m*xy_m$y}*((r_m/p_m)*xy_m$x*(1-(xy_m$x/K_m)^p_m))
+      z.pred_a <- matrix(z.pred_a,nrow=grid.lines,ncol=grid.lines)
+      z.pred_m <- matrix(z.pred_m,nrow=grid.lines,ncol=grid.lines)
 
-    y2 <- y * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
-    y.pred2 <- y.pred * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
+      y2 <- y * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
+      y.pred2 <- y.pred * attr(y, 'scaled:scale') + attr(y, 'scaled:center')
 
-    cat("\n This can take a while... \n")
+      cat("\n This can take a while... \n")
 
-    plot3D::scatter3D(x, y2, z, bty="b2", pch = 19, cex = 1, cex.axis = 0.6,
-                      colkey = list(length = 0.5, width = 0.5, cex.clab = 0.8, cex.axis = 0.8),
-                      xlim = c(0,max(x.pred_a)), zlim = c(0,max(z.pred_a)*1.5),
-                      theta = 28, phi = 20, ticktype = "detailed", clim = c(0,max(z.pred_a,z)),
-                      xlab = "SSB", ylab = selected_var, zlab = "SP", clab = "Surplus production",
-                      surf = list(x = x.pred_a, y = y.pred2, z = z.pred_a, facets = NA, fit = z),
-                      main = "Additive model: Production curve", sub = knobi_results$data$Stock)
-    plot3d_add<-grDevices::recordPlot()
+      plot3D::scatter3D(x, y2, z, bty="b2", pch = 19, cex = 1, cex.axis = 0.6,
+                        colkey = list(length = 0.5, width = 0.5, cex.clab = 0.8, cex.axis = 0.8),
+                        xlim = c(0,max(x.pred_a)), zlim = c(0,max(z.pred_a)*1.5),
+                        theta = 28, phi = 20, ticktype = "detailed", clim = c(0,max(z.pred_a,z)),
+                        xlab = "SSB", ylab = selected_var, zlab = "SP", clab = "Surplus production",
+                        surf = list(x = x.pred_a, y = y.pred2, z = z.pred_a, facets = NA, fit = z),
+                        main = "Additive model: Production curve", sub = knobi_results$data$Stock)
+      plot3d_add<-grDevices::recordPlot()
 
-    if (plot_out==TRUE){
-      grDevices::jpeg("additive_model.jpeg",width=2500, height=2500,res=300)
-      grDevices::replayPlot(plot3d_add)
-      grDevices::dev.off()
+      if (plot_out==TRUE){
+        grDevices::jpeg("additive_model.jpeg",width=2500, height=2500,res=300)
+        grDevices::replayPlot(plot3d_add)
+        grDevices::dev.off()
+      }
+
+      cat("\n ... Just a little more. May the 4th be with you ... \n")
+
+      plot3D::scatter3D(x, y2, z, bty="b2", pch = 19, cex = 1, cex.axis = 0.6,
+                        colkey = list(length = 0.5, width = 0.5, cex.clab = 0.8, cex.axis = 0.8),
+                        xlim = c(0, max(x.pred_m)), zlim = c(0,max(z.pred_m)*1.5),
+                        theta = 28, phi = 18, ticktype = "detailed", clim=c(0,max(z.pred_m,z)),
+                        xlab = "SSB", ylab = selected_var, zlab = "SP", clab = "Surplus production",
+                        surf = list(x = x.pred_m, y = y.pred2, z = z.pred_m, facets = NA, fit = z),
+                        main = "Multiplicative model: Production curve", sub = knobi_results$data$Stock)
+      plot3d_mult<-grDevices::recordPlot()
+
+      if (plot_out==TRUE){
+        grDevices::jpeg("multiplicative_model.jpeg",width=2500, height=2500,res=300)
+        grDevices::replayPlot(plot3d_mult)
+        grDevices::dev.off()
+      }
+
+      cat(paste0("\n ... Done! :) \n"))
+
+
+      res_env$plots3D<-list(additive_plot=plot3d_add,multiplicative_plot=plot3d_mult)
     }
-
-    cat("\n ... Just a little more. May the 4th be with you ... \n")
-
-    plot3D::scatter3D(x, y2, z, bty="b2", pch = 19, cex = 1, cex.axis = 0.6,
-                      colkey = list(length = 0.5, width = 0.5, cex.clab = 0.8, cex.axis = 0.8),
-                      xlim = c(0, max(x.pred_m)), zlim = c(0,max(z.pred_m)*1.5),
-                      theta = 28, phi = 18, ticktype = "detailed", clim=c(0,max(z.pred_m,z)),
-                      xlab = "SSB", ylab = selected_var, zlab = "SP", clab = "Surplus production",
-                      surf = list(x = x.pred_m, y = y.pred2, z = z.pred_m, facets = NA, fit = z),
-                      main = "Multiplicative model: Production curve", sub = knobi_results$data$Stock)
-    plot3d_mult<-grDevices::recordPlot()
-
-    if (plot_out==TRUE){
-      grDevices::jpeg("multiplicative_model.jpeg",width=2500, height=2500,res=300)
-      grDevices::replayPlot(plot3d_mult)
-      grDevices::dev.off()
-    }
-
-    res_env$plots3D<-list(additive_plot=plot3d_add,multiplicative_plot=plot3d_mult)
-
 
   } else {
 
@@ -514,8 +520,8 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
     if(ncol(envs)>=6){stop("The number of covariables is too big. Consider reducing the amount of environmental variables.")}
 
     Data<-list(env=envs,data=df, start_r=as.numeric(knobi_results$fit$Parameter_estimates[[1]]),
-              start_K=as.numeric(knobi_results$fit$Parameter_estimates[[2]]),
-              start_c=start_c[1], start_p=1)
+               start_K=as.numeric(knobi_results$fit$Parameter_estimates[[2]]),
+               start_c=start_c[1], start_p=1)
 
     if (knobi_results$control$pella){
 
@@ -619,9 +625,9 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
   Environmental$error <- knobi_error(knobi_results, Environmental, plot_out)
 
   if (plot_out==TRUE){
-    cat(paste0("\n ... Done! :) \n \n Plots successfully saved in '",getwd(),"'"),". \n")
+    cat(paste0("\n Plots successfully saved in '",getwd(),"'"),". \n")
     setwd(old_dir)
-  } else {cat("\n ... Done! :) \n")}
+  }
 
   class(Environmental)<-"knobi"
 
