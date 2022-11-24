@@ -2,7 +2,7 @@ Package: knobi
 Type: Package
 Title: Known-Biomass Production Model (KBPM)
 Version: 0.1.0
-Author: c(person("Anxo", "Paz", email = "anxo.paz@ieo.es", role = c("aut", "cre")),
+Authors@R: c(person("Anxo", "Paz", email = "anxo.paz@ieo.es", role = c("aut", "cre")),
   person("Marta", "Cousido Rocha", email = "marta.cousido@ieo.es", role = c("aut", "cre")),
   person("Santiago", "Cervino Lopez", email = "santiago.cervino@ieo.es", role = c("aut", "ths")),
   person("M. Grazia", "Peninno", email = "grazia.pennino@ieo.es", role = c("aut", "ths")))

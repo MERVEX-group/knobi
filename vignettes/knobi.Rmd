@@ -527,7 +527,7 @@ fmsy<-hake_n_results$fit$RP$F_MSY
 ff<-rep(fmsy,5)
 f<-data.frame(f=ff,f12=ff*1.2,f08=ff*0.8)
 
-knobi_proj(hake_n_results, f=f, n_y=5, env_results=hake_n_results, env=env)
+knobi_proj(hake_n_results, f=f, n_y=5, env_results=hake_n_environmental, env=env)
 ```
 
 The example without environmental information for the projections is given below. The number of projection years is also extended.
