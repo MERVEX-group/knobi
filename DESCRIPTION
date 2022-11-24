@@ -2,11 +2,10 @@ Package: knobi
 Type: Package
 Title: Known-Biomass Production Model (KBPM)
 Version: 0.1.0
-Authors@R: c(person("Anxo", "Paz", email = "anxo.paz@ieo.es", role = c("aut", "cre")),
-  person("Marta", "Cousido Rocha", email = "marta.cousido@ieo.es", role = c("aut", "cre")),
-  person("Santiago", "Cervino Lopez", email = "santiago.cervino@ieo.es", role = c("aut", "ths")),
-  person("M. Grazia", "Peninno", email = "grazia.pennino@ieo.es", role = c("aut", "ths")))
-Maintainer: Anxo Paz <anxo.paz@ieo.csic.es>
+Authors@R: c(person("Anxo", "Paz", email = "anxo.paz@ieo.csic.es", role = c("aut", "cre")),
+  person("Marta", "Cousido Rocha", email = "marta.cousido@ieo.csic.es", role = c("aut", "ths")),
+  person("Santiago", "Cervino Lopez", email = "santiago.cervino@ieo.csic.es", role = c("aut", "ths")),
+  person("M. Grazia", "Peninno", email = "grazia.pennino@ieo.csic.es", role = c("aut")))
 Description: Application of a KBPM (Known Biomass Production Model): (1) the fitting of KBPM to each stock; (2) the retrospective analysis to identify regime shifts; (3) the estimation of the effects of environmental variability; (4) the estimation of forecasts.
 License: GPL-2
 Encoding: UTF-8
