@@ -222,7 +222,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
     ref<-stats::qnorm(0.975)/sqrt(length(KBPM_residuals))
 
     auto<-max(which(abs(pacf_res)>=ref),0)
-    fit(auto==0){
+    if(auto==0){
       warning("KBPM base residuals are not autocorrelated. An AR(0) model is fitted for SP residuals.")
       }
 
