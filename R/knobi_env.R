@@ -217,7 +217,7 @@ knobi_env<-function(knobi_results,environmental,plot_out=FALSE,plot_filename=NUL
   if(environmental$ar_cor==TRUE){
 
     KBPM_residuals<-knobi_results$fit$error$residuals
-    pacf_res<-stats::pacf(KBPM_residuals)$acf[,1,1]
+    pacf_res<-stats::pacf(KBPM_residuals,plot=FALSE)$acf[,1,1]
 
     ref<-stats::qnorm(0.975)/sqrt(length(KBPM_residuals))
 
