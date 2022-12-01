@@ -267,11 +267,13 @@ $$SP_{t}=  \frac{r}{p}\overline{B}_{t}\left(1-\left( \frac{\overline{B}_{t}}{K}\
 
 &nbsp;
 
-`knobi_env` input is the object returned by `knobi_fit` and the object `environmental`, a list containing the environmental information required for the fit. In this example, we provide the mandatory information, which is:
+`knobi_env` input is the object returned by `knobi_fit` and the object `data`, a list containing the mandatory environmental information required for the fit, which is:
 
-* `data`: data frame containing the values of each of the environmental variable(s) in one column. Each row represents a year.
+* `env`: data frame containing the values of each of the environmental variable(s) in one column. Each row represents a year.
 * `years`: time series of years corresponding to the environmental variable(s).
-* `nlag`: this argument is used to test all the lags smaller or equal to `nlag` (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lag environmental covariable values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included.
+
+
+In the object `list` we provide the optional settings for the environmental fit. In this case, for example, we are going to set `nlag=5`. This argument is used to test all the lags smaller or equal to `nlag` (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lag environmental covariable values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable. The length of this argument must be equal to the number of environmental variables included. By default, `nlag=3`.
 
 ```{r}
 Env<-data.frame(years=seq(1973,2020),AMO=c(-0.236,-0.441,-0.32,-0.385,-0.21,-0.201,-0.132,
@@ -291,15 +293,15 @@ nlag<-5
 Env<-Env[(ind-nlag):ind1,]
 
 # Now we create the environmental list
-environmental<-list()
-environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years<-Env$years
-environmental$nlag<-nlag
+data<-list(env=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo),
+           years=Env$years)
+control$nlag<-nlag
 ```
 
 ```{r,eval=FALSE}
 hake_n_environmental<-knobi_env(hake_n_results,        # previous results
-                                environmental,         # the environmental information
+                                data,                  # the environmental data
+                                control,               # the environmental settings
                                 plot_out=TRUE,
                                 plot_filename="hake_n",
                                 plot_dir="Z:/knobi/HAKE/"))
@@ -307,7 +309,7 @@ hake_n_environmental<-knobi_env(hake_n_results,        # previous results
 
 
 ```{r,echo=FALSE, fig.width=8, fig.height=6}
-hake_n_environmental<-knobi_env(hake_n_results,environmental)
+hake_n_environmental<-knobi_env(hake_n_results,data,control)
 ```
 
 Result plots are shown in the plot window and also saved (if `plot_out=TRUE`) on the provided directory or in the same directory as `knobi_fit`.
@@ -361,37 +363,34 @@ hake_n_environmental$model_env_Multiplicative
 
 #### More options ####
 
-There is the possibility of obtain 3D plots that reports the surplus production curve conditioned to a grid of environmental values, through the argument `environmental$plot3d=TRUE`.
+There is the possibility of obtain 3D plots that reports the surplus production curve conditioned to a grid of environmental values, through the argument `control$plot3d=TRUE`.
 
 ```{r, eval=FALSE}
-environmental$plot3d=TRUE
-knobi_env(hake_n_results,environmental)
+control$plot3d=TRUE
+knobi_env(hake_n_results,data,control)
 ```
 
 In this case, a list named `plots3D` is added to the output list of `knobi_env` with the 3D plots objects.
 
 &nbsp;
 
-As mentioned above, when more than one environmental variable is introduced in `data`, the fit is made, by default, with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `environmental` list. 
+As mentioned above, when more than one environmental variable is introduced in `data`, the fit is made, by default, with the most correlated environmental variable considering the selected lag, but there is the possibility of choosing one of the introduced variables through the argument `selected_var` inside the `control` list. 
 
 ```{r, eval=FALSE}
-environmental$selected_var<-"AMO"
-knobi_env(hake_n_results,environmental)
+control$selected_var<-"AMO"
+knobi_env(hake_n_results,data,control)
 ```
 
 &nbsp;
 
-There is the possibility of fixing lag value(s) in the relation among the surplus production and the environmental variable, using `lag` instead `nlag` inside `environmental`.
+There is the possibility of fixing lag value(s) in the relation among the surplus production and the environmental variable, using `lag` instead `nlag` inside `control`.
 
-It is also possible to fit the environmental model considering more environmental variables, up to a total of 5 covariates, using `multicovar = TRUE`. This means that *cX<sub>t</sub>* is replaced by *sum<sub>{i in 1...n}</sub>(c<sub>i</sub>X<sub>t,i</sub>)* in equations (4) and (5), where index *n* represents each environmental variable.
+It is also possible to fit the environmental model considering more environmental variables, up to a total of 5 covariates, using `control$multicovar = TRUE`. This means that *cX<sub>t</sub>* is replaced by *sum<sub>{i in 1...n}</sub>(c<sub>i</sub>X<sub>t,i</sub>)* in equations (4) and (5), where index *n* represents each environmental variable.
 
 ```{r, eval=FALSE}
-environmental<-list()
-environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years<-Env$years
-environmental$lag<-c(2,3)
-environmental$multicovar<-TRUE
-hake_n_multi<-knobi_env(hake_n_results,environmental)
+data<-list(env=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo),years=Env$years)
+control<-list(lag=c(2,3),multicovar=TRUE)
+hake_n_multi<-knobi_env(hake_n_results,data,control)
 ```
 
 In this case, 3D plots are never reported, and the output list slightly differs from the previous one.
@@ -419,15 +418,12 @@ being $X_{t,lag}$ the lagged environmental variable, for each lag corresponding 
 
 For each model, the Akaike information criterion (AIC) is estimated, comparing the value obtained for the AR model with the residuals only and their values for the AR models considering each environmental variable and for each lag (only works with the argument `nlag`)
 
-This test is performed using the argument `ar_cor=T` in `environmental`. By default this argument is `FALSE`, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. The environmental variable whose AR model shows a lower AIC (with its corresponding lag) is used in the environmental adjustment if the environmental variable is not fixed.
+This test is performed using the argument `ar_cor=T` in `control` list. By default this argument is `FALSE`, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. The environmental variable whose AR model shows a lower AIC (with its corresponding lag) is used in the environmental adjustment if the environmental variable is not fixed.
 
 
 ```{r, eval=FALSE}
-environmental<-list()
-environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years<-Env$years
-environmental$nlag<-3
-environmental$ar_cor<-TRUE
+data<-list(env=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo),years=Env$years)
+control=list(nlag=3,ar_cor=TRUE)
 hake_n_ar<-knobi_env(hake_n_results,environmental)
 ```
 

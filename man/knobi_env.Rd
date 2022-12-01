@@ -6,7 +6,8 @@
 \usage{
 knobi_env(
   knobi_results,
-  environmental,
+  data,
+  control = NULL,
   plot_out = FALSE,
   plot_filename = NULL,
   plot_dir = NULL
@@ -15,11 +16,13 @@ knobi_env(
 \arguments{
 \item{knobi_results}{The output object of \code{\link{knobi_fit}} function (main function).}
 
-\item{environmental}{A list containing the following data and settings: \itemize{
-\item data: data frame containing the values of each one of the environmental variable(s) in one column. Each row represents a year.
-\item years: time series of years corresponding to the environmental variable(s).
-\item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included.
-\item nlag: if lag value is not provided, this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model.
+\item{data}{A list containing the following data: \itemize{
+\item env: data frame containing the values of each one of the environmental variable(s) in one column. Each row represents a year.
+\item years: time series of years corresponding to the environmental variable(s).}}
+
+\item{control}{A list containing the following settings: \itemize{
+\item nlag: this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model. 3 lags by default.
+\item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included. Only work if 'nlag' argument is not provided.
 \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
 \item ar_cor: optional logical. By default this argument is FALSE, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. If this argument is "TRUE", the correlation is estimated by fitting an autoregressive (AR) model for the KBPM residuals and compare its Akaike information criterion (AIC) with the AIC obtained for the same model considering the environmental variable as a regressive variable. See details.
 \item plot3d: optional logical. If this argument is TRUE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values. FALSE by default.
@@ -34,9 +37,9 @@ knobi_env(
 }
 \value{
 A list containing the environmental analysis is provided. \itemize{
-\item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
+\item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation (or the lowest AIC if 'ar_cor=TRUE') between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
 \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
-\item env_aic: If ar_cor=T, AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals.
+\item env_aic: If 'ar_cor=TRUE', AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals.
 \item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
 \item model_env_Multiplicative: Estimates of the multiplicative model parameters.
 \item model_env_Additive: Estimates of the additive model parameters.
@@ -47,9 +50,9 @@ A list containing the environmental analysis is provided. \itemize{
 \item error: List of performance and accuracy: \itemize{
 \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sd(observations) for each model (base KBPM, additive model and multiplicative model).
 \item error_table: Array of performance and accuracy (observed vs. estimated) measures for each model: Standard error of the regression (SER), coefficient of determination (R-squared), adjusted coefficient of determination (adj-R-squared), Akaike information criterion (AIC), root-mean-squared error (RMSE), mean absolute percentage error (MAPE) and the value of the F statistic corresponding to the comparison of each environmental model respect to the base model (F-value) and its corresponding p-value (Pr(>F)).}}
-Result plots are shown in the plot window and also saved (if plot_out="TRUE") on the provided directory or in the same directory as knobi_fit.
+Result plots are shown in the plot window and also saved (if 'plot_out=TRUE') on the provided directory or in the same directory as knobi_fit.
 The first plot reports the correlation analysis between the environmental variable(s) and the KBPM SP residuals. The second one reports the fitted values of the base model (no environmental information) and of the environmental ones.
-If multicovar=FALSE and plot3d=TRUE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
+If 'multicovar=FALSE' and 'plot3d=TRUE', 3D plots reporting the surplus production curve conditioned to a grid of environmental values are also reported.
 }
 \description{
 Analyse and model the relationships between surplus production and environmental covariables to test whether productivity changes in response to environmental fluctuations.  Environmental effects are included as additive and multiplicative effects in the general KBPM formulation (see details).
@@ -93,12 +96,11 @@ nlag<-5
 Env<-Env[(ind-nlag):ind1,]
 
 # Now we create the environmental list
-environmental<-list()
-environmental$data<-data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo)
-environmental$years<-Env$years
-environmental$nlag<-nlag
+data<-list(env=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo),
+           years=Env$years)
+control=list(nlag=nlag)
 
-knobi_environmental<-knobi_env(knobi_results,environmental)
+knobi_environmental<-knobi_env(knobi_results,data,control)
 knobi_environmental
 }
 
