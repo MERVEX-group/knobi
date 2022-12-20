@@ -114,8 +114,6 @@ data$years<-hake_n$Year                # Years
 
 Control list contains a set of settings for the KBPM fit.
 
-Below, we provide values for the mandatory ones.
-
 &nbsp;
 
 ```{r}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/knobi_fit.R
 \name{knobi_fit}
 \alias{knobi_fit}
-\title{Known biomass Production Model (KBPM) fit}
+\title{Known Biomass Production Model (KBPM) fit}
 \usage{
 knobi_fit(
   data,
@@ -14,10 +14,10 @@ knobi_fit(
 }
 \arguments{
 \item{data}{A list containing the data. \itemize{
-\item years: time series of years corresponding to the catch time series.
 \item Catch: time series of catch estimates from a stock assessment model.
 \item Biomass: time series of biomass estimates from a stock assessment model. If it is available, other case introduce SSB in the next argument.
 \item Spawning_Biomass: time series of SSB estimates from a stock assessment model. If it is available, other case introduce Biomass in the previous argument.
+\item years: optional. Time series of years corresponding to the catch time series.
 \item Stock: optional. Character string with the stock name for the plot subtitles.
 \item Recruitment: optional. Time series of recruitment from a stock assessment model. See details.
 \item F_input: optional. Time series of F estimates from a stock assessment model. See details.

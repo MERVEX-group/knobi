@@ -19,9 +19,9 @@ knobi_retro(
 
 \item{yR}{Vector containing the years in which the catch time series ends in each of the retrospective analysis settings.}
 
-\item{yR0}{Optional argument. Vector containing the years in which the catch time series starts in each of the retrospective analysis settings. Equal length of yR vector is required. By default it is assumed that the catch time series starts in the same year as in the original fit.}
+\item{yR0}{Optional argument. Vector containing the years in which the catch time series starts in each of the retrospective analysis settings. Equal length of 'yR' vector is required. By default it is assumed that the catch time series starts in the same year as in the original fit.}
 
-\item{nR}{Number of retrospective patterns. Only required when yR is not provided (if both earguments are included and error message is reported). See details.}
+\item{nR}{Number of retrospective patterns. Only required when 'yR' is not provided (if both arguments are included and error message is reported). See details.}
 
 \item{plot_out}{Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the input of this argument in the knobi_fit function.}
 
@@ -31,13 +31,13 @@ knobi_retro(
 }
 \value{
 A list containing the retrospective analysis results is provided. It includes the fits and the list of corresponding reference points.
-The estimate surplus production curves of the retrospective analysis are plotted.  The plot is shown in the plot window and saved (if plot_out=TRUE) on the provided directory or in the current directory.
+The estimate surplus production curves of the retrospective analysis are plotted. The plot is shown in the plot window and saved (if plot_out=TRUE) on the provided directory or in the current directory.
 }
 \description{
-This function carries out the retrospective analysis evaluating the robustness of the KBPM fit when systematically last years of data are removed.
+This function carries out the retrospective analysis evaluating the robustness of the KBPM fit.
 }
 \details{
-If nR is provided it specifies the number of fits to carry out. The first model considers the data deleting the last year and fits the surplus production curve, the next model deletes the two last years of the original data set and fits the SP curve, and the procedure continues until the last SP curve is fitted over the data excluding the last nR years. If the yR argument is provided, the procedure is analogous but the number of years deleted in each of the retrospective fits is specified through the end years provided by this vector.
+If 'nR' is provided it specifies the number of fits to carry out. The first model considers the data deleting the last year and fits the surplus production curve, the next model deletes the two last years of the original data set and fits the SP curve, and the procedure continues until the last SP curve is fitted over the data excluding the last nR years. If the 'yR' argument is provided, the procedure is analogous but the number of years deleted in each of the retrospective fits is specified through the end years provided by this vector from the beginning of the time series or from the years specified in 'yR0'.
 }
 \examples{
 

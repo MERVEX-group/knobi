@@ -4,11 +4,11 @@
 #'
 #' @param knobi_results The output object of \code{\link{knobi_fit}} function (main function).
 #' @param env_results Optional. The output object of \code{\link{knobi_env}} function.
-#' @param n_y Optional. The number of years for projections. If not provided, enter end_y in the next argument.
-#' @param end_y Optional. The end year of our projections. If not provided, enter n_y in the argument above. If both are provided, the function uses n_y.
-#' @param Ct Optional. Vector, data frame or matrix containing the values of the catch for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.
-#' @param f Optional. Vector, data frame or matrix containing the values of the fishing mortality for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.
-#' @param env Optional. If the multicovar argument of \code{\link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the multicovar argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.
+#' @param n_y Optional. The number of years for projections. If not provided, enter 'end_y' in the next argument.
+#' @param end_y Optional. The end year of our projections. If not provided, enter 'n_y' in the argument above. If both are provided, the function uses 'n_y'.
+#' @param Ct Optional. Vector, data frame or matrix containing the values of the catch for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, 'Ct' or 'f', must be introduced.
+#' @param f Optional. Vector, data frame or matrix containing the values of the fishing mortality for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, 'Ct' or 'f', must be introduced.
+#' @param env Optional. If the multicovar argument of \code{\link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the 'multicovar' argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.
 #' @param plot_out Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.
 #' @param plot_dir Optional directory for creating the folder and save the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
 #' @param plot_filename Optional name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
@@ -358,9 +358,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
           stop('Number of environmental covariables is different than ist number in knobi_env')}
 
         for(j in 1:ncol(Xt)){
-          Xt[,j]<-(Xt[,j]-attr(env_results$environmental_variables[,j],
-                              "scaled:center"))/attr(env_results$environmental_variables[,j],
-                                                     "scaled:scale")
+          Xt[,j]<-(Xt[,j]-attr(env_results$scaled_environmental_var[,j],
+                               "scaled:center"))/attr(env_results$scaled_environmental_var[,j],
+                                                      "scaled:scale")
         }
 
 
@@ -528,7 +528,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         Xt<-env[,n]
 
         Xt<-(Xt-attr(env_results$scaled_environmental_var,
-                    "scaled:center"))/attr(env_results$scaled_environmental_var,"scaled:scale")
+                     "scaled:center"))/attr(env_results$scaled_environmental_var,"scaled:scale")
 
         add_Bt[[n]]<-array(c(B0,rep(0,ly-1)),c(ly,n_esc)); colnames(add_Bt[[n]])<-sc_names
         add_SP[[n]]<-array(rep(0,ly-1),c(ly-1,n_esc)); colnames(add_SP[[n]])<-sc_names
@@ -669,7 +669,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
   base_model<-array(NA,dim=c(length(total_years),4,n_esc),
-                   dimnames=list(total_years,c("Biomass","Catch","F","SP"),sc_names))
+                    dimnames=list(total_years,c("Biomass","Catch","F","SP"),sc_names))
 
 
   for(i in 1:n_esc){
@@ -683,7 +683,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   if(is.null(env_results)==FALSE){
 
     additive_model<-array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
-                         dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
+                          dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
@@ -696,7 +696,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
     multiplicative_model<-array(NA,dim=c(length(total_years),4,n_env_esc,n_esc),
-                               dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
+                                dimnames=list(total_years,c("Biomass","Catch","F","SP"),colnames(env),sc_names))
 
     for(i in 1:n_esc){
       for(j in 1:n_env_esc){
@@ -710,27 +710,27 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
 
   base_plot<-data.frame(years=c(years[(length(years)-9):length(years)],proj_years[1]),
-                       biomass=Bt_ini[(length(years)-9):(length(years)+1)],
-                       catch=c(knobi_results$data$Catch[(length(years)-9):length(years)],NA),
-                       f=c(knobi_results$data$F_output[(length(years)-9):length(years)],NA),
-                       SP=c(knobi_results$data$SP[(length(years)-9):length(years)],NA))
+                        biomass=Bt_ini[(length(years)-9):(length(years)+1)],
+                        catch=c(knobi_results$data$Catch[(length(years)-9):length(years)],NA),
+                        f=c(knobi_results$data$F_output[(length(years)-9):length(years)],NA),
+                        SP=c(knobi_results$data$SP[(length(years)-9):length(years)],NA))
 
 
   biomass<-data.frame(years=c(years,proj_years[1]),
-                     biomass=Bt_ini,
-                     type=rep("data",length(Bt_ini)),
-                     scenario=rep("input",length(Bt_ini)),
-                     env_scenario=rep("input",length(Bt_ini)),
-                     model=rep("input",length(Bt_ini)))
+                      biomass=Bt_ini,
+                      type=rep("data",length(Bt_ini)),
+                      scenario=rep("input",length(Bt_ini)),
+                      env_scenario=rep("input",length(Bt_ini)),
+                      model=rep("input",length(Bt_ini)))
 
   for(i in 1:n_esc){
     scenario<-sc_names[i]
     new_b<-data.frame(years=c(proj_years[-1],proj_years[length(proj_years)]+1),
-                     biomass=base_Bt[-1,i],
-                     type=rep("forecast",ly-1),
-                     scenario=rep(scenario,ly-1),
-                     env_scenario=rep("without_env",ly-1),
-                     model=rep("base_model",ly-1))
+                      biomass=base_Bt[-1,i],
+                      type=rep("forecast",ly-1),
+                      scenario=rep(scenario,ly-1),
+                      env_scenario=rep("without_env",ly-1),
+                      model=rep("base_model",ly-1))
     biomass<-rbind(biomass,new_b)
   }
 
@@ -741,8 +741,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     biomass_plot<-biomass[(length(years)-10):nrow(biomass),-3]
     biomass_plot<-rbind(biomass_plot,data.frame(years=rep(biomass$years[length(years)+1],n_esc),
-                                               biomass=rep(biomass$biomass[length(years)+1],n_esc),
-                                               scenario=sc_names))
+                                                biomass=rep(biomass$biomass[length(years)+1],n_esc),
+                                                scenario=sc_names))
 
     vec<-min(biomass_plot$years)
     vec1<-max(biomass_plot$years)
@@ -779,11 +779,11 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
         ij_biomass<-c(add_Bt[[j]][-1,i],mult_Bt[[j]][-1,i])
         new_b<-data.frame(years=rep(c(proj_years[-1],proj_years[length(proj_years)]+1),2),
-                         biomass=ij_biomass,
-                         type=factor,
-                         scenario=scenario,
-                         env_scenario=env_scenario,
-                         model=model)
+                          biomass=ij_biomass,
+                          type=factor,
+                          scenario=scenario,
+                          env_scenario=env_scenario,
+                          model=model)
         biomass<-rbind(biomass,new_b)
       }}
 
@@ -821,9 +821,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
       i_b_plot<-biomass_plot[[i]]
       i_b_plot<-rbind(data.frame(years=base_plot$years,
-                                biomass=base_plot$biomass,
-                                model="input",env_scenario="input"),
-                     i_b_plot)
+                                 biomass=base_plot$biomass,
+                                 model="input",env_scenario="input"),
+                      i_b_plot)
 
 
       vec<-min(i_b_plot$years)
@@ -854,20 +854,20 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   Ct_ini<-knobi_results$data$Catch
 
   catch<-data.frame(years=c(years),
-                   catch=Ct_ini,
-                   type=rep("data",length(Ct_ini)),
-                   scenario=rep("input",length(Ct_ini)),
-                   env_scenario=rep("input",length(Ct_ini)),
-                   model=rep("input",length(Ct_ini)))
+                    catch=Ct_ini,
+                    type=rep("data",length(Ct_ini)),
+                    scenario=rep("input",length(Ct_ini)),
+                    env_scenario=rep("input",length(Ct_ini)),
+                    model=rep("input",length(Ct_ini)))
 
   for(i in 1:n_esc){
     scenario<-sc_names[i]
     new_c<-data.frame(years=proj_years,
-                     catch=base_Ct[,i],
-                     type=rep("forecast",ly-1),
-                     scenario=rep(scenario,ly-1),
-                     env_scenario=rep("without_env",ly-1),
-                     model=rep("base_model",ly-1))
+                      catch=base_Ct[,i],
+                      type=rep("forecast",ly-1),
+                      scenario=rep(scenario,ly-1),
+                      env_scenario=rep("without_env",ly-1),
+                      model=rep("base_model",ly-1))
     catch<-rbind(catch,new_c)
   }
 
@@ -878,8 +878,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     catch_plot<-catch[(length(years)-10):nrow(catch),-3]
     catch_plot<-rbind(catch_plot,data.frame(years=rep(catch$years[length(years)],n_esc),
-                                           catch=rep(catch$catch[length(years)],n_esc),
-                                           scenario=sc_names))
+                                            catch=rep(catch$catch[length(years)],n_esc),
+                                            scenario=sc_names))
 
     vec<-min(catch_plot$years)
     vec1<-max(catch_plot$years)
@@ -916,11 +916,11 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
         ij_c<-c(add_Ct[[j]][,i],mult_Ct[[j]][,i])
         new_c<-data.frame(years=rep(proj_years,2),
-                         catch=ij_c,
-                         type=factor,
-                         scenario=scenario,
-                         env_scenario=env_scenario,
-                         model=model)
+                          catch=ij_c,
+                          type=factor,
+                          scenario=scenario,
+                          env_scenario=env_scenario,
+                          model=model)
         catch<-rbind(catch,new_c)
       }}
 
@@ -961,9 +961,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
       i_c_plot<-catch_plot[[i]]
       i_c_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
-                                catch=base_plot$catch[-length(base_plot$years)],
-                                model="input",env_scenario="input"),
-                     i_c_plot)
+                                 catch=base_plot$catch[-length(base_plot$years)],
+                                 model="input",env_scenario="input"),
+                      i_c_plot)
 
 
       vec<-min(i_c_plot$years)
@@ -994,20 +994,20 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   f_ini<-knobi_results$data$F_output
 
   f<-data.frame(years=c(years),
-               f=f_ini,
-               type=rep("data",length(f_ini)),
-               scenario=rep("input",length(f_ini)),
-               env_scenario=rep("input",length(f_ini)),
-               model=rep("input",length(f_ini)))
+                f=f_ini,
+                type=rep("data",length(f_ini)),
+                scenario=rep("input",length(f_ini)),
+                env_scenario=rep("input",length(f_ini)),
+                model=rep("input",length(f_ini)))
 
   for(i in 1:n_esc){
     scenario<-sc_names[i]
     new_f<-data.frame(years=proj_years,
-                     f=base_f[,i],
-                     type=rep("forecast",ly-1),
-                     scenario=rep(scenario,ly-1),
-                     env_scenario=rep("without_env",ly-1),
-                     model=rep("base_model",ly-1))
+                      f=base_f[,i],
+                      type=rep("forecast",ly-1),
+                      scenario=rep(scenario,ly-1),
+                      env_scenario=rep("without_env",ly-1),
+                      model=rep("base_model",ly-1))
     f<-rbind(f,new_f)
   }
 
@@ -1018,8 +1018,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     f_plot<-f[(length(years)-10):nrow(f),-3]
     f_plot<-rbind(f_plot,data.frame(years=rep(f$years[length(years)],n_esc),
-                                   f=rep(f$f[length(years)],n_esc),
-                                   scenario=sc_names))
+                                    f=rep(f$f[length(years)],n_esc),
+                                    scenario=sc_names))
 
     vec<-min(f_plot$years)
     vec1<-max(f_plot$years)
@@ -1056,11 +1056,11 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
         ij_f<-c(add_f[[j]][,i],mult_f[[j]][,i])
         new_f<-data.frame(years=rep(proj_years,2),
-                         f=ij_f,
-                         type=factor,
-                         scenario=scenario,
-                         env_scenario=env_scenario,
-                         model=model)
+                          f=ij_f,
+                          type=factor,
+                          scenario=scenario,
+                          env_scenario=env_scenario,
+                          model=model)
         f<-rbind(f,new_f)
       }}
 
@@ -1100,9 +1100,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
       i_f_plot<-f_plot[[i]]
       i_f_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
-                                f=base_plot$f[-length(base_plot$years)],
-                                model="input",env_scenario="input"),
-                     i_f_plot)
+                                 f=base_plot$f[-length(base_plot$years)],
+                                 model="input",env_scenario="input"),
+                      i_f_plot)
 
 
       vec<-min(i_f_plot$years)
@@ -1132,20 +1132,20 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
   SP_ini<-knobi_results$data$SP
 
   SP<-data.frame(years=c(years),
-                SP=SP_ini,
-                type=rep("data",length(SP_ini)),
-                scenario=rep("input",length(SP_ini)),
-                env_scenario=rep("input",length(SP_ini)),
-                model=rep("input",length(SP_ini)))
+                 SP=SP_ini,
+                 type=rep("data",length(SP_ini)),
+                 scenario=rep("input",length(SP_ini)),
+                 env_scenario=rep("input",length(SP_ini)),
+                 model=rep("input",length(SP_ini)))
 
   for(i in 1:n_esc){
     scenario<-sc_names[i]
     new_sp<-data.frame(years=proj_years,
-                      SP=base_SP[,i],
-                      type=rep("forecast",ly-1),
-                      scenario=rep(scenario,ly-1),
-                      env_scenario=rep("without_env",ly-1),
-                      model=rep("base_model",ly-1))
+                       SP=base_SP[,i],
+                       type=rep("forecast",ly-1),
+                       scenario=rep(scenario,ly-1),
+                       env_scenario=rep("without_env",ly-1),
+                       model=rep("base_model",ly-1))
     SP<-rbind(SP,new_sp)
   }
 
@@ -1156,8 +1156,8 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
     SP_plot<-SP[(length(years)-10):nrow(SP),-3]
     SP_plot<-rbind(SP_plot,data.frame(years=rep(SP$years[length(years)],n_esc),
-                                     SP=rep(SP$SP[length(years)],n_esc),
-                                     scenario=sc_names))
+                                      SP=rep(SP$SP[length(years)],n_esc),
+                                      scenario=sc_names))
 
     vec<-min(SP_plot$years)
     vec1<-max(SP_plot$years)
@@ -1194,11 +1194,11 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
         model<-c(rep("additive",ly-1),rep("multiplicative",ly-1))
         ij_sp<-c(add_SP[[j]][,i],mult_SP[[j]][,i])
         new_sp<-data.frame(years=rep(proj_years,2),
-                          SP=ij_sp,
-                          type=factor,
-                          scenario=scenario,
-                          env_scenario=env_scenario,
-                          model=model)
+                           SP=ij_sp,
+                           type=factor,
+                           scenario=scenario,
+                           env_scenario=env_scenario,
+                           model=model)
         SP<-rbind(SP,new_sp)
       }}
 
@@ -1237,9 +1237,9 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
 
       i_sp_plot<-SP_plot[[i]]
       i_sp_plot<-rbind(data.frame(years=base_plot$years[-length(base_plot$years)],
-                                 SP=base_plot$SP[-length(base_plot$years)],
-                                 model="input",env_scenario="input"),
-                      i_sp_plot)
+                                  SP=base_plot$SP[-length(base_plot$years)],
+                                  model="input",env_scenario="input"),
+                       i_sp_plot)
 
 
       vec<-min(i_sp_plot$years)
@@ -1280,15 +1280,15 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
     }
 
     f1<-ggpubr::ggarrange(biomass_plots, SP_plots,catch_plots, f_plots, nrow = 2, ncol=2,
-                         common.legend = TRUE, legend="bottom")
+                          common.legend = TRUE, legend="bottom")
 
     print(f1)
 
   } else {
 
     forecast<-list(base_model=base_model,additive_model=additive_model,
-                  multiplicative_model=multiplicative_model,
-                  biomass=biomass,catch=catch,f=f,SP=SP)
+                   multiplicative_model=multiplicative_model,
+                   biomass=biomass,catch=catch,f=f,SP=SP)
 
     for(i in sc_names){
 
@@ -1300,7 +1300,7 @@ knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
       }
 
       f1<-ggpubr::ggarrange(biomass_plots[[i]], SP_plots[[i]],catch_plots[[i]],f_plots[[i]],
-                           nrow = 2, ncol=2, common.legend = TRUE, legend="right")
+                            nrow = 2, ncol=2, common.legend = TRUE, legend="right")
 
       print(f1)
     }

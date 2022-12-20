@@ -20,14 +20,14 @@ knobi_env(
 \item env: data frame containing the values of each one of the environmental variable(s) in one column. Each row represents a year.
 \item years: time series of years corresponding to the environmental variable(s).}}
 
-\item{control}{A list containing the following settings: \itemize{
+\item{control}{An optional list containing the following settings: \itemize{
 \item nlag: this argument is used to test all the lags smaller or equal to nlag (numeric) through cor.test function. The lag corresponding to the highest pearson correlation among the base KBPM surplus production residuals and the lagged environmental covariable values is considered in the environmental model. By default, 'nlag=3'.
 \item lag: optional numerical vector providing the used lag value(s) in the relation among the base KBPM surplus production residuals and the environmental variable(s). This means that the residuals_{t} is related to X_{t-lag} being X the environmental variable. The length of this argument must be equal to the number of environmental variables included. Only work if 'nlag' argument is not provided.
 \item start_c: optional numerical vector providing the start values of the environmental c parameter for the optimization of the additive and multiplicative models, respectively. By default, start_c=c(1,1). See details.
 \item ar_cor: optional logical. By default this argument is FALSE, which means the correlation between the KBPM base residuals and the environmental variable(s) is tested through a pearson correlation test, as mentioned above. If this argument is "TRUE", the correlation is estimated by fitting an autoregressive (AR) model for the KBPM residuals and compare its Akaike information criterion (AIC) with the AIC obtained for the same model considering the environmental variable as a regressive variable. See details.
 \item plot3d: optional logical. If this argument is TRUE, 3D plots reporting the surplus production curve conditioned to a grid of environmental values. FALSE by default.
-\item selected_var: optional character. By default, the fit is done using the higher correlated environmental variable. If this argument is provided, the fit is made with this fixed selected variable considering its lags based on the 'nlag' or 'lag' arguments.
-\item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental covariable reporting the highest pearson correlation is included (after lagging it if corresponds).}}
+\item selected_var: optional character. By default, the fit is done using the highest correlated environmental variable considering the lag derived from the previous arguments. However, if this argument is equal to the name of one of the environmental variables, this variable is used in the environmental fit considering considering the lag derived from the previous arguments.
+\item multicovar: optional logical. TRUE if you want to fit the environmental model including all the input environmental covariables, up to a maximum of 5. By default this argument is FALSE, which means that only the environmental variable reporting the highest correlation is included (after lagging it if corresponds).}}
 
 \item{plot_out}{Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.}
 
@@ -40,12 +40,11 @@ A list containing the environmental analysis is provided. \itemize{
 \item selected_lag: Data frame with the estimated lag corresponding to the one reporting the highest correlation (or the lowest AIC if 'ar_cor=TRUE') between the environmental variable and the base KBPM surplus production residuals (derived if lag is not fixed) or the fixed lag and the correlation corresponding to this lag for each variable.
 \item lag_cor: Correlation between the environmental variable(s) value and the base KBPM surplus production residuals for each lag.
 \item env_aic: If 'ar_cor=TRUE', AIC values obtained for the AR model considering each environmental variable(s) for each lag among the AIC value for the AR model considering only the KBPM base SP residuals.
-\item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest pearson correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
+\item selected_var: Environmental variable used in the fit, chosen by the user or the one derived from the highest correlation procedure. In case that argument 'multicovar' is omitted, 'NULL' or equal to 'FALSE'.
 \item model_env_Multiplicative: Estimates of the multiplicative model parameters.
 \item model_env_Additive: Estimates of the additive model parameters.
 \item ref_pts: Reference points (RPs) estimates for each model assuming X_t=0 (see vignettes).
-\item scaled_environmental_var: Standardized variable used in the fit, with the 'scale' and 'center' attributes.
-\item environmental_variables: Standardized covariables used in the fit (if 'multicovar=TRUE'), with the 'scale' and 'center' attributes.
+\item scaled_environmental_var: Standardized variable(s) used in the fit, with the 'scale' and 'center' attributes.
 \item plots3D: List with the 3D plots objects (if 'plot3d=TRUE').
 \item error: List of performance and accuracy: \itemize{
 \item residuals: Pearson's residuals from the fit calculated as (observations-estimates)/sd(observations) for each model (base KBPM, additive model and multiplicative model).

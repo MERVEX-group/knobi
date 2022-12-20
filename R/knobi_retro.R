@@ -1,19 +1,19 @@
 #' @title KBPM retrospective analysis
 #'
-#' @description This function carries out the retrospective analysis evaluating the robustness of the KBPM fit when systematically last years of data are removed.
+#' @description This function carries out the retrospective analysis evaluating the robustness of the KBPM fit.
 #'
 #' @param knobi_results A list containing the results of the KBPM fit. Object provided by \code{\link{knobi_fit}} function (main function).
 #' @param yR Vector containing the years in which the catch time series ends in each of the retrospective analysis settings.
-#' @param yR0 Optional argument. Vector containing the years in which the catch time series starts in each of the retrospective analysis settings. Equal length of yR vector is required. By default it is assumed that the catch time series starts in the same year as in the original fit.
-#' @param nR Number of retrospective patterns. Only required when yR is not provided (if both earguments are included and error message is reported). See details.
+#' @param yR0 Optional argument. Vector containing the years in which the catch time series starts in each of the retrospective analysis settings. Equal length of 'yR' vector is required. By default it is assumed that the catch time series starts in the same year as in the original fit.
+#' @param nR Number of retrospective patterns. Only required when 'yR' is not provided (if both arguments are included and error message is reported). See details.
 #' @param plot_out Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the input of this argument in the knobi_fit function.
 #' @param plot_dir Optional directory for creating the folder and save the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
 #' @param plot_filename Optional name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
 #'
-#' @details If nR is provided it specifies the number of fits to carry out. The first model considers the data deleting the last year and fits the surplus production curve, the next model deletes the two last years of the original data set and fits the SP curve, and the procedure continues until the last SP curve is fitted over the data excluding the last nR years. If the yR argument is provided, the procedure is analogous but the number of years deleted in each of the retrospective fits is specified through the end years provided by this vector.
+#' @details If 'nR' is provided it specifies the number of fits to carry out. The first model considers the data deleting the last year and fits the surplus production curve, the next model deletes the two last years of the original data set and fits the SP curve, and the procedure continues until the last SP curve is fitted over the data excluding the last nR years. If the 'yR' argument is provided, the procedure is analogous but the number of years deleted in each of the retrospective fits is specified through the end years provided by this vector from the beginning of the time series or from the years specified in 'yR0'.
 #'
 #' @return A list containing the retrospective analysis results is provided. It includes the fits and the list of corresponding reference points.
-#' The estimate surplus production curves of the retrospective analysis are plotted.  The plot is shown in the plot window and saved (if plot_out=TRUE) on the provided directory or in the current directory.
+#' The estimate surplus production curves of the retrospective analysis are plotted. The plot is shown in the plot window and saved (if plot_out=TRUE) on the provided directory or in the current directory.
 #'
 #' @author
 #' \itemize{
@@ -84,10 +84,10 @@ knobi_retro<-function(knobi_results,yR=NULL,yR0=NULL,nR=NULL,plot_out=F,plot_fil
       val<-RF(fit)
 
       vec[i,]<-c(val$K,
-                val$B_MSY,
-                val$F_MSY,
-                val$MSY,
-                val$MSYoverK)
+                 val$B_MSY,
+                 val$F_MSY,
+                 val$MSY,
+                 val$MSYoverK)
       name_i<-paste(min(df$Year), "-", lastyear-i)
       names_retro<-c(names_retro,name_i)
       modelretro[[name_i]]<-fit
@@ -165,7 +165,7 @@ knobi_retro<-function(knobi_results,yR=NULL,yR0=NULL,nR=NULL,plot_out=F,plot_fil
     bretro <- predict_model(fit)
     aretro<-av
     df_plot<-data.frame(B=c(df_plot$B,aretro),SP=c(df_plot$SP,bretro),
-                       factor=c(df_plot$factor,rep(names(modelretro[i]),3*length(x))))
+                        factor=c(df_plot$factor,rep(names(modelretro[i]),3*length(x))))
     df_plot$factor<-as.character(df_plot$factor)
   }
 

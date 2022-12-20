@@ -1,12 +1,12 @@
-#' @title Known biomass Production Model (KBPM) fit
+#' @title Known Biomass Production Model (KBPM) fit
 #'
 #' @description This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the the catch time series and the biomass or SSB (Spawning Stock Biomass) derived from the fit of other stock assessment model.
 #'
 #' @param data A list containing the data. \itemize{
-#' \item years: time series of years corresponding to the catch time series.
 #' \item Catch: time series of catch estimates from a stock assessment model.
 #' \item Biomass: time series of biomass estimates from a stock assessment model. If it is available, other case introduce SSB in the next argument.
 #' \item Spawning_Biomass: time series of SSB estimates from a stock assessment model. If it is available, other case introduce Biomass in the previous argument.
+#' \item years: optional. Time series of years corresponding to the catch time series.
 #' \item Stock: optional. Character string with the stock name for the plot subtitles.
 #' \item Recruitment: optional. Time series of recruitment from a stock assessment model. See details.
 #' \item F_input: optional. Time series of F estimates from a stock assessment model. See details.
@@ -180,7 +180,13 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
   # Check input data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   C<-data$Catch
-  years<-data$years
+
+  if(is.null(data$years)==T){
+    years<-1:length(C)
+    data$years<-years
+  } else {
+    years<-data$years
+  }
 
   if(is.null(data$Biomass)){
     data$Biomass<-NA
@@ -322,7 +328,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,size=3,color=~Year)) +
     ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~y,size=2,color=~Year,
-                                                            label=~Year,vjust=-1), show.legend = FALSE) +
+                                                             label=~Year,vjust=-1), show.legend = FALSE) +
     ggplot2::geom_point(data=df,ggplot2::aes_(x=~x,y=~y,color=~Year)) +
     ggplot2::geom_path(data=df,ggplot2::aes_(x=~x,y=~y,color=~Year)) +
     ggplot2::labs(title=xtit,x =xaxis, y = "Surplus Production (SP)") +
@@ -354,7 +360,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
     ggplot2::geom_line(ggplot2::aes(size=1.5)) + ggplot2::ylim(vec,vec1) +
     ggplot2::geom_point(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~C,size=3,color=~Year)) +
     ggplot2::geom_text(data=df[c(1,nrow(df)),],ggplot2::aes_(x=~x,y=~C,size=2,color=~Year,
-                                                            label=~Year,vjust=-1), show.legend = FALSE) +
+                                                             label=~Year,vjust=-1), show.legend = FALSE) +
     ggplot2::geom_point(data=df,ggplot2::aes_(x=~x,y=~C,color=~Year)) +
     ggplot2::geom_path(data=df,ggplot2::aes_(x=~x,y=~C,color=~Year)) +
     ggplot2::labs(title="SP curve and observed catch and SP",
@@ -420,8 +426,8 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
 
   plot_df<-data.frame(Year=rep(Year,2),f=c(F_out,F_inp),fr=c(Frel_out,Frel_inp),
-                     f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
-                     b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
+                      f_factor=c(rep("F from KBPM",length(Year)),rep("original F",length(Year))),
+                      b=rep(B_aver,2),br=c(Brel_out,Brel_inp),b_factor=bfac)
 
 
   f_plot<-ggplot2::ggplot(data=subset(plot_df,!is.na(plot_df$f)),ggplot2::aes_(x=~Year,y=~f,color=~f_factor)) +
@@ -509,7 +515,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
 
   RP<-list(K=fit$K,B_MSY=fit$B_MSY,F_MSY=fit$F_MSY,
-          MSY=fit$MSY,MSYoverK=fit$MSYoverK)
+           MSY=fit$MSY,MSYoverK=fit$MSYoverK)
   adjustment<-list(data=data,control=control,fit=list(
     Parameter_estimates=fit$Parameter_estimates,data=fit$data,RP=RP,optimr=fit$optimr))
   class(adjustment$fit)<-class(fit)

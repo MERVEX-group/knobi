@@ -1,6 +1,6 @@
 #' @title Print a knobi object
 #'
-#' @description The default print method for a \code{\link{knobi_fit}},\code{\link{knobi_env}} or a \code{\link{knobi_proj}} object
+#' @description The default print method for a \code{\link{knobi_fit}}, \code{\link{knobi_env}} or a \code{\link{knobi_proj}} object
 #'
 #' @param x,... Fitted model objects of class \code{knobi} produced by \code{knobi_fit()}, \code{knobi_env()} or \code{knobi_proj()}.
 #'

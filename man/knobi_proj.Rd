@@ -22,15 +22,15 @@ knobi_proj(
 
 \item{env_results}{Optional. The output object of \code{\link{knobi_env}} function.}
 
-\item{Ct}{Optional. Vector, data frame or matrix containing the values of the catch for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.}
+\item{Ct}{Optional. Vector, data frame or matrix containing the values of the catch for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, 'Ct' or 'f', must be introduced.}
 
-\item{f}{Optional. Vector, data frame or matrix containing the values of the fishing mortality for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, Ct or f, must be introduced.}
+\item{f}{Optional. Vector, data frame or matrix containing the values of the fishing mortality for the projected. Different catch scenarios are allowed. The values for each should be provided in each of the columns. The length vector or row number should be equal to the number of years. Projections can be based on selected catch or fishing mortality values, then only one of the arguments, 'Ct' or 'f', must be introduced.}
 
-\item{env}{Optional. If the multicovar argument of \code{\link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the multicovar argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.}
+\item{env}{Optional. If the multicovar argument of \code{\link{knobi_env}} is FALSE, a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the 'multicovar' argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each argument must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.}
 
-\item{end_y}{Optional. The end year of our projections. If not provided, enter n_y in the argument above. If both are provided, the function uses n_y.}
+\item{end_y}{Optional. The end year of our projections. If not provided, enter 'n_y' in the argument above. If both are provided, the function uses 'n_y'.}
 
-\item{n_y}{Optional. The number of years for projections. If not provided, enter end_y in the next argument.}
+\item{n_y}{Optional. The number of years for projections. If not provided, enter 'end_y' in the next argument.}
 
 \item{plot_out}{Logical. TRUE means that a file with the  environmental fit plots is created. By default this argument is FALSE.}
 
