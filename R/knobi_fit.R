@@ -203,7 +203,7 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
     } else {
       if(control$method=="Biomass"){
         control$method<-"SSB"
-        warning("'Biomass' method cannot be applied if biomass time series is not provided. 'SSB' method is used instead")
+        warning("'Biomass' method cannot be applied if biomass time series is not provided. 'SSB' method is used instead.")
       }
     }
   }
@@ -223,20 +223,20 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
   if(is.na(data$Biomass[1])==TRUE){control$method<-"SSB"}
   if(is.na(data$Spawning_Biomass[1])==TRUE){control$method<-"Biomass"}
 
-  if(length(years)!=(length(C))){stop('Length of catch time series is different than the length of years vector')}
+  if(length(years)!=(length(C))){stop('Length of catch time series is different than the length of years vector.')}
 
   if(control$method=="Biomass"){
     B<-data$Biomass
-    if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to biomass time series length')}
+    if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to biomass time series length.')}
   }
 
   if(control$method=="SSB"){
     B<-data$Spawning_Biomass
-    if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to spawning biomass time series length')}
+    if(length(B)!=(length(C)+1)){warning('The length of the catch time series is reduced according to spawning biomass time series length.')}
   }
 
   if(length(B)!=(length(C)) & length(B)!=(length(C)+1)){
-    stop('The biomass MUST be provided for the same years as the catch or for such years and the next one')}
+    stop('The biomass MUST be provided for the same years as the catch or for such years and the next one.')}
 
 
   # Compute SP values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
