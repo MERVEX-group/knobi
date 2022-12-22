@@ -123,6 +123,6 @@ knobi_proj(knobi_results, knobi_environmental2, Ct=Ct[1:5,], n_y=5, env=env)
 \item{Anxo Paz}
 \item{Marta Cousido-Rocha}
 \item{Santiago Cerviño López}
-\item{M. Grazia Pennino}
+\item{Maria Grazia Pennino}
 }
 }

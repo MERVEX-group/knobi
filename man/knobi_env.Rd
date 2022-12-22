@@ -109,6 +109,6 @@ knobi_environmental
 \item{Anxo Paz}
 \item{Marta Cousido-Rocha}
 \item{Santiago Cerviño López}
-\item{M. Grazia Pennino}
+\item{Maria Grazia Pennino}
 }
 }
