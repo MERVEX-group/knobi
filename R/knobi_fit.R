@@ -182,6 +182,9 @@ knobi_fit<-function(data,control=NULL,plot_out=FALSE,plot_filename=NULL,plot_dir
 
   if(is.null(data$Biomass) & is.null(data$Spawning_Biomass)){ stop("Biomass or SSB time series should be provided.")}
 
+  if(!is.null(data$Biomass) & !is.null(data$Spawning_Biomass) & is.null(control$method)){
+    stop("No information about 'control$method', that sets whether the fit is carried using 'SSB' or 'Biomass'.")}
+
   if(is.null(data$Catch)){ stop("Catch time series should be provided.")}
 
   C<-data$Catch
