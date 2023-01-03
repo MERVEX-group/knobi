@@ -1,26 +1,28 @@
 #' @title KBPM retrospective analysis
 #'
-#' @description This function carries out the retrospective analysis evaluating the robustness of the KBPM fit.
+#' @description This function performs the retrospective analysis evaluating that evaluates the robustness of the KBPM fit to systematically deletion of recent data.
 #'
-#' @param knobi_results A list containing the results of the KBPM fit. Object provided by \code{\link{knobi_fit}} function (main function).
-#' @param yR Vector containing the years in which the catch time series ends in each of the retrospective analysis settings.
-#' @param yR0 Optional argument. Vector containing the years in which the catch time series starts in each of the retrospective analysis settings. Equal length of 'yR' vector is required. By default it is assumed that the catch time series starts in the same year as in the original fit.
+#' @param knobi_results A list containing the results of the KBPM fit. Object provided by \code{\link{knobi_fit}} function (main package function).
+#' @param yR Vector of catch time series final years in each one of the retrospective models.
+#' @param yR0 Optional. Vector of catch time series starting years in each one of the retrospective models. The same length of 'yR' vector is required. By default, the catch time series is assumed to start in the same year as in the original fit.
 #' @param nR Number of retrospective patterns. Only required when 'yR' is not provided (if both arguments are included and error message is reported). See details.
-#' @param plot_out Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the input of this argument in the knobi_fit function.
-#' @param plot_dir Optional directory for creating the folder and save the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
-#' @param plot_filename Optional name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the input of this argument in the knobi_fit function.
+#' @param plot_out Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the argument input in the \code{\link{knobi_fit}} function.
+#' @param plot_dir Optional. Directory to create the folder and save the plots. Required when plot_out=TRUE. The default value is the argument input in the \code{\link{knobi_fit}} function.
+#' @param plot_filename Optional. Name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the argument input in the \code{\link{knobi_fit}} function.
 #'
-#' @details If 'nR' is provided it specifies the number of fits to carry out. The first model considers the data deleting the last year and fits the surplus production curve, the next model deletes the two last years of the original data set and fits the SP curve, and the procedure continues until the last SP curve is fitted over the data excluding the last nR years. If the 'yR' argument is provided, the procedure is analogous but the number of years deleted in each of the retrospective fits is specified through the end years provided by this vector from the beginning of the time series or from the years specified in 'yR0'.
+#' @details There are different options for defining retrospective fits:
+#' (1) Usage of 'nR' argument. This argument specifies the number of retrospective patterns. Furthermore, it is implicit in the use of this argument that the retrospective patterns will consist of the systematic deletion of the last year of data up to the number of years determined by 'nR'.
+#' (2) Usage of 'yR' argument. This argument specifies the catch time series final years in each one of the restrospective models, which allows greater flexibility by being able to choose the year from which we delete information. Then, the number of retrospective patterns will be the length of the vector 'yR'. In this option it is possible to set different starting years for the respective time series final years 'yR' than the first year with data using the argument 'yR0'.
 #'
-#' @return A list containing the retrospective analysis results is provided. It includes the fits and the list of corresponding reference points.
-#' The estimate surplus production curves of the retrospective analysis are plotted. The plot is shown in the plot window and saved (if plot_out=TRUE) on the provided directory or in the current directory.
+#' @return A list containing the retrospective analysis: parameter estimates and reference points for each one of the models.
+#' The estimated surplus production curves from the retrospective analysis are plotted. The plot is displayed in the plot window and saved (if plot_out=TRUE) in the provided directory or in the current directory.
 #'
 #' @author
 #' \itemize{
 #' \item{Anxo Paz}
 #' \item{Marta Cousido-Rocha}
 #' \item{Santiago Cerviño López}
-#' \item{Maria Grazia Pennino}
+#' \item{M. Grazia Pennino}
 #' }
 #'
 #' @examples

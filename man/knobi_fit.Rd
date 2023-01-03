@@ -23,17 +23,17 @@ knobi_fit(
 \item F_input: optional. Fishing mortality time series estimated through a data-rich stock assessment model. See details.
 \item classF_input: optional. Character indicating the type of fishing mortality estimate. See details.
 \item RP: optional. Estimates of the following biological reference points derived from the fit of a data-rich stock assessment model (see details): \itemize{
-\item F_MSY: fishing mortality at Maximum Sustainable Yield (MSY).
-\item B_MSY: biomass at MSY (or SSB depending on the value of the 'method' argument, see control list).
 \item MSY: Maximum Sustainable Yield.
+\item F_MSY: fishing mortality at MSY.
+\item B_MSY: biomass at MSY (or SSB depending on the value of the 'method' argument, see control list).
 \item K: virgin biomass.}}}
 
 \item{control}{A list containing the following control parameters. \itemize{
 \item pella: Logical. TRUE means that Pella-Tomlinson model is used whereas FALSE means that Schaefer model is fitted (by default). See details.
-\item start_r: optional. Start value of the growth rate model parameter r (i.e. intrinsic rate of natural increase). See details.
-\item start_K: optional. Start value of the carrying capacity model parameter K (the maximum population size for growth to be positive). See details.
-\item start_p: optional. Start value of the shape model parameter p. Used for Pella-Tomlinson model. See details.
-\item method: sets whether the fit is carried using "SSB" or "Biomass". The argument is only required if both time series, 'Spawning_Biomass' and 'Biomass', are provided.}}
+\item start_r: optional. Start value of the growth rate model parameter 'r' (i.e. intrinsic rate of natural increase). See details.
+\item start_K: optional. Start value of the carrying capacity model parameter 'K' (the maximum population size for growth to be positive). See details.
+\item start_p: optional. Start value of the shape model parameter 'p'. Used for Pella-Tomlinson model. See details.
+\item method: sets whether the fit is carried using 'SSB' or 'Biomass'. The argument is only required if both time series, 'Spawning_Biomass' and 'Biomass', are provided.}}
 
 \item{plot_out}{Logical. TRUE means that files are created with the input time series plots and the fitting results. FALSE by default.}
 
@@ -47,15 +47,15 @@ An output list updated with the fitting information. The control output is the i
 \item data: the data used for the model.
 \item RP: biological reference points estimates: \itemize{
 \item K: virgin biomass.
-\item B_MSY: biomass at maximum sustainable yield.
-\item F_MSY: fishing mortality at maximum sustainable yield.
-\item MSY: maximum sustainable yield.
+\item MSY: maximum sustainable yield (MSY).
+\item B_MSY: biomass at MSY.
+\item F_MSY: fishing mortality at MSY.
 \item MSYoverK: ratio of MSY and K. }
 \item optimr: list of some results provided by \code{\link[optimr]{optimr}}: \itemize{
-\item value: value of the function corresponding to the parameter estimation.
+\item value: value of the objective function in the minimization process.
 \item convergence: integer code. ‘0’ indicates successful completion in the optimization.
 \item message: character string giving any additional information returned by the optimizer, or NULL.}
-\item error: list of performance and accuracy measures: \itemize{
+\item goodness_of_fit: list of goodness-of-fit measures of the adjustment: \itemize{
 \item residuals: pearson's residuals calculated as (observations-estimates)/sd(observations).
 \item error_table: data frame measures of estimates accuracy (error measures comparing observed an estimated values) and model performance: \itemize{
 \item SER: standard error of the regression, calculated as the root of the rate between the sum of residual squares and the degrees of freedom of the regression.
@@ -64,19 +64,17 @@ An output list updated with the fitting information. The control output is the i
 \item AIC: Akaike information criterion.
 \item RMSE: root mean squared error.
 \item MAPE: mean absolute percentage error.}}}
-The plots are displayed in the plot window and also saved (if 'plot_out=TRUE') in the provided directory or in the current one (if 'plot_dir' is not provided). The following input quantities are plotted: fishing mortality time series, SSB, surplus production and catch time series. Plots of catch over fishing mortality, fishing mortality over SSB, and catch over SSB time series with a smooth line from a "loess" regression are also available. Plot of input-output time series of fishing mortality  is provided with horizontal lines at fishing mortality at MSY ( one line if input F_MSY is NULL). The analogous SSB plot is also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first) and with the catch and SP observations (second).
+The plots are displayed in the plot window and also saved (if 'plot_out=TRUE') in the provided directory or in the current one (if 'plot_dir' is not provided). The following input quantities are plotted: fishing mortality time series, SSB, surplus production and catch time series. Plots of catch over fishing mortality, fishing mortality over SSB, and catch over SSB time series with a smooth line from a "loess" regression are also available. Plot of input-output time series of fishing mortality is provided with horizontal lines at fishing mortality at MSY (one line if input F_MSY is NULL). Also a relative fishing mortality plot is displayed, that is the relation between the fishing mortality and F_MSY, and where a horizontal line equal to 1 is added, where values greater than this amount would inform us of a state of overfishing. The analogous SSB plots are also reported. On the other hand, the fitted surplus production curve is plotted twice with the SSB and SP observations (first) and with the catch and SP observations (second). Finally, a plot with the KBPM fit residuals is reported.
 }
 \description{
 This function, that is the main function of the knobi package, fits a type of surplus production models named known-biomass production models (KBPM) (MacCall, 2002). The surplus production curve is fitting using the catch time series and the biomass or SSB (Spawning Stock Biomass) estimates derived from the fit of a data-rich stock assessment model.
 }
 \details{
-
-
 The KBPMs implemented in the current package are explained below.
-Schaefer model (1):
+Schaefer model (1954) (1):
 \deqn{SP_{t} = r B_{t} (1-(B_{t}/K))}
 where \eqn{SP_{t}} is the surplus production, \eqn{B_{t}} is the biomass or \eqn{SSB_{t}} averaged (mean of two consecutive years), \eqn{r} is the population growth rate parameter, and \eqn{K} is the virgin biomass. The subscript \eqn{t} denotes the time (years).
-Pella and Tomlinson model (2):
+Pella and Tomlinson model (1969) (2):
 \deqn{SP_{t} = (r/p) B_{t} (1-(B_{t}/K)^{p})}
 where \eqn{SP_{t}} is the surplus production, \eqn{B_{t}} is the biomass or \eqn{SSB_{t}} averaged,  \eqn{r} is the population growth rate parameter, \eqn{K} is the virgin biomass and \eqn{p} is the asymmetry parameter. The subscript \eqn{t} denotes the time (years).
 
@@ -122,11 +120,12 @@ control$method<-"SSB" # Information for the fit: "SSB" or "Biomass".
 
 
 # Finally, we can fit the model
+
 knobi_results<-knobi_fit(data,control,plot_out=TRUE,plot_filename="results")
 knobi_results$fit
 
 
-# Fitting multispecific KBPM
+#### Fitting multispecific KBPM
 
 # Below, a multistock approximation aggregating the
 # northern and southern stocks of sardine is performed.
@@ -164,9 +163,10 @@ knobi_results2<-knobi_fit(data,control)
 knobi_results2$fit
 
 
-
 }
 \references{
+Schaefer, M.B. (1954). Some Aspects of the Dynamics of Populations Important to the Management of the Commercial Marine Fisheries. Bulletin of the Inter-American Tropical Tuna Commission. 1:26-56.
+Pella, J.J., Tomlinson, P.K. (1969). A generalized stock-production model. Bulletin of the Inter-American Tropical Tuna Commission. 13:421–58.
 MacCall, A. (2002). Use of Known-Biomass Production Models to Determine Productivity of West Coast Groundfish Stocks. North American Journal of Fisheries Management, 22, 272-279.
 }
 \author{
