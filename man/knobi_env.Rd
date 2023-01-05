@@ -67,7 +67,7 @@ First, an AR model is fitted to the residuals.
 \deqn{r_t=\sum_{i=1}^{p}\beta_{i}r_{t-i}+\epsilon_{t}}
 being \eqn{r_t} the KBPM base residual for year \eqn{t} and \eqn{p} the AR model order, estimated as the maximum time lag at which the absolute value of the partial autocorrelation value  is large than \eqn{qnorm(0.975)/\sqrt(length(r))}.
 Then, AR models are fitted considering each one of the lagged environmental variable(s),
-\deqn{r_t,lag=\sum_{i=1}^{p}\beta_{i}r_{t-i}+X_{t,lag}+\epsilon_{t}}, for \eqn{lag=0,1,...,nlag}.
+\deqn{r_{t,lag}=\sum_{i=1}^{p}\beta_{i}r_{t-i}+X_{t,lag}+\epsilon_{t}}, for \eqn{lag=0,1,...,nlag}.
 being \eqn{X_{t,lag}} the lagged environmental variable at year {t} and time lag. Then, we have an autoregressive model for each of the lagged environmental variables.
 The AIC values of the above models are compared, and the lagged environmental variable whose model reports the lowest AIC is used in the KBPM fit, except if the argument 'lag' is used.
 }
