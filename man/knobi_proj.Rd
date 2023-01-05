@@ -47,7 +47,7 @@ A list containing the projection results. \itemize{
 \item catch: data frame containing historical and projected catch values for the different scenarios.
 \item f: data frame containing historical and projected fishing mortality values for the different scenarios.
 \item SP: data frame containing historical and projected surplus production values for the different scenarios.}
-The plots results are displayed in the plot window and are also saved (if plot_out="TRUE") in the  provided directory or in the same directory as \code{link{knobi_fit}}.
+The resulting plots are displayed in the plot window and are also saved (if plot_out="TRUE") in the  provided directory or in the same directory as \code{link{knobi_fit}}.
 If only the base KBPM is considered in the projections, four plots are presented in a panel reporting the biomass, surplus production, catch and fishing mortality projections for each catch or fishing mortality scenario.
 If the environmental fit is also considered, the plots are displayed in four plots panel for each catch or fishing mortality scenario. This four plots reports biomass, surplus production, catch and fishing mortality projections and each panel represent the different environmental scenarios.
 }
