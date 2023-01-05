@@ -43,7 +43,7 @@ A list containing the results of the three-step environmental analysis is provid
 \item selected_var: environmental variable used in the fit.
 \item model_env_Multiplicative: estimates of the multiplicative model parameters.
 \item model_env_Additive: estimates of the additive model parameters.
-\item ref_pts: reference points (RPs) estimates for each model assuming X_t=0 (see vignettes).
+\item ref_pts: reference points (RPs) estimates for each model assuming X_t=0 (see vignettes for RPs estimation depending on X_t).
 \item scaled_environmental_var: standardized environmental variable(s) used in the fit, that means that the variable(s) are transformed subtracting its mean and dividing by its standard deviation (sd) with the 'scale' and 'center' attributes, which are the sd and the mean of the variable respectively.
 \item plots3D: list with the 3D plots objects (if 'plot3d=TRUE').
 \item goodness_of_fit: list of goodness-of-fit measures of the fits: \itemize{

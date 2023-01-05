@@ -43,9 +43,9 @@ print.knobi<-function(x, ...){
 
     if("p" %in% names(x$model_env_Multiplicative)){
 
-      cat("\n Multiplicative model:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p)*exp(c%*%X_t) \n \n")
+      cat("\n Multiplicative model:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p)*exp(c*X_t) \n \n")
     } else {
-      cat("\n Multiplicative model:\n","SP_t = r*B_t*(1-B_t/K)*exp(c%*%X_t) \n \n")
+      cat("\n Multiplicative model:\n","SP_t = r*B_t*(1-B_t/K)*exp(c*X_t) \n \n")
     }
 
     cat("Parameter estimates:\n")
@@ -60,9 +60,9 @@ print.knobi<-function(x, ...){
 
     if("p" %in% names(x$model_env_Multiplicative)){
 
-      cat("\n Additive model:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p)+c%*%X_tB_t \n \n")
+      cat("\n Additive model:\n","SP_t = (r/p)*B_t*(1-(B_t/K)^p)+c*X_tB_t \n \n")
     } else {
-      cat("\n Additive model:\n","SP_t = r*B_t*(1-B_t/K)+c%*%X_tBt \n \n")
+      cat("\n Additive model:\n","SP_t = r*B_t*(1-B_t/K)+c*X_tBt \n \n")
     }
 
     cat("Parameter estimates:\n")
