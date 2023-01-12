@@ -55,7 +55,7 @@ If 'multicovar=FALSE' and 'plot3d=TRUE', 3D plots reporting the surplus producti
 If 'multicovar=TRUE', a plot with the Pearson correlation between the environmental variables is reported too.
 }
 \description{
-Analyze and model the relationships between surplus production (SP) and environmental covariable(s) to test whether productivity changes in response to environmental fluctuations in three steps: (1) correlation analysis between the environmental variable(s) at different delays (lags) and the KBPM residuals through Pearson's correlation or autoregressive models; (2) selection of the environmental variable(s) and its lag that is included in the KBPM models; (3) KBPM environmental fitting, where environmental effects are included as additive and multiplicative effects in the KBPM formulation (see details).
+Analyze and model the relationships between surplus production (SP) and environmental covariable(s) to test whether productivity changes in response to environmental fluctuations in three steps: (1) correlation analysis between the environmental variable(s) at different delays (lags) and the KBPM residuals through Pearson's correlation or autoregressive models; (2) selection of which lagged environmental variable(s) is included in the environmental KBPM models fit; (3) KBPM environmental fitting, where environmental effects are included as additive and multiplicative effects in the KBPM formulation (see details).
 }
 \details{
 Additive environmental model adds the following term on the right hand of equation (1) or (2) described in \code{\link{knobi_fit}} function: \eqn{cX_{t-lag}B_{t}}, being \eqn{X_{t-lag}} the environmental variable and \eqn{B_{t}} the biomass or SSB at time \eqn{t-lag}.

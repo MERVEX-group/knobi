@@ -1,7 +1,7 @@
 
 #' @title KBPM environmental analysis
 #'
-#' @description Analyze and model the relationships between surplus production (SP) and environmental covariable(s) to test whether productivity changes in response to environmental fluctuations in three steps: (1) correlation analysis between the environmental variable(s) at different delays (lags) and the KBPM residuals through Pearson's correlation or autoregressive models; (2) selection of the environmental variable(s) and its lag that is included in the KBPM models; (3) KBPM environmental fitting, where environmental effects are included as additive and multiplicative effects in the KBPM formulation (see details).
+#' @description Analyze and model the relationships between surplus production (SP) and environmental covariable(s) to test whether productivity changes in response to environmental fluctuations in three steps: (1) correlation analysis between the environmental variable(s) at different delays (lags) and the KBPM residuals through Pearson's correlation or autoregressive models; (2) selection of which lagged environmental variable(s) is included in the environmental KBPM models fit; (3) KBPM environmental fitting, where environmental effects are included as additive and multiplicative effects in the KBPM formulation (see details).
 #'
 #' @param knobi_results The output object of \code{\link{knobi_fit}} function (main package function).
 #' @param data A list containing the following data: \itemize{

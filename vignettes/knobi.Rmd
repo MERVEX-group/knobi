@@ -269,7 +269,7 @@ Note that in this examples, plots are displayed but not saved.
 After carrying out the KBPM fit using `knobi_fit`, `knobi_env` function allows us to analyse and model the relationships between surplus production and environmental covariable(s) to test whether productivity changes in response to environmental fluctuations in three steps: 
 
 1.  The analysis of the correlation between the environmental variable(s) and the KBPM residuals through the pearson's correlation or through the study of autoregressive models; 
-2.  The selection of the environmental variable(s) and its lag that is included in the KBPM models; 
+2.  The selection of which lagged environmental variable(s) is included in the environmental KBPM models fit; 
 3.  The KBPM environmental fit.
 
 
