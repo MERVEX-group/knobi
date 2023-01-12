@@ -23,23 +23,23 @@ knobi_retro(
 
 \item{nR}{Number of retrospective patterns. Only required when 'yR' is not provided (if both arguments are included and error message is reported). See details.}
 
-\item{plot_out}{Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the argument input in the \code{\link{knobi_fit}} function.}
+\item{plot_out}{Logical. TRUE means that a file with the plot of the retrospective fits is created. The default value is the input in the \code{\link{knobi_fit}} function.}
 
-\item{plot_filename}{Optional. Name of the folder that will contain the plots. Required when plot_out=TRUE. The default value is the argument input in the \code{\link{knobi_fit}} function.}
+\item{plot_filename}{Optional. Name of the folder that will contain the plots. Required when 'plot_out=TRUE'. The default value is the input in the \code{\link{knobi_fit}} function.}
 
-\item{plot_dir}{Optional. Directory to create the folder and save the plots. Required when plot_out=TRUE. The default value is the argument input in the \code{\link{knobi_fit}} function.}
+\item{plot_dir}{Optional. Directory to create the folder and save the plots. Required when 'plot_out=TRUE'. The default value is the input in the \code{\link{knobi_fit}} function.}
 }
 \value{
 A list containing the retrospective analysis: parameter estimates and reference points for each one of the models.
 The estimated surplus production curves from the retrospective analysis are plotted. The plot is displayed in the plot window and saved (if plot_out=TRUE) in the provided directory or in the current directory.
 }
 \description{
-This function performs the retrospective analysis evaluating that evaluates the robustness of the KBPM fit to systematically deletion of recent data.
+This function performs a retrospective analysis that evaluates the robustness of the KBPM fit to the systematically deletion of recent data.
 }
 \details{
 There are different options for defining retrospective fits:
 (1) Usage of 'nR' argument. This argument specifies the number of retrospective patterns. Furthermore, it is implicit in the use of this argument that the retrospective patterns will consist of the systematic deletion of the last year of data up to the number of years determined by 'nR'.
-(2) Usage of 'yR' argument. This argument specifies the catch time series final years in each one of the restrospective models, which allows greater flexibility by being able to choose the year from which we delete information. Then, the number of retrospective patterns will be the length of the vector 'yR'. In this option it is possible to set different starting years for the respective time series final years 'yR' than the first year with data using the argument 'yR0'.
+(2) Usage of 'yR' argument. This argument specifies the catch time series final years in each one of the retrospective models, which allows greater flexibility by being able to choose the year from which we delete information. Then, the number of retrospective patterns will be the length of the vector 'yR'. In this option it is possible to set different starting years for the respective time series final years through the argument 'yR0'.
 }
 \examples{
 
