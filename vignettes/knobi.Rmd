@@ -134,7 +134,7 @@ control$method <- "SSB"
 There is the possibility of defining another `control` settings such as `start_r`, `start_K` or `start_p`, optional start values of the model parameters $r$ (intrinsic growth rate), $K$ (maximum population size) and $p$ (shape parameter in Pella-Tomlinson model), respectively.
 
 
-#### KBPM mmodel fit ####
+#### KBPM model fit ####
 
 After preparing both lists, `data` and `control`, we can apply the `knobi_fit` function over them for the fit of the KBPM model. 
 
