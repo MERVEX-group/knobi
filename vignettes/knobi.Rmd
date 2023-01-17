@@ -453,7 +453,7 @@ knobi_proj(hake_n_results, f=f, n_y=5, env_results=hake_n_environmental, env=env
 
 #### Case of considering multicovariate environmental models #### 
 
-In the case of `multicovar = TRUE` in `knobi_env`, an example of the list that is required, which each item is a data frame for each environmental scenario.
+In the case of `multicovar = TRUE` in `knobi_env`, an example of the list that is required, each item is a data frame for each environmental scenario.
 
 ```{r, eval=FALSE}
 env <- list( climate_1 = data.frame( AMO=c(0.2,0.2,0.3,0.3,0.4),
