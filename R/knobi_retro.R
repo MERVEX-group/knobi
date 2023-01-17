@@ -1,6 +1,6 @@
 #' @title KBPM retrospective analysis
 #'
-#' @description This function performs a retrospective analysis that evaluates the robustness of the KBPM fit to the systematically deletion of recent data.
+#' @description This function performs a retrospective analysis that evaluates the robustness of the KBPM fit to the systematic deletion of recent data.
 #'
 #' @param knobi_results A list containing the results of the KBPM fit. Object provided by \code{\link{knobi_fit}} function (main package function).
 #' @param yR Vector of catch time series final years in each one of the retrospective models.

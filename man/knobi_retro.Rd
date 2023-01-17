@@ -34,7 +34,7 @@ A list containing the retrospective analysis: parameter estimates and reference 
 The estimated surplus production curves from the retrospective analysis are plotted. The plot is displayed in the plot window and saved (if plot_out=TRUE) in the provided directory or in the current directory.
 }
 \description{
-This function performs a retrospective analysis that evaluates the robustness of the KBPM fit to the systematically deletion of recent data.
+This function performs a retrospective analysis that evaluates the robustness of the KBPM fit to the systematic deletion of recent data.
 }
 \details{
 There are different options for defining retrospective fits:
