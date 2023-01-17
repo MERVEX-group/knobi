@@ -269,7 +269,7 @@ data <- list(env=data.frame(AMO=Env$AMO,Tmax=Env$TMax_Vigo),
            years=Env$years)
 ```
 
-In the optional `control` input list we provide the settings for the environmental fit. In this case, for example, we are going to set `nlag=5`. This argument is used to test all the lags smaller or equal to `nlag` (numeric). The lag corresponding to the highest correlation among the base KBPM surplus production residuals and the lagged environmental covariable(s) values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable and *lag=0,1,...,nlag*. The length of this argument must be equal to the number of environmental variables included. By default, `nlag=3`. Note that the environmental data series must start in the first year of the KBPM fit data minus the provided nlag or lag.
+In the optional `control` input list we provide the settings for the environmental fit. In this case, for example, we are going to set `nlag=5`. This argument is used to test all the lags smaller or equal to `nlag` (numeric). The lag corresponding to the highest correlation among the base KBPM surplus production residuals and the lagged environmental covariable(s) values is considered in the environmental model. This means that the *residuals<sub>t</sub>* is related to *X<sub>t-lag</sub>* being *X* the environmental variable and *lag=0,1,...,nlag*. The length of this argument must be equal to the number of environmental variables included. By default, `nlag=3`. Note that the environmental data series must start in the first year of the KBPM fit data minus the provided `nlag`.
 
 ```{r}
 control <- list( nlag = nlag)
