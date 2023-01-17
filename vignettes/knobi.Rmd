@@ -412,7 +412,7 @@ The complete output object is a list containing the projection estimates for eac
 
 There is the possibility of considering the environmental information in the forecasts. For this purpose, it has to be provided the `knobi_env` results and the new environmental information through the arguments `env_results`, the output object of the `knobi_env` function; and `env`, the environmental variable(s) projections.
 
-In this example, the future values of the environmental variable(s) are included in a data frame containing the environmental covariable values for the projected years. Three scenarios are considered: (i) Constant maximum year temperature equal to 19; (ii) temperature equal to 19 and then constant raise of 0.5 degrees; and (iii) temperature equal to 19 and then constant raise of 1 degrees
+In this example, the future values of the environmental variable(s) are included in a data frame containing the environmental covariable values for the projected years. Three scenarios are considered: (i) Constant maximum year temperature equal to 19 degrees (centigrade); (ii) temperature equal to 19 degrees and then constant raise of 0.5 degrees; and (iii) temperature equal to 19 and then constant raise of 1 degrees.
 
 
 ```{r}
