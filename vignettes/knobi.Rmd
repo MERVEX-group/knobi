@@ -440,7 +440,7 @@ The output list also contains the projections for each of the scenarios consider
 
 #### Forecast through fishing mortality ####
 
-There is also the possibility of forecast through projections for fishing mortality instead of catch, considering or not the environmental information. In this case, input `Ct` is replaced by `f`, which is a vector, data frame or matrix that establishes the fishing mortality values for each one of the projected years. Different scenarios are also allowed and can be defined in each of the data frame or matrix columns. Therefore, the length vector (in the case of one scenario) or the number of rows of the data frame or matrix (in the case of multiple scenarios) must be equal to the number of projected years.
+There is also the possibility of forecast through projections for fishing mortality instead of catch, considering or not the environmental information. In this case, input `Ct` is replaced by `f`. Different scenarios are also allowed.
 
 ```{r, eval=FALSE}
 fmsy <- hake_n_results$fit$RP$F_MSY
