@@ -439,7 +439,7 @@ knobi_proj(hake_n_results, hake_n_environmental, Ct=Ct, n_y=5, env=env)
 The output list also contains the projections for each of the scenarios considered for both catches and environmental variability, which also, as can be seen in detail in the package help, can be obtained based on each of the considered models.
 
 
-#### Forecast through fishing mortality ####
+#### Forecast via fishing mortality ####
 
 There is also the possibility of forecast through projections for fishing mortality instead of catch, considering or not the environmental information. In this case, input `Ct` is replaced by `f`. Different scenarios are also allowed.
 
