@@ -62,7 +62,7 @@ Once, the surplus production is calculated using the known average biomass (of t
 
 $$SP_{t}= \frac{r}{p}\overline{B}_{t}\left(1-\left( \frac{\overline{B}_{t}}{K}\right) ^{p}\right)$$ (4)
 
-Schaefer (1954) model corresponds to *p=1* (symmetric production curve and $SP_{max}=K/2$).
+Schaefer (1954) model corresponds to *p=1* (symmetric production curve and *SP<sub>max</sub>=K/2*).
 
 
 ## 2. `knobi` package ##
@@ -82,7 +82,7 @@ In this section the `knobi` package functions are described. More precisely, in 
 
 This section illustrates the use of the `knobi_fit` function, which allows us to execute the KBPM fit. 
 
-For that, the case study of European hake ($Merluccius$ $merluccius$) is used. European hake is a resource of great commercial importance in Atlantic Iberian Waters. This species is assessed by the International Council for the Exploration of the Sea (ICES) in two units: the northern and the southern stocks. For the current illustration we focus on the northern hake unit which covers the subareas 4, 6, and 7, and divisions 3.a, 8.a–b, and 8.d (Greater North Sea, Celtic Seas, and the northern Bay of Biscay).
+For that, the case study of European hake (*Merluccius merluccius*) is used. European hake is a resource of great commercial importance in Atlantic Iberian Waters. This species is assessed by the International Council for the Exploration of the Sea (ICES) in two units: the northern and the southern stocks. For the current illustration we focus on the northern hake unit which covers the subareas 4, 6, and 7, and divisions 3.a, 8.a–b, and 8.d (Greater North Sea, Celtic Seas, and the northern Bay of Biscay).
 
 
 
