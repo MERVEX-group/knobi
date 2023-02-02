@@ -338,7 +338,7 @@ where *r*, *p*, *K* and *c* are the model parameter estimates (equations 5 and 6
 $$B_{msy}(X)=K\left(\frac{p c X+r}{r(p+1)}\right)^{1/p}$$
 $$F_{msy}(X)=\frac{r}{p}\left(1-\frac{1}{p+1}\right)-\frac{cX}{p+1}+cX$$
 $$MSY(X)=B_{msy}(X)*F_{msy}(X)$$
-$$K(X)=K+cX_t$$
+$$K(X)=K+cX$$
 
 where *r*, *p*, *K* and *c* are the model parameter estimates (equations 5 and 6) and *X* the centered environmental variable.
 
