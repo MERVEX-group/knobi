@@ -330,7 +330,7 @@ $$F_{msy}(X)=\frac{r}{p}\left(1-\frac{1}{p+1}\right) cX$$
 $$MSY(X)=B_{msy}(X)*F_{msy}(X)$$
 $$K(X)=K$$
 
-where *r*, *p*, *K* and *c* are the model parameter estimates and *X* the centered environmental variable.
+where *r*, *p*, *K* and *c* are the model parameter estimates (equations 5 and 6) and *X* the centered environmental variable.
 
 
 * In the case of the additive model
@@ -340,7 +340,7 @@ $$F_{msy}(X)=\frac{r}{p}\left(1-\frac{1}{p+1}\right)-\frac{cX}{p+1}+cX$$
 $$MSY(X)=B_{msy}(X)*F_{msy}(X)$$
 $$K(X)=K+cX_t$$
 
-where *r*, *p*, *K* and *c* are the model parameter estimates (equations 5 and 6).
+where *r*, *p*, *K* and *c* are the model parameter estimates (equations 5 and 6) and *X* the centered environmental variable.
 
 
 #### More options ####
