@@ -315,7 +315,7 @@ A detailed description of each slot of the output function's object is available
 
 From equations (5) and (6) we can derive the formulas that provide the reference points (RPs). It is important to take into account that in these models the RPs can depend on the value of the environmental covariate (details provided below for each model).
 
-For simplicity, the output slot `ref_pts` provides the RPs estimates for a value of the centered environmental variable equal to 0 (*X=0*), see the following example.
+For simplicity, the output slot `$ref_pts` provides the RPs estimates for a value of the centered environmental variable equal to 0 (*X=0*), see the following example.
 
 ```{r}
 hake_n_environmental$ref_pts
