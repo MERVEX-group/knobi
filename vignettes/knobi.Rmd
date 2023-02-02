@@ -326,7 +326,7 @@ The mathematical formulation of the RPs estimates for each KBPM model depending 
 * In the case of the multiplicative model
 
 $$B_{msy}(X)=K\left(\frac{1}{p+1}\right)^{1/p}$$
-$$F_{msy}(X)=\frac{r}{p}\left(1-\frac{1}{p+1}\right) cX_t$$
+$$F_{msy}(X)=\frac{r}{p}\left(1-\frac{1}{p+1}\right) cX$$
 $$MSY(X)=B_{msy}(X)*F_{msy}(X)$$
 $$K(X)=K$$
 
