@@ -10,8 +10,8 @@ knobi_proj(
   Ct = NULL,
   f = NULL,
   env = NULL,
-  end_y = NULL,
   n_y = NULL,
+  end_y = NULL,
   plot_out = FALSE,
   plot_filename = NULL,
   plot_dir = NULL
@@ -28,9 +28,9 @@ knobi_proj(
 
 \item{env}{Optional. Environmental variable(s) projections required if the environmental fit is considered to forecast the population and fishery dynamics. This fit considers the variable(s) selected in the \code{\link{knobi_env}} function. If the 'multicovar' argument of \code{\link{knobi_env}} is FALSE, tihs argument is a vector, data frame or matrix containing the values of the environmental covariates (unstandardized) for the projection years (rows) and the different catch or fishing mortality settings (columns).  On the other hand, if the 'multicovar' argument of \code{\link{knobi_env}} is TRUE, the current argument must be a list, and each entry must be a data frame corresponding to each catch or fishing mortality setting containing the values of the environmental covariates for that scenario.}
 
-\item{end_y}{Optional. The final year of the projections. If not given, enter 'n_y' in the argument above. If both are provided, 'n_y' is used.}
-
 \item{n_y}{Optional. The number of projected years. If not provided, enter 'end_y' in the next argument.}
+
+\item{end_y}{Optional. The final year of the projections. If not given, enter 'n_y' in the argument above. If both are provided, 'n_y' is used.}
 
 \item{plot_out}{Logical. TRUE means that a file with the plot of the forecasts is created. The default value is the input in the \code{\link{knobi_fit}} function.}
 

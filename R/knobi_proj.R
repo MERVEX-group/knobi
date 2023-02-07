@@ -122,7 +122,7 @@
 #' @export
 
 knobi_proj<-function(knobi_results, env_results=NULL, Ct=NULL, f=NULL, env=NULL,
-                     end_y=NULL, n_y=NULL,
+                     n_y=NULL, end_y=NULL,
                      plot_out=FALSE, plot_filename=NULL, plot_dir=NULL){
 
 
