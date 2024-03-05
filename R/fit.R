@@ -22,7 +22,7 @@ fitting.Pella<-function(Data){
 
     )
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",upper=c(2,Inf,3.5),lower=c(0.05,0,0.25))
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",upper=c(2,Inf,3.5),lower=c(0.05,0,0.25))
   return(out)
 }
 
@@ -44,7 +44,7 @@ fitting.Schaefer<-function(Data){
 
     )
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",upper=c(2,Inf),lower=c(0.05,0))
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",upper=c(2,Inf),lower=c(0.05,0))
   return(out)
 }
 
@@ -69,7 +69,7 @@ fitting.Schaefer_Mult<-function(Data){
     )
   }
 
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,20),lower=c(0.05,0,-20),env=as.numeric(Data$env))
   return(out$par)
 
@@ -96,7 +96,7 @@ fitting.Schaefer_Add<-function(Data){
     )
   }
 
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,1000000),lower=c(0.05,0,-1000000),env=as.numeric(Data$env))
   return(out$par)
 }
@@ -124,7 +124,7 @@ fitting.Pella_Mult<-function(Data){
     )
   }
 
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,20,3.5),lower=c(0.05,0,-20,0.25),env=as.numeric(Data$env))
   return(out$par)
 }
@@ -151,7 +151,7 @@ fitting.Pella_Add<-function(Data){
     )
   }
 
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,1000000,3.5),lower=c(0.05,0,-1000000,0.25),env=as.numeric(Data$env))
   return(out$par)
 }
@@ -177,7 +177,7 @@ fitting.Pella_Mult_2<-function(Data){
     sum(
       (y-my_model(x,env1,env2, p["r"], p["K"],p["c1"],p["c2"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env)),3.5),lower=c(0.05,0,rep(-20,ncol(env)),0.25),
                         env1=env1,env2=env2)
 
@@ -205,7 +205,7 @@ fitting.Pella_Mult_3<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env)),3.5),lower=c(0.05,0,rep(-20,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3)
   return(out$par)
@@ -232,7 +232,7 @@ fitting.Pella_Mult_4<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env)),3.5),lower=c(0.05,0,rep(-20,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3,env4=env4)
   return(out$par)
@@ -260,7 +260,7 @@ fitting.Pella_Mult_5<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4,env5, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["c5"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env)),3.5),lower=c(0.05,0,rep(-20,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3,env4=env4,env5=env5)
 
@@ -287,7 +287,7 @@ fitting.Schaefer_Mult_2<-function(Data){
     sum(
       (y-my_model(x,env1,env2, p["r"], p["K"],p["c1"],p["c2"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env))),lower=c(0.05,0,rep(-20,ncol(env))),
                         env1=env1,env2=env2)
   return(out$par)
@@ -314,7 +314,7 @@ fitting.Schaefer_Mult_3<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3, p["r"], p["K"],p["c1"],p["c2"],p["c3"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env))),lower=c(0.05,0,rep(-20,ncol(env))),
                         env1=env1,env2=env2,env3=env3)
   return(out$par)
@@ -340,7 +340,7 @@ fitting.Schaefer_Mult_4<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env))),lower=c(0.05,0,rep(-20,ncol(env))),
                         env1=env1,env2=env2,env3=env3,env4=env4)
   return(out$par)
@@ -366,7 +366,7 @@ fitting.Schaefer_Mult_5<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4,env5, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["c5"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(20,ncol(env))),lower=c(0.05,0,rep(-20,ncol(env))),
                         env1=env1,env2=env2,env3=env3,env4=env4,env5=env5)
   return(out$par)
@@ -393,7 +393,7 @@ fitting.Pella_Add_2<-function(Data){
     sum(
       (y-my_model(x,env1,env2, p["r"], p["K"],p["c1"],p["c2"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env)),3.5),lower=c(0.05,0,rep(-1000000,ncol(env)),0.25),
                         env1=env1,env2=env2)
   return(out$par)
@@ -420,7 +420,7 @@ fitting.Pella_Add_3<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env)),3.5),lower=c(0.05,0,rep(-1000000,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3)
   return(out$par)
@@ -447,7 +447,7 @@ fitting.Pella_Add_4<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env)),3.5),lower=c(0.05,0,rep(-1000000,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3,env4=env4)
   return(out$par)
@@ -473,7 +473,7 @@ fitting.Pella_Add_5<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4,env5, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["c5"],p["p"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env)),3.5),lower=c(0.05,0,rep(-1000000,ncol(env)),0.25),
                         env1=env1,env2=env2,env3=env3,env4=env4,env5=env5)
   return(out$par)
@@ -500,7 +500,7 @@ fitting.Schaefer_Add_2<-function(Data){
     sum(
       (y-my_model(x,env1,env2, p["r"], p["K"],p["c1"],p["c2"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env))),lower=c(0.05,0,rep(-1000000,ncol(env))),
                         env1=env1,env2=env2)
   return(out$par)
@@ -526,7 +526,7 @@ fitting.Schaefer_Add_3<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3, p["r"], p["K"],p["c1"],p["c2"],p["c3"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env))),lower=c(0.05,0,rep(-1000000,ncol(env))),
                         env1=env1,env2=env2,env3=env3)
   return(out$par)
@@ -552,7 +552,7 @@ fitting.Schaefer_Add_4<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env))),lower=c(0.05,0,rep(-1000000,ncol(env))),
                         env1=env1,env2=env2,env3=env3,env4=env4)
   return(out$par)
@@ -578,7 +578,7 @@ fitting.Schaefer_Add_5<-function(Data){
     sum(
       (y-my_model(x,env1,env2,env3,env4,env5, p["r"], p["K"],p["c1"],p["c2"],p["c3"],p["c4"],p["c5"]))^2)
   }
-  out <- optimr::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
+  out <- optimx::optimr(params,fun,x=data$x,y=data$y,method="L-BFGS-B",
                         upper=c(2,Inf,rep(1000000,ncol(env))),lower=c(0.05,0,rep(-1000000,ncol(env))),
                         env1=env1,env2=env2,env3=env3,env4=env4,env5=env5)
   return(out$par)
