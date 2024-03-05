@@ -21,7 +21,7 @@ devtools::install_github("MERVEX-group/knobi",build_vignettes = TRUE)
 This option needs to install previously the following packages:
 
 ```
-install.packages(c("corrplot", "ggplot2",  "gridExtra", "grDevices",  "optimr", "plot3D"))
+install.packages(c("corrplot", "ggplot2",  "gridExtra", "grDevices",  "optimx", "plot3D"))
 ```
 
 ## 2. Version without vignettes
